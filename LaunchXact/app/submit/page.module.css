@@ -1,0 +1,104 @@
+.container {
+    padding-top: 120px;
+    padding-bottom: 6rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title {
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.7;
+}
+
+.formPanel {
+    padding: 3rem;
+    background: var(--surface);
+}
+
+.form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .form {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.fullWidth {
+    grid-column: 1 / -1;
+}
+
+.formGroup label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--glass-border);
+    background: var(--background);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--foreground);
+    transition: all 0.2s;
+}
+
+.formGroup option {
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.actions {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.successPanel {
+    text-align: center;
+    padding: 5rem 2rem;
+}
+
+.successIcon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.successPanel p {
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}

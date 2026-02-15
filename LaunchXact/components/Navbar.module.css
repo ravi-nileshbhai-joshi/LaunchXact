@@ -1,0 +1,55 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logoWrapper {
+    display: flex;
+    align-items: center;
+    /* Remove text styles as they are handled by SVG now, 
+       but keep generic link styles reset if needed */
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo {
+    /* Deprecated, but keeping for reference if needed or fallback */
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.links {
+    display: flex;
+    gap: 2rem;
+}
+
+.links a {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--foreground);
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.links a:hover {
+    opacity: 1;
+}
