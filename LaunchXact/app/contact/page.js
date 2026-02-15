@@ -4,6 +4,11 @@ import { faXTwitter, faLinkedin, faInstagram, faFacebook } from '@fortawesome/fr
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 export default function Contact() {
+    const handleSocialClick = (e, platform) => {
+        e.preventDefault();
+        alert(`${platform} account is coming soon!`);
+    };
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
@@ -28,13 +33,13 @@ export default function Contact() {
                             <a href="https://twitter.com/launchxact" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} title="X (Twitter)">
                                 <FontAwesomeIcon icon={faXTwitter} />
                             </a>
-                            <a href="#" className={styles.socialIcon} title="LinkedIn (Coming Soon)">
+                            <a href="#" onClick={(e) => handleSocialClick(e, 'LinkedIn')} className={styles.socialIcon} title="LinkedIn (Coming Soon)">
                                 <FontAwesomeIcon icon={faLinkedin} />
                             </a>
-                            <a href="#" className={styles.socialIcon} title="Instagram (Coming Soon)">
+                            <a href="#" onClick={(e) => handleSocialClick(e, 'Instagram')} className={styles.socialIcon} title="Instagram (Coming Soon)">
                                 <FontAwesomeIcon icon={faInstagram} />
                             </a>
-                            <a href="#" className={styles.socialIcon} title="Facebook (Coming Soon)">
+                            <a href="#" onClick={(e) => handleSocialClick(e, 'Facebook')} className={styles.socialIcon} title="Facebook (Coming Soon)">
                                 <FontAwesomeIcon icon={faFacebook} />
                             </a>
                         </div>
