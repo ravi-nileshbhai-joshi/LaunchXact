@@ -7,9 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
     "vercel-build": "node debug-build.js && next build"
   },
   "dependencies": {
