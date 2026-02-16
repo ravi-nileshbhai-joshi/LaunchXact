@@ -1,10 +1,8 @@
 export default function robots() {
     return {
-        rules: {
-            userAgent: '*',
-            allow: '/',
-            disallow: '/private/',
-        },
+        userAgent: '*',
+        allow: '/',
+    },
         sitemap: 'https://launchxact.com/sitemap.xml',
     };
 }
