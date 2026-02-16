@@ -63,20 +63,7 @@ export default function RootLayout({ children }) {
         <GoogleTagManager gtmId="GTM-PJRNX6SW" />
 
 
-        {/* Google Analytics (Legacy/Direct) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-ZPYHYV8KXT"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-ZPYHYV8KXT');
-          `}
-        </Script>
+        {/* Google Analytics (Legacy/Direct) removed in favor of GTM */}
 
         <Navbar />
         <main>{children}</main>
