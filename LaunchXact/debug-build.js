@@ -1,29 +1,24 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('--- DEBUG BUILD START ---');
-console.log('CWD:', process.cwd());
+console.log('=== DEBUG START ===');
+console.log('Current Directory:', process.cwd());
 
-function listDir(dir, level = 0) {
-    if (level > 2) return; // Limit depth
-    try {
-        const files = fs.readdirSync(dir);
-        files.forEach(file => {
-            // Ignore node_modules and .git to keep logs clean
-            if (file === 'node_modules' || file === '.git' || file === '.next') return;
+try {
+    const files = fs.readdirSync('.');
+    console.log('Root Files:', files);
 
-            console.log('  '.repeat(level) + ' - ' + file);
-            try {
-                const fullPath = path.join(dir, file);
-                if (fs.statSync(fullPath).isDirectory()) {
-                    listDir(fullPath, level + 1);
-                }
-            } catch (e) { }
-        });
-    } catch (e) {
-        console.log('  '.repeat(level) + 'Error listing ' + dir + ': ' + e.message);
+    if (files.includes('app')) {
+        console.log('App directory found!');
+        try {
+            console.log('App contents:', fs.readdirSync('app'));
+        } catch (err) {
+            console.log('Error reading app dir:', err.message);
+        }
+    } else {
+        console.error('ERROR: App directory NOT found in root!');
     }
+} catch (e) {
+    console.error('Debug Error:', e);
 }
-
-listDir('.');
-console.log('--- DEBUG BUILD END ---');
+console.log('=== DEBUG END ===');
