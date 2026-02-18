@@ -134,8 +134,8 @@ export default function WaitingListFull() {
             <section className={`${styles.hero} ${styles.reveal}`}>
                 <div className={styles.heroContent}>
                     <h1 className={styles.heroTitle}>
-                        Launch your product. Reach real users.<br />
-                        <span className={styles.gradientText}>Skip the marketing chaos.</span>
+                        The Premier Product Launch Platform.<br />
+                        <span className={styles.gradientText}>Where SaaS Takes Off.</span>
                     </h1>
                     <p className={styles.heroSub}>
                         LaunchXact is a curated platform where indie founders list their products and early adopters discover new tools—without the noise, algorithms, or one-day launches.

@@ -11,6 +11,7 @@ export default function Footer() {
                     {/* <Link href="/submit">Submit</Link> */}
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>
+                    <Link href="/where-to-launch-saas">Where to Launch</Link>
                 </div>
             </div>
         </footer>
