@@ -90,7 +90,8 @@ Keep building,
 
 Ravi
 Founder, LaunchXact
-https://launchxact.com`
+https://launchxact.com
+https://x.com/Ravi_Nileshbhai`
                     : `Hi there,
 
 You’re now on the LaunchXact early adopter waitlist.
