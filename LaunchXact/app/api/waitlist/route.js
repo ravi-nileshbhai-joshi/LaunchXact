@@ -34,6 +34,9 @@ export async function POST(request) {
                 category: data.category,
                 email: data.email,
                 social_profile: data.social,
+                utm_source: data.utmSource || null,
+                utm_medium: data.utmMedium || null,
+                utm_campaign: data.utmCampaign || null,
             }]);
             dbError = error;
         } else {
@@ -57,32 +60,37 @@ export async function POST(request) {
         if (resend) {
             try {
                 const emailSubject = type === 'founder'
-                    ? "You’re on the LaunchXact founder waitlist"
+                    ? `Next steps for ${data.productName} on LaunchXact`
                     : "You’re on the LaunchXact early user list";
 
                 const emailBody = type === 'founder'
                     ? `Hi ${data.founderName || 'Founder'},
 
-Thanks for submitting your product to the LaunchXact founder waitlist.
+Thanks for submitting ${data.productName} to the LaunchXact founder waitlist.
 
-We’re curating a small collection of indie SaaS tools for our initial launch. Your product is now in the review queue.
+We are hand-picking a limited "Genesis Batch" of 40 high-quality SaaS tools for our official debut. Your product has successfully entered our review queue.
 
-If selected, your product will:
-- Be featured in the launch collection
-- Get early visibility among founders and adopters
-- Be part of the first LaunchXact listings
+If selected, your product will receive:
 
-If you’d like a chance to be featured, you can share this:
-“My product ${data.productName} will be featured on LaunchXact’s launch collection.”
+Priority Placement: A featured spot in our launch-day collection.
 
-We’ll notify you once your product is approved and scheduled.
+Massive Distribution: Exposure to our 350k+ reach network across LinkedIn, X, and Reddit.
 
-Thanks for building something useful.
+Early Adopter Traffic: Direct visibility to our growing waitlist of SaaS enthusiasts.
 
-—
+Want to boost your selection chances?
+Founders who show early community interest move to the top of our review list. You can share your "Genesis" status here:
+
+[Tweet this]: Just submitted ${data.productName} to the @LaunchXact Genesis Batch. Excited to be part of the first 40 curated SaaS tools launching soon! 🚀
+(Or copy and paste text to share)
+
+I’ll personally reach out once your product is approved and give you the specific date for your feature.
+
+Keep building,
+
 Ravi
 Founder, LaunchXact
-hello@launchxact.com`
+https://launchxact.com`
                     : `Hi there,
 
 You’re now on the LaunchXact early adopter waitlist.

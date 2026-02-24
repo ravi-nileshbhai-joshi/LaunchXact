@@ -45,8 +45,24 @@ export default function WaitingListFull() {
         category: '',
         email: '',
         social: '',
-        founderName: '' // Added explicitly
+        founderName: '', // Added explicitly
+        utmSource: '',
+        utmMedium: '',
+        utmCampaign: ''
     });
+
+    // Capture UTM Parameters from URL on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            setFounderForm(prev => ({
+                ...prev,
+                utmSource: params.get('utm_source') || '',
+                utmMedium: params.get('utm_medium') || '',
+                utmCampaign: params.get('utm_campaign') || ''
+            }));
+        }
+    }, []);
     const [buyerForm, setBuyerForm] = useState({
         email: '',
         interests: ''
