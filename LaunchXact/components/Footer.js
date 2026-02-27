@@ -12,6 +12,9 @@ export default function Footer() {
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>
                     <Link href="/where-to-launch-saas">Where to Launch</Link>
+                    <Link href="/terms">Terms</Link>
+                    <Link href="/privacy">Privacy</Link>
+                    <Link href="/refund-policy">Refunds</Link>
                 </div>
             </div>
         </footer>

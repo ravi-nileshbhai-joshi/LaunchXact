@@ -29,6 +29,26 @@ export default function Contact() {
                     </div>
 
                     <div className={styles.method}>
+                        <h3>Support Hours</h3>
+                        <p className={styles.text}>Mon-Fri, 9 AM - 6 PM IST</p>
+                    </div>
+
+                    <div className={styles.method}>
+                        <h3>Contact Number</h3>
+                        <a href="tel:+917990786383" className={styles.link}>+91 7990786383</a>
+                    </div>
+
+                    <div className={styles.method}>
+                        <h3>Grievance Officer</h3>
+                        <p className={styles.text}>Krupa Joshi</p>
+                    </div>
+
+                    <div className={styles.method}>
+                        <h3>Registered Address</h3>
+                        <p className={styles.text}>Shree Dresses, Nr. Vachraj Temple, Canal Road, Chhaya, Porbandar, Gujarat Pin code- 360-575</p>
+                    </div>
+
+                    <div className={styles.method}>
                         <h3>Socials</h3>
                         <div className={styles.socialLinks}>
                             <a href="https://twitter.com/launchxact" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} title="X (Twitter)">
@@ -37,10 +57,10 @@ export default function Contact() {
                             <a href="#" onClick={(e) => handleSocialClick(e, 'LinkedIn')} className={styles.socialIcon} title="LinkedIn (Coming Soon)">
                                 <FontAwesomeIcon icon={faLinkedin} />
                             </a>
-                            <a href="#" onClick={(e) => handleSocialClick(e, 'Instagram')} className={styles.socialIcon} title="Instagram (Coming Soon)">
+                            <a href="https://www.instagram.com/launchxact/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} title="Instagram">
                                 <FontAwesomeIcon icon={faInstagram} />
                             </a>
-                            <a href="#" onClick={(e) => handleSocialClick(e, 'Facebook')} className={styles.socialIcon} title="Facebook (Coming Soon)">
+                            <a href="https://www.facebook.com/profile.php?id=61588146346749" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} title="Facebook">
                                 <FontAwesomeIcon icon={faFacebook} />
                             </a>
                         </div>

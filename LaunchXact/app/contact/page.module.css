@@ -72,6 +72,15 @@
     text-decoration: underline;
 }
 
+.text {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--foreground);
+    opacity: 0.9;
+    margin: 0;
+    line-height: 1.4;
+}
+
 .socialLinks {
     display: flex;
     justify-content: center;
