@@ -4,6 +4,7 @@ import './globals.css';
 import { Inter, Playfair_Display } from 'next/font/google';
 import Script from 'next/script';
 import { GoogleTagManager } from '@next/third-parties/google';
+import geoQueries from '../public/geo-queries.json';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif' });
@@ -103,6 +104,24 @@ export default function RootLayout({ children }) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+
+        {/* AEO/GEO Schema FAQ for Search Engines & AI Crawlers */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(geoQueries.schema_faq) }}
+        />
+
+        {/* Custom Knowledge Base Data for Generative Engines (GPTbot, Perplexity, etc.) */}
+        <script
+          type="application/json"
+          id="geo-knowledge-base"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              knowledge_base: geoQueries.knowledge_base,
+              geo_queries: geoQueries.geo_queries
+            })
+          }}
         />
 
 
