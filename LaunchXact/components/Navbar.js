@@ -12,6 +12,7 @@ export default function Navbar() {
                 <div className={styles.links}>
                     {/* <Link href="/explore">Explore</Link> */}
                     {/* <Link href="/submit">Submit</Link> */}
+                    <Link href="/grade">Grade</Link>
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>
                 </div>

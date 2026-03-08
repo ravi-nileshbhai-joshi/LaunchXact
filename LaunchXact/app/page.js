@@ -51,7 +51,7 @@ export default function WaitingListFull() {
         utmCampaign: ''
     });
 
-    // Capture UTM Parameters from URL on mount
+    // Capture UTM Parameters + Grader auto-fill data from URL on mount
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const params = new URLSearchParams(window.location.search);
@@ -59,8 +59,18 @@ export default function WaitingListFull() {
                 ...prev,
                 utmSource: params.get('utm_source') || '',
                 utmMedium: params.get('utm_medium') || '',
-                utmCampaign: params.get('utm_campaign') || ''
+                utmCampaign: params.get('utm_campaign') || '',
+                // Auto-fill from grader
+                website: params.get('website') || prev.website,
+                description: params.get('description') || prev.description,
             }));
+
+            // If coming from grader, scroll to the form after a short delay
+            if (params.get('from_grader') === 'true') {
+                setTimeout(() => {
+                    document.getElementById('founder-form')?.scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
         }
     }, []);
     const [buyerForm, setBuyerForm] = useState({
@@ -228,11 +238,36 @@ export default function WaitingListFull() {
                 </div>
             </section>
 
-            {/* SECTION 4: FOUNDER FORM */}
+            {/* SECTION 4: GRADE CTA */}
+            <section className={`${styles.graderCta} ${styles.reveal}`}>
+                <div className={styles.graderCtaInner}>
+                    <div className={styles.graderGlow} />
+                    <span className={styles.graderBadge}>🔥 FREE AI-POWERED TOOL</span>
+                    <h2 className={styles.graderCtaTitle}>
+                        Grade Your SaaS <span className={styles.gradientText}>for Free</span>
+                    </h2>
+                    <p className={styles.graderCtaDesc}>
+                        Get an instant AI audit of your landing page. We&apos;ll score your conversion, trust signals,
+                        and distribution readiness — then tell you exactly what to fix.
+                    </p>
+                    <Link href="/grade" className={`${styles.btn} ${styles.btnPrimary} ${styles.graderCtaBtn}`}>
+                        ⚡ Grade My Landing Page
+                    </Link>
+                    <p className={styles.graderCtaNote}>
+                        Score 80+ to fast-track your Genesis Batch application
+                    </p>
+                </div>
+            </section>
+
+            {/* SECTION 5: FOUNDER FORM */}
             <section id="founder-form" className={`${styles.section} ${styles.reveal}`}>
                 <div className={`glass-panel ${styles.formCard}`}>
                     <h2>Join the LaunchXact founder waitlist</h2>
                     <p className={styles.formSub}>Be part of the first curated launch collection.</p>
+
+                    <Link href="/grade" className={styles.gradeNudge}>
+                        ⚡ Grade your SaaS first — score 80+ and your submission gets fast-tracked. <span>Get your free score →</span>
+                    </Link>
 
                     {founderStatus === 'success' ? (
                         <div className={styles.successBox}>
@@ -343,7 +378,9 @@ export default function WaitingListFull() {
                 </div>
             </section>
 
-            {/* SECTION 8: FINAL CTA */}
+
+
+            {/* SECTION 9: FINAL CTA */}
             <section className={`${styles.finalCta} ${styles.reveal}`}>
                 <h2>Be part of the first LaunchXact collection.</h2>
                 <p>Whether you’re building a tool or looking for one,<br />LaunchXact is where founders and early adopters meet.</p>
