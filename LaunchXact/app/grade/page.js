@@ -127,9 +127,22 @@ export default function GradePage() {
     const scorePercent = result ? (animatedScore / 100) : 0;
     const dashOffset = circumference * (1 - scorePercent);
 
-    const tweetText = result
-        ? `I just got my LaunchXact Readiness Score: ${result.total_score}/100 ${getScoreEmoji(result.total_score)}\n\nMy Founder Archetype: "${result.founder_archetype}"\n\nCheck yours → https://launchxact.com/grade`
-        : '';
+    const getTweetText = () => {
+        if (!result) return '';
+
+        const score = result.total_score;
+        const archetype = result.founder_archetype;
+        const url_clean = 'launchxact.com/grade';
+        const officialTags = '@LaunchXact @Ravi_Nileshbhai';
+
+        if (score >= 85) {
+            return `Just got a ${score}/100 on the ${officialTags} AI Auditor. Apparently, I'm "${archetype}." 🚀\n\nMy primary headline was weak, but the AI rewrite is fire. Check your SaaS readiness: ${url_clean}`;
+        }
+
+        return `I just got my LaunchXact Readiness Score: ${score}/100 ${getScoreEmoji(score)}\n\nMy Founder Archetype: "${archetype}"\n\nCheck yours here (via ${officialTags}) → ${url_clean}`;
+    };
+
+    const tweetText = getTweetText();
 
     const pillarConfig = [
         { key: 'hook', name: 'The Hook', weight: '30%' },

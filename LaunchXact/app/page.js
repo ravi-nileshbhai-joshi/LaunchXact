@@ -7,6 +7,7 @@ import Link from 'next/link';
 import ConstellationCanvas from '@/components/ConstellationCanvas';
 import FloatingRocket from '@/components/FloatingRocket';
 import FloatingTelescope from '@/components/FloatingTelescope';
+import WallOfFame from '@/components/WallOfFame';
 
 // Buyer Taglines rotator
 const BUYER_TAGLINES = [
@@ -194,6 +195,9 @@ export default function WaitingListFull() {
                     <p className={styles.trustText}>Early access collection opening soon</p>
                 </div>
             </section>
+
+            {/* WALL OF FAME (Live Audit Stream) */}
+            <WallOfFame />
 
             {/* SECTION 2: FOUNDER VALUE PROP */}
             <section className={`${styles.section} ${styles.reveal}`}>
