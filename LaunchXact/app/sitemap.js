@@ -1,24 +1,23 @@
 export default function sitemap() {
     const baseUrl = 'https://launchxact.com';
 
-    return [
-        {
-            url: baseUrl,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 1,
-        },
-        {
-            url: `${baseUrl}/about`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/contact`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.5,
-        },
+    const routes = [
+        '',
+        '/grade',
+        '/where-to-launch-saas',
+        '/explore',
+        '/submit',
+        '/about',
+        '/contact',
+        '/terms',
+        '/privacy',
+        '/refund-policy'
     ];
+
+    return routes.map((route) => ({
+        url: `${baseUrl}${route}`,
+        lastModified: new Date(),
+        changeFrequency: route === '' || route === '/grade' ? 'daily' : 'monthly',
+        priority: route === '' ? 1 : route === '/grade' ? 0.9 : 0.7,
+    }));
 }
