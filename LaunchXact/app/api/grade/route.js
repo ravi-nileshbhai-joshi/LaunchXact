@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
+import { supabase } from '@/lib/supabase';
 
 const SYSTEM_PROMPT = `You are the "LaunchXact Automated Auditor." Your goal is to review a SaaS landing page for the "Genesis Batch."
 You are not a corporate SEO tool. You are a successful Technical Founder who is ruthless about conversion, trust, and shipping.
@@ -222,6 +223,23 @@ export async function POST(request) {
         }
 
         const parsed = JSON.parse(resultText);
+
+        // 4. Persist to Supabase (Async)
+        try {
+            supabase.from('grader_results').insert([
+                {
+                    url: parsedUrl.toString(),
+                    product_name: parsed.product_name || 'Unknown SaaS',
+                    score: parsed.total_score,
+                    archetype: parsed.founder_archetype,
+                }
+            ]).then(({ error }) => {
+                if (error) console.error('Supabase Grader Error:', error);
+            });
+        } catch (dbErr) {
+            console.error('DB Persistence Error:', dbErr);
+        }
+
         return NextResponse.json(parsed);
 
     } catch (error) {

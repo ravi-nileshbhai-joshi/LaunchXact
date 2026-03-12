@@ -7,6 +7,8 @@ import Link from 'next/link';
 import ConstellationCanvas from '@/components/ConstellationCanvas';
 import FloatingRocket from '@/components/FloatingRocket';
 import FloatingTelescope from '@/components/FloatingTelescope';
+import WallOfFame from '@/components/WallOfFame';
+import { supabase } from '@/lib/supabase';
 
 // Buyer Taglines rotator
 const BUYER_TAGLINES = [
@@ -194,6 +196,9 @@ export default function WaitingListFull() {
                     <p className={styles.trustText}>Early access collection opening soon</p>
                 </div>
             </section>
+
+            {/* SECTION 1.5: WALL OF FAME */}
+            <WallOfFame />
 
             {/* SECTION 2: FOUNDER VALUE PROP */}
             <section className={`${styles.section} ${styles.reveal}`}>

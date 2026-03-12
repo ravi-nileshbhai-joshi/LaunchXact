@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import styles from './page.module.css';
 
@@ -57,6 +58,20 @@ export default function GradePage() {
 
             setResult(data);
             setStatus('done');
+
+            // Save to DB if not demo
+            if (!data.is_demo) {
+                try {
+                    await supabase.from('grader_results').insert([{
+                        url: url.trim(),
+                        product_name: data.product_name || 'Unknown',
+                        score: data.total_score,
+                        archetype: data.founder_archetype
+                    }]);
+                } catch (dbErr) {
+                    console.error('Failed to save result:', dbErr);
+                }
+            }
 
             // Animate score counter
             const target = data.total_score || 0;
