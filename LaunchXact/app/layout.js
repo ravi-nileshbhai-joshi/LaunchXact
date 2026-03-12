@@ -98,10 +98,7 @@ const websiteJsonLd = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable}`}>
-        {/* Google Tag Manager (Implemented via @next/third-parties) */}
-        <GoogleTagManager gtmId="GTM-PJRNX6SW" />
-
+      <head>
         {/* JSON-LD Schema for Brand Entity & Logo */}
         <script
           type="application/ld+json"
@@ -129,9 +126,10 @@ export default function RootLayout({ children }) {
             })
           }}
         />
-
-
-        {/* Google Analytics (Legacy/Direct) removed in favor of GTM */}
+      </head>
+      <body className={`${inter.variable} ${playfair.variable}`}>
+        {/* Google Tag Manager (Implemented via @next/third-parties) */}
+        <GoogleTagManager gtmId="GTM-PJRNX6SW" />
 
         <Navbar />
         <main>{children}</main>
