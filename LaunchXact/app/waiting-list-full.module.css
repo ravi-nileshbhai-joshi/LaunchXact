@@ -1,7 +1,8 @@
 /* Full Page Layout with Load Animation */
 .page {
     width: 100%;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
     padding-bottom: 4rem;
     opacity: 0;
@@ -21,7 +22,7 @@
 }
 
 .section {
-    padding: 5rem 1.5rem;
+    padding: clamp(3rem, 10vh, 6rem) clamp(1rem, 5vw, 2.5rem);
     display: flex;
     justify-content: center;
     position: relative;
@@ -113,7 +114,7 @@
 
 /* Split Section Layout (Deprecated/Backup) */
 .splitSection {
-    padding: 6rem 1.5rem;
+    padding: clamp(4rem, 12vh, 8rem) clamp(1rem, 5vw, 2.5rem);
     position: relative;
     overflow: hidden;
     /* Contain the canvas */
@@ -247,7 +248,7 @@
 }
 
 .heroTitle {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 8vw, 3.5rem);
     line-height: 1.1;
     margin-bottom: 1.5rem;
     text-align: center;
@@ -270,7 +271,7 @@
 */
 
 .sectionHeading {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
     text-align: center;
     margin-bottom: 1rem;
     font-weight: 700;

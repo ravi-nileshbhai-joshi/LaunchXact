@@ -1,0 +1,89 @@
+.container {
+    padding: 4rem 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    margin-bottom: 3rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.ticker {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    padding: 2rem 0;
+    width: max-content;
+}
+
+.tickerAnimated {
+    animation: scroll 60s linear infinite;
+}
+
+.tickerStatic {
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.card {
+    min-width: clamp(260px, 75vw, 320px);
+    max-width: calc(100% - 3rem);
+    padding: clamp(1rem, 4vw, 1.5rem);
+    background: rgba(20, 20, 20, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.productName {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.1rem;
+    word-break: break-all;
+}
+
+.score {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.scoreGreen { background: rgba(0, 255, 65, 0.1); color: #00FF41; border: 1px solid rgba(0, 255, 65, 0.3); }
+.scoreAmber { background: rgba(255, 184, 0, 0.1); color: #FFB800; border: 1px solid rgba(255, 184, 0, 0.3); }
+.scoreRed { background: rgba(255, 68, 68, 0.1); color: #FF4444; border: 1px solid rgba(255, 68, 68, 0.3); }
+
+.archetype {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+}
+
+.url {
+    font-size: 0.8rem;
+    color: #64748b;
+    word-break: break-all;
+}
