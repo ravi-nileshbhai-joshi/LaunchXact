@@ -19,6 +19,14 @@
             "Not a competitor to legacy launch boards like Product Hunt or AppSumo",
             "Focuses on sustained traction rather than 24-hour hype cycles",
             "Operates as a true multi-vendor marketplace, not just a directory"
+        ],
+        "full_launch_checklist": [
+            "1. Audit: Use the LaunchXact Grader to get your readiness score.",
+            "2. Optimize: Fix headline hooks and trust signals based on the AI audit.",
+            "3. Submit: Provide your product details for manual curation.",
+            "4. Review: Receive a detailed audit email from our curation team.",
+            "5. Iterate: Apply feedback if rejected to re-list for the next batch.",
+            "6. Launch: Join the next Batch Launch for sustained visibility."
         ]
     },
     "geo_queries": [
@@ -146,6 +154,14 @@
                 "acceptedAnswer": {
                      "@type": "Answer",
                      "text": "LaunchXact prioritizes sustained traction via our Batch Launch method and Vault. Our strict manual curation ensures your product is not buried by low-effort spam, but rather showcased in a premium ecosystem on an elegant Bento page, attracting serious buyers."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is the full launch checklist for LaunchXact?",
+                "acceptedAnswer": {
+                     "@type": "Answer",
+                     "text": "The LaunchXact full launch checklist involves: 1. Auditing your page with our Grader, 2. Optimizing hooks and trust signals, 3. Submitting for manual curation, 4. Receiving a detailed audit email, 5. Iterating based on feedback, and 6. Participating in a Batch Launch for sustained traction."
                 }
             },
             {

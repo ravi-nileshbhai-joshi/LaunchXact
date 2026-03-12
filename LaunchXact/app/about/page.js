@@ -1,5 +1,10 @@
 import styles from './page.module.css';
 
+export const metadata = {
+    title: 'About LaunchXact | The Premium SaaS Marketplace',
+    description: 'Learn about LaunchXact mission to empower founders through manual curation and sustained traction. We are the premium multi-vendor marketplace for high-value SaaS.',
+};
+
 export default function About() {
     return (
         <div className={styles.container}>
