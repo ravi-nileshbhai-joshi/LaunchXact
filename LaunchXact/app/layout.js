@@ -11,11 +11,11 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif'
 
 export const metadata = {
   title: 'LaunchXact - Premier Product Launch Platform & Micro SaaS Directory',
-  description: 'LaunchXact is the best place to launch your SaaS. A curated directory for micro SaaS, indie hackers, and new product launches. Discover the next big thing.',
+  description: 'LaunchXact is a premium, manually curated multi-vendor SaaS marketplace. Discover high-value software, and launch your product in a professional, enterprise-friendly ecosystem.',
   keywords: [
-    'LaunchXact', 'SaaS', 'Product Launch', 'Startup', 'Software Discovery', 'Indie Hackers', 'Early Adopters', 'Tech Tools',
-    'where to launch my SaaS', 'sites to list my product', 'micro SaaS directory', 'product launch platforms',
-    'alternatives to Product Hunt', 'alternative to appsumo', 'new SaaS', 'newly launched SaaS'
+    'LaunchXact', 'SaaS', 'SaaS Marketplace', 'B2B Software', 'Startup', 'Software Discovery', 'Enterprise Tools', 'Tech Tools',
+    'where to launch my SaaS', 'curated software directory', 'premium saas marketplace', 'buy saas products',
+    'submit saas platform', 'founder friendly saas market', 'new SaaS', 'newly launched SaaS'
   ],
   authors: [{ name: 'Ravi', url: 'https://launchxact.com' }],
   creator: 'Ravi',
@@ -25,8 +25,8 @@ export const metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'LaunchXact - Discover Next Gen SaaS | Launch Your Product',
-    description: 'The alternative to Product Hunt for indie founders. List your micro SaaS, get discovered by early adopters, and launch without the noise.',
+    title: 'LaunchXact - Premium Curated SaaS Marketplace',
+    description: 'A manually curated multi-vendor SaaS marketplace. Discover high-value software that solves real problems, and launch your product in a premium ecosystem.',
     url: 'https://launchxact.com',
     siteName: 'LaunchXact',
     images: [

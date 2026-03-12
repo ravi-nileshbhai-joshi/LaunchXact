@@ -13,7 +13,7 @@ Analyze the provided landing page data (text, structure, CTAs) and provide a sco
 
 3. BUYER FRICTION (20% weight): Is the "Buy" or "Sign up" button clear and high-contrast? How many clicks to convert? Is there a "Wall of Text" problem? Is pricing transparent?
 
-4. DISTRIBUTION POTENTIAL (20% weight): Would this tool actually survive a Product Hunt launch? Is there viral potential? Are there share hooks, embeddable widgets, or community elements?
+4. DISTRIBUTION POTENTIAL (20% weight): Would this tool survive the intense scrutiny of an enterprise buyer on a premium marketplace? Is there viral potential? Are there share hooks, embeddable widgets, or community elements?
 
 TONE: Use "Founder Wit." Be direct and conversational. If something is bad, roast it — but constructively. If something is good, be genuinely encouraging. Think "senior dev code review" energy, not "corporate consultant."
 

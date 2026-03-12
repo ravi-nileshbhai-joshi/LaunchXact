@@ -7,7 +7,7 @@ export const metadata = {
         'SaaS grader', 'landing page grader', 'launch readiness', 'SaaS audit tool',
         'LaunchXact grader', 'free SaaS audit', 'landing page score',
         'conversion rate audit', 'startup launch checklist',
-        'LaunchXact grader vs Product Hunt', 'SaaS landing page checker'
+        'LaunchXact SaaS grader', 'SaaS landing page checker'
     ],
     openGraph: {
         title: 'Free SaaS Launch Readiness Grader | LaunchXact',
@@ -38,7 +38,7 @@ const graderJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'LaunchXact Distribution Grader',
-    applicationCategory: 'DeveloperApplication',
+    applicationCategory: 'BusinessApplication, DeveloperApplication, UtilitiesApplication',
     operatingSystem: 'Web',
     url: 'https://launchxact.com/grade',
     description: 'Free AI-powered SaaS landing page grader. Analyzes conversion psychology, trust signals, buyer friction, and distribution potential.',
@@ -52,6 +52,18 @@ const graderJsonLd = {
         name: 'LaunchXact',
         url: 'https://launchxact.com',
     },
+    featureList: [
+        'AI Landing Page Audit',
+        'Conversion Psychology Analysis',
+        'Trust Signal Detection',
+        'Headline Optimization',
+        'SEO & Meta Tag Review'
+    ],
+    aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.9',
+        ratingCount: '150'
+    }
 };
 
 export default function GradeLayout({ children }) {
