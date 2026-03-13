@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -24,6 +24,44 @@ export default function GradePage() {
     const [auditEmail, setAuditEmail] = useState('');
     const [isAuditing, setIsAuditing] = useState(false);
     const [auditError, setAuditError] = useState('');
+    const resultsRef = useRef(null);
+
+    useEffect(() => {
+        if (status === 'done' && resultsRef.current) {
+            const yOffset = -120; // Increased offset to ensure it stops before touching nav bar
+            const elementY = resultsRef.current.getBoundingClientRect().top;
+            const targetY = elementY + window.scrollY + yOffset;
+            
+            // Custom Ease-In-Out Smooth Scroll
+            const duration = 1500; // 1.5 seconds for a slower, premium feel
+            const startY = window.scrollY;
+            const distance = targetY - startY;
+            let startTime = null;
+
+            const easeInOutQuad = (t, b, c, d) => {
+                t /= d / 2;
+                if (t < 1) return (c / 2) * t * t + b;
+                t--;
+                return (-c / 2) * (t * (t - 2) - 1) + b;
+            };
+
+            const animation = (currentTime) => {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                
+                const nextY = easeInOutQuad(timeElapsed, startY, distance, duration);
+                window.scrollTo(0, nextY);
+
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(animation);
+                } else {
+                    window.scrollTo(0, targetY); // Ensure it lands exactly on the target
+                }
+            };
+
+            requestAnimationFrame(animation);
+        }
+    }, [status]);
 
     const handleGrade = async (e) => {
         e.preventDefault();
@@ -203,9 +241,8 @@ export default function GradePage() {
                 </section>
             )}
 
-            {/* RESULTS */}
             {status === 'done' && result && (
-                <section className={styles.results}>
+                <section ref={resultsRef} className={styles.results}>
 
                     {/* Demo Banner */}
                     {result.is_demo && (

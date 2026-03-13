@@ -237,22 +237,51 @@ export async function POST(request) {
 
         const parsed = JSON.parse(resultText);
 
-        // 4. Persist to Supabase (Async)
+        // 4. Persist to Supabase (Safe Update/Insert Logic)
         try {
             const normalized = normalizeUrl(parsedUrl.toString());
-            supabase.from('grader_results').upsert(
-                {
-                    url: normalized,
-                    product_name: parsed.product_name || 'Unknown SaaS',
-                    score: parsed.total_score,
-                    archetype: parsed.founder_archetype,
-                },
-                { onConflict: 'url' }
-            ).then(({ error }) => {
-                if (error) console.error('Supabase Grader Error:', error);
-            });
+            
+            // First, check if the website already exists
+            const { data: existing, error: fetchError } = await supabase
+                .from('grader_results')
+                .select('id')
+                .eq('url', normalized)
+                .single();
+
+            if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "No rows found"
+                console.error('Supabase Fetch Error:', fetchError);
+            }
+
+            if (existing) {
+                // UPDATE existing record
+                const { error: updateError } = await supabase
+                    .from('grader_results')
+                    .update({
+                        product_name: parsed.product_name || 'Unknown SaaS',
+                        score: parsed.total_score,
+                        archetype: parsed.founder_archetype,
+                        // Not updating url as it's the match key
+                    })
+                    .eq('id', existing.id);
+                
+                if (updateError) console.error('Supabase Update Error:', updateError);
+                else console.log('✅ Updated existing record for:', normalized);
+            } else {
+                // INSERT new record
+                const { error: insertError } = await supabase
+                    .from('grader_results')
+                    .insert([{
+                        url: normalized,
+                        product_name: parsed.product_name || 'Unknown SaaS',
+                        score: parsed.total_score,
+                        archetype: parsed.founder_archetype,
+                    }]);
+                
+                if (insertError) console.error('Supabase Insertion Error:', insertError);
+                else console.log('✨ Created new record for:', normalized);
+            }
         } catch (dbErr) {
-            console.error('DB Persistence Error:', dbErr);
+            console.error('Unexpected DB Error:', dbErr);
         }
 
         return NextResponse.json(parsed);

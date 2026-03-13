@@ -48,4 +48,5 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 
-.vercel
+/videos
+/scripts/record_grader_demo.py
