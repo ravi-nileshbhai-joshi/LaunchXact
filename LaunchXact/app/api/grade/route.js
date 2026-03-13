@@ -240,14 +240,15 @@ export async function POST(request) {
         // 4. Persist to Supabase (Async)
         try {
             const normalized = normalizeUrl(parsedUrl.toString());
-            supabase.from('grader_results').insert([
+            supabase.from('grader_results').upsert(
                 {
                     url: normalized,
                     product_name: parsed.product_name || 'Unknown SaaS',
                     score: parsed.total_score,
                     archetype: parsed.founder_archetype,
-                }
-            ]).then(({ error }) => {
+                },
+                { onConflict: 'url' }
+            ).then(({ error }) => {
                 if (error) console.error('Supabase Grader Error:', error);
             });
         } catch (dbErr) {
