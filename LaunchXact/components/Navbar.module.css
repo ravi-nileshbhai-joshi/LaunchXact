@@ -7,10 +7,10 @@
     display: flex;
     align-items: center;
     z-index: 1000; /* Higher z-index to stay on top */
-    background: rgba(10, 10, 10, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 10, 0.3); /* Lower opacity to let the blur show through */
+    -webkit-backdrop-filter: blur(24px); /* Webkit prefix first for Safari support */
+    backdrop-filter: blur(24px); /* Stronger blur for true glassmorphic feel */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     transition: background 0.3s ease;
 }
 
