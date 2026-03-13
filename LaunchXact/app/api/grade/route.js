@@ -24,6 +24,7 @@ Example roast lines:
 
 You MUST return ONLY a valid JSON object with this exact structure:
 {
+  "product_name": "<string: the name of the SaaS/product being audited>",
   "total_score": <integer 0-100>,
   "pillar_scores": {
     "hook": <integer 0-100>,
@@ -38,6 +39,18 @@ You MUST return ONLY a valid JSON object with this exact structure:
   "original_h1": "<string: the current H1 from the page, or 'No H1 found' if missing>",
   "ecosystem_nudge": "<string: a sentence telling them how LaunchXact can help, e.g. 'There are 400 founders on LaunchXact right now looking for exactly this type of tool, but they can't find you.'>"
 }`;
+
+function normalizeUrl(url) {
+    try {
+        let normalized = url.toLowerCase().trim();
+        if (!normalized.startsWith('http')) normalized = `https://${normalized}`;
+        const parsed = new URL(normalized);
+        let host = parsed.hostname.replace(/^www\./, '');
+        return `${parsed.protocol}//${host}${parsed.pathname === '/' ? '' : parsed.pathname.replace(/\/$/, '')}`;
+    } catch {
+        return url;
+    }
+}
 
 // Strip HTML to plain text, preserving some structure
 function htmlToText(html) {
@@ -226,9 +239,10 @@ export async function POST(request) {
 
         // 4. Persist to Supabase (Async)
         try {
+            const normalized = normalizeUrl(parsedUrl.toString());
             supabase.from('grader_results').insert([
                 {
-                    url: parsedUrl.toString(),
+                    url: normalized,
                     product_name: parsed.product_name || 'Unknown SaaS',
                     score: parsed.total_score,
                     archetype: parsed.founder_archetype,
