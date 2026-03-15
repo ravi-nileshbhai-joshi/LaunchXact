@@ -43,9 +43,10 @@ export default function Navbar() {
                 </button>
 
                 <div className={`${styles.links} ${isOpen ? styles.linksOpen : ''}`}>
-                    {/* <Link href="/explore">Explore</Link> */}
-                    {/* <Link href="/submit">Submit</Link> */}
+                    <Link href="/explore" onClick={() => setIsOpen(false)}>Explore</Link>
+                    <Link href="/submit" onClick={() => setIsOpen(false)}>Submit</Link>
                     <Link href="/grade" onClick={() => setIsOpen(false)}>Grade</Link>
+                    <Link href="/where-to-launch-saas" onClick={() => setIsOpen(false)}>Where to Launch</Link>
                     <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
                     <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
                 </div>
