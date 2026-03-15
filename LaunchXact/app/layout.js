@@ -21,9 +21,6 @@ export const metadata = {
   creator: 'Ravi',
   publisher: 'LaunchXact',
   metadataBase: new URL('https://launchxact.com'),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     title: 'LaunchXact - Premium Curated SaaS Marketplace',
     description: 'A manually curated multi-vendor SaaS marketplace. Discover high-value software that solves real problems, and launch your product in a premium ecosystem.',

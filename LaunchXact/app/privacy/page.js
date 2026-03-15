@@ -3,11 +3,36 @@ import styles from '../about/page.module.css';
 export const metadata = {
     title: 'Privacy Policy | LaunchXact',
     description: 'LaunchXact Privacy Policy, compliant with the Digital Personal Data Protection (DPDP) Act of India.',
+    alternates: { canonical: '/privacy' }
 };
 
 export default function PrivacyPolicy() {
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Privacy Policy',
+                item: 'https://launchxact.com/privacy'
+            }
+        ]
+    };
+
     return (
-        <div className={styles.container}>
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
+            <div className={styles.container}>
             <header className={styles.header}>
                 <h1 className={styles.title}>Privacy Policy</h1>
                 <p className={styles.subtitle}>Last Updated: February 27, 2026</p>
@@ -56,5 +81,6 @@ export default function PrivacyPolicy() {
                 </section>
             </div>
         </div>
+        </>
     );
 }

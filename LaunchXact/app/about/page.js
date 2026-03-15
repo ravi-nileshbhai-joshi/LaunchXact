@@ -3,11 +3,36 @@ import styles from './page.module.css';
 export const metadata = {
     title: 'About LaunchXact | The Premium SaaS Marketplace',
     description: 'Learn about LaunchXact mission to empower founders through manual curation and sustained traction. We are the premium multi-vendor marketplace for high-value SaaS.',
+    alternates: { canonical: '/about' }
 };
 
 export default function About() {
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'About',
+                item: 'https://launchxact.com/about'
+            }
+        ]
+    };
+
     return (
-        <div className={styles.container}>
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
+            <div className={styles.container}>
             <header className={styles.header}>
                 <h1 className={styles.title}>About LaunchXact</h1>
                 <p className={styles.subtitle}>Empowering the next generation of indie hackers.</p>
@@ -42,5 +67,6 @@ export default function About() {
                 </section>
             </div>
         </div>
+        </>
     );
 }

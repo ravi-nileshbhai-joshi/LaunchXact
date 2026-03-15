@@ -32,6 +32,7 @@ export const metadata = {
         creator: '@launchxact',
         images: ['/twitter-image.png'],
     },
+    alternates: { canonical: '/grade' }
 };
 
 const graderJsonLd = {
@@ -66,12 +67,35 @@ const graderJsonLd = {
     }
 };
 
+const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+        {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: 'https://launchxact.com'
+        },
+        {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Grade Your SaaS',
+            item: 'https://launchxact.com/grade'
+        }
+    ]
+};
+
 export default function GradeLayout({ children }) {
     return (
         <>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(graderJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             {children}
         </>

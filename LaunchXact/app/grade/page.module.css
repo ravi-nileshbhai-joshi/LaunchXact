@@ -644,6 +644,8 @@
     color: #a5b4fc;
     font-weight: 600;
     font-size: 0.85rem;
+    white-space: nowrap;
+    flex-shrink: 0;
     cursor: pointer;
     transition: background 0.3s ease;
     font-family: var(--font-sans);
@@ -766,6 +768,17 @@
     }
 
     .gradeBtn {
+        border-radius: 0;
+        padding: 1rem;
+    }
+
+    .emailForm {
+        flex-direction: column;
+        border-radius: 12px;
+    }
+
+    .emailSubmit {
+        width: 100%;
         border-radius: 0;
         padding: 1rem;
     }

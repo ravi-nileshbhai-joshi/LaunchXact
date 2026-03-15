@@ -1,13 +1,12 @@
 'use client';
-
 import { useState } from 'react';
-import { getAllTools } from '../../lib/data';
-import ToolGrid from '../../components/ToolGrid';
-import styles from './page.module.css';
+import { getAllTools } from '@/lib/data';
+import ToolGrid from './ToolGrid';
+import styles from '@/app/explore/page.module.css';
 
 const categories = ['All', 'Developer Tools', 'Analytics', 'Marketing', 'Productivity', 'Design', 'Hosting'];
 
-export default function Explore() {
+export default function ExploreContent() {
     const [activeCategory, setActiveCategory] = useState('All');
     const allTools = getAllTools();
 

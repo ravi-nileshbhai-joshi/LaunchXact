@@ -3,11 +3,36 @@ import styles from '../about/page.module.css';
 export const metadata = {
     title: 'Refund & Cancellation Policy | LaunchXact',
     description: 'Refund & Cancellation Policy for LaunchXact proprietary and third-party SaaS products.',
+    alternates: { canonical: '/refund-policy' }
 };
 
 export default function RefundPolicy() {
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Refund & Cancellation Policy',
+                item: 'https://launchxact.com/refund-policy'
+            }
+        ]
+    };
+
     return (
-        <div className={styles.container}>
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
+            <div className={styles.container}>
             <header className={styles.header}>
                 <h1 className={styles.title}>Refund & Cancellation Policy</h1>
                 <p className={styles.subtitle}>Last Updated: February 27, 2026</p>
@@ -55,5 +80,6 @@ export default function RefundPolicy() {
                 </section>
             </div>
         </div>
+        </>
     );
 }

@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '../../lib/supabase';
-import styles from './page.module.css';
+import { supabase } from '@/lib/supabase';
+import styles from '@/app/submit/page.module.css';
 
-export default function SubmitProduct() {
+export default function SubmitContent() {
     const [formData, setFormData] = useState({
         name: '',
         website: '',

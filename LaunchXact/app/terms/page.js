@@ -3,11 +3,36 @@ import styles from '../about/page.module.css';
 export const metadata = {
     title: 'Terms of Service | LaunchXact',
     description: 'Terms of Service and Agreement for LaunchXact platform and waitlist.',
+    alternates: { canonical: '/terms' }
 };
 
 export default function TermsOfService() {
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Terms of Service',
+                item: 'https://launchxact.com/terms'
+            }
+        ]
+    };
+
     return (
-        <div className={styles.container}>
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
+            <div className={styles.container}>
             <header className={styles.header}>
                 <h1 className={styles.title}>Terms of Service</h1>
                 <p className={styles.subtitle}>Last Updated: February 27, 2026</p>
@@ -56,5 +81,6 @@ export default function TermsOfService() {
                 </section>
             </div>
         </div>
+        </>
     );
 }

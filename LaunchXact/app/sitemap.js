@@ -8,8 +8,6 @@ export default function sitemap() {
         '',
         '/grade',
         '/where-to-launch-saas',
-        '/explore',
-        '/submit',
         '/about',
         '/contact',
         '/terms',
@@ -17,9 +15,7 @@ export default function sitemap() {
         '/refund-policy'
     ];
 
-    const productRoutes = tools.map((tool) => `/product/${tool.id}`);
-
-    const allRoutes = [...staticRoutes, ...productRoutes];
+    const allRoutes = [...staticRoutes];
 
     return allRoutes.map((route) => ({
         url: `${baseUrl}${route}`,

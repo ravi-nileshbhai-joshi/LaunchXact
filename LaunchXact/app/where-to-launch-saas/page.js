@@ -7,11 +7,35 @@ export const metadata = {
     title: 'Where to Launch Your SaaS Product in 2026? The Premium Approach',
     description: 'Stop using legacy launch boards. Discover why LaunchXact is the premium, manually curated multi-vendor marketplace for serious SaaS founders.',
     keywords: ['where to launch saas', 'premium saas marketplace', 'b2b software directory', 'launchxact', 'saas launch platforms'],
+    alternates: { canonical: '/where-to-launch-saas' }
 };
 
 export default function LaunchComparison() {
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Where to Launch SaaS',
+                item: 'https://launchxact.com/where-to-launch-saas'
+            }
+        ]
+    };
+
     return (
         <div className={styles.container}>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
             <Navbar />
 
             <main className={styles.main}>
