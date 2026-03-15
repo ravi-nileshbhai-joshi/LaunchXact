@@ -15,13 +15,13 @@ export default function Contact() {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://launchxact.com'
+                item: 'https://www.launchxact.com'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'Contact',
-                item: 'https://launchxact.com/contact'
+                item: 'https://www.launchxact.com/contact'
             }
         ]
     };

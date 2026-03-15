@@ -12,7 +12,7 @@ export const metadata = {
     openGraph: {
         title: 'Free SaaS Launch Readiness Grader | LaunchXact',
         description: 'AI-powered audit for your SaaS landing page. Get scored on conversion, trust, and distribution readiness. Score 80+ to fast-track your Genesis Batch application.',
-        url: 'https://launchxact.com/grade',
+        url: 'https://www.launchxact.com/grade',
         siteName: 'LaunchXact',
         images: [
             {
@@ -41,7 +41,7 @@ const graderJsonLd = {
     name: 'LaunchXact Distribution Grader',
     applicationCategory: 'BusinessApplication, DeveloperApplication, UtilitiesApplication',
     operatingSystem: 'Web',
-    url: 'https://launchxact.com/grade',
+    url: 'https://www.launchxact.com/grade',
     description: 'Free AI-powered SaaS landing page grader. Analyzes conversion psychology, trust signals, buyer friction, and distribution potential.',
     offers: {
         '@type': 'Offer',
@@ -51,7 +51,7 @@ const graderJsonLd = {
     creator: {
         '@type': 'Organization',
         name: 'LaunchXact',
-        url: 'https://launchxact.com',
+        url: 'https://www.launchxact.com',
     },
     featureList: [
         'AI Landing Page Audit',
@@ -75,13 +75,13 @@ const breadcrumbJsonLd = {
             '@type': 'ListItem',
             position: 1,
             name: 'Home',
-            item: 'https://launchxact.com'
+            item: 'https://www.launchxact.com'
         },
         {
             '@type': 'ListItem',
             position: 2,
             name: 'Grade Your SaaS',
-            item: 'https://launchxact.com/grade'
+            item: 'https://www.launchxact.com/grade'
         }
     ]
 };

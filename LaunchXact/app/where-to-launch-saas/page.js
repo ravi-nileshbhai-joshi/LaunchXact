@@ -19,13 +19,13 @@ export default function LaunchComparison() {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://launchxact.com'
+                item: 'https://www.launchxact.com'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'Where to Launch SaaS',
-                item: 'https://launchxact.com/where-to-launch-saas'
+                item: 'https://www.launchxact.com/where-to-launch-saas'
             }
         ]
     };

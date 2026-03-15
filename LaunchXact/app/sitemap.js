@@ -1,7 +1,7 @@
 import { getAllTools } from '@/lib/data';
 
 export default function sitemap() {
-    const baseUrl = 'https://launchxact.com';
+    const baseUrl = 'https://www.launchxact.com';
     const tools = getAllTools();
 
     const staticRoutes = [

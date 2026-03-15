@@ -17,14 +17,14 @@ export const metadata = {
     'where to launch my SaaS', 'curated software directory', 'premium saas marketplace', 'buy saas products',
     'submit saas platform', 'founder friendly saas market', 'new SaaS', 'newly launched SaaS'
   ],
-  authors: [{ name: 'Ravi', url: 'https://launchxact.com' }],
+  authors: [{ name: 'Ravi', url: 'https://www.launchxact.com' }],
   creator: 'Ravi',
   publisher: 'LaunchXact',
-  metadataBase: new URL('https://launchxact.com'),
+  metadataBase: new URL('https://www.launchxact.com'),
   openGraph: {
     title: 'LaunchXact - Premium Curated SaaS Marketplace',
     description: 'A manually curated multi-vendor SaaS marketplace. Discover high-value software that solves real problems, and launch your product in a premium ecosystem.',
-    url: 'https://launchxact.com',
+    url: 'https://www.launchxact.com',
     siteName: 'LaunchXact',
     images: [
       {
@@ -67,8 +67,8 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'LaunchXact',
-  url: 'https://launchxact.com',
-  logo: 'https://launchxact.com/icon',
+  url: 'https://www.launchxact.com',
+  logo: 'https://www.launchxact.com/icon',
   sameAs: [
     'https://twitter.com/launchxact',
     // Add other social profiles here
@@ -84,10 +84,10 @@ const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'LaunchXact',
-  url: 'https://launchxact.com',
+  url: 'https://www.launchxact.com',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://launchxact.com/?q={search_term_string}',
+    target: 'https://www.launchxact.com/?q={search_term_string}',
     'query-input': 'required name=search_term_string',
   },
 };

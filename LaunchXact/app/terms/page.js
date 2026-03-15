@@ -15,13 +15,13 @@ export default function TermsOfService() {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://launchxact.com'
+                item: 'https://www.launchxact.com'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'Terms of Service',
-                item: 'https://launchxact.com/terms'
+                item: 'https://www.launchxact.com/terms'
             }
         ]
     };

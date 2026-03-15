@@ -15,13 +15,13 @@ export default function About() {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://launchxact.com'
+                item: 'https://www.launchxact.com'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'About',
-                item: 'https://launchxact.com/about'
+                item: 'https://www.launchxact.com/about'
             }
         ]
     };

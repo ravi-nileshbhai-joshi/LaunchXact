@@ -171,7 +171,7 @@ export default function GradePage() {
 
         const score = result.total_score;
         const archetype = result.founder_archetype;
-        const url_clean = 'launchxact.com/grade';
+        const url_clean = 'www.launchxact.com/grade';
         const officialTags = '@LaunchXact @Ravi_Nileshbhai';
 
         if (score >= 85) {

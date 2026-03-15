@@ -15,13 +15,13 @@ export default function RefundPolicy() {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://launchxact.com'
+                item: 'https://www.launchxact.com'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'Refund & Cancellation Policy',
-                item: 'https://launchxact.com/refund-policy'
+                item: 'https://www.launchxact.com/refund-policy'
             }
         ]
     };
