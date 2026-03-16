@@ -278,6 +278,51 @@ export default function GradePage() {
                         </div>
                     </div>
 
+                    {/* Launch Readiness Meter */}
+                    <div className={styles.readinessSection}>
+                        <div className={styles.readinessHeader}>
+                            <h3 className={styles.readinessTitle}>Launch Readiness</h3>
+                            <div className={styles.readinessOverall}>
+                                <span className={styles.readinessValue}>{(animatedScore / 10).toFixed(1)}</span>
+                                <span className={styles.readinessMax}>/10</span>
+                            </div>
+                        </div>
+                        
+                        <div className={styles.readinessMeter}>
+                            <div 
+                                className={`${styles.readinessBar} ${styles[`readinessBar${getScoreColor(animatedScore)}`]}`}
+                                style={{ width: `${animatedScore}%` }}
+                            />
+                        </div>
+
+                        <div className={styles.readinessGuidance}>
+                            {animatedScore < 65 && "🚨 Improve messaging and trust signals before launch."}
+                            {animatedScore >= 65 && animatedScore < 80 && "✨ You're close. Optimize a few elements to hit the Genesis Batch bar."}
+                            {animatedScore >= 80 && "🚀 Ready for Genesis Batch submission. High conversion potential."}
+                        </div>
+
+                        <div className={styles.readinessGrid}>
+                            <div className={styles.readinessItem}>
+                                <div className={styles.readinessItemLabel}>Landing Page Clarity</div>
+                                <div className={styles.readinessItemTrack}>
+                                    <div className={styles.readinessItemFill} style={{ width: `${(result.pillar_scores?.hook + result.pillar_scores?.friction) / 2 || 0}%` }} />
+                                </div>
+                            </div>
+                            <div className={styles.readinessItem}>
+                                <div className={styles.readinessItemLabel}>Messaging Strength</div>
+                                <div className={styles.readinessItemTrack}>
+                                    <div className={styles.readinessItemFill} style={{ width: `${result.pillar_scores?.distribution || 0}%` }} />
+                                </div>
+                            </div>
+                            <div className={styles.readinessItem}>
+                                <div className={styles.readinessItemLabel}>Conversion Potential</div>
+                                <div className={styles.readinessItemTrack}>
+                                    <div className={styles.readinessItemFill} style={{ width: `${result.pillar_scores?.trust || 0}%` }} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Roast Summary */}
                     <div className={styles.roastCard}>
                         <div className={styles.roastLabel}>The Verdict</div>
@@ -327,6 +372,48 @@ export default function GradePage() {
                         </div>
                     )}
 
+                    {/* Visual Launch Roadmap */}
+                    <div className={styles.roadmapSection}>
+                        <h3 className={styles.roadmapTitle}>What happens if you launch on LaunchXact?</h3>
+                        <div className={styles.roadmapLine}>
+                            <div className={styles.roadmapStep}>
+                                <div className={styles.roadmapStepIcon}>1</div>
+                                <div className={styles.roadmapCard}>
+                                    <h4>Genesis Batch Launch</h4>
+                                    <p>Your product launches with a curated batch of new SaaS tools.</p>
+                                </div>
+                            </div>
+                            <div className={styles.roadmapStep}>
+                                <div className={styles.roadmapStepIcon}>2</div>
+                                <div className={styles.roadmapCard}>
+                                    <h4>Visibility Cycles</h4>
+                                    <p>Your product enters the Founder Visibility Engine for guaranteed exposure.</p>
+                                </div>
+                            </div>
+                            <div className={styles.roadmapStep}>
+                                <div className={styles.roadmapStepIcon}>3</div>
+                                <div className={styles.roadmapCard}>
+                                    <h4>Proof of Life</h4>
+                                    <p>Connect GitHub or payment platforms to verify active development.</p>
+                                </div>
+                            </div>
+                            <div className={styles.roadmapStep}>
+                                <div className={styles.roadmapStepIcon}>4</div>
+                                <div className={styles.roadmapCard}>
+                                    <h4>AI Discovery</h4>
+                                    <p>Your tool becomes indexable by intent-based AI semantic search.</p>
+                                </div>
+                            </div>
+                            <div className={styles.roadmapStep}>
+                                <div className={styles.roadmapStepIcon}>5</div>
+                                <div className={styles.roadmapCard}>
+                                    <h4>Discovery Map</h4>
+                                    <p>Buyers find your product inside real-world B2B workflows.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Bridge CTA */}
                     <div className={styles.bridgeCta}>
                         {result.total_score >= 80 ? (
@@ -341,6 +428,18 @@ export default function GradePage() {
                                 >
                                     🚀 Submit to Genesis Batch — Fast-Tracked
                                 </Link>
+
+                                <div className={styles.benefitsBox}>
+                                    <h4 className={styles.benefitsTitle}>Genesis Batch Benefits</h4>
+                                    <ul className={styles.benefitsList}>
+                                        <li><span>✓</span> Curated launch alongside premium tools</li>
+                                        <li><span>✓</span> Lifetime discovery cycles</li>
+                                        <li><span>✓</span> Semantic search discovery integration</li>
+                                        <li><span>✓</span> Proof-of-life verification badge</li>
+                                        <li><span>✓</span> Optional native checkout & hosting</li>
+                                        <li><span>✓</span> LaunchXact ecosystem tool inclusion</li>
+                                    </ul>
+                                </div>
                             </>
                         ) : (
                             <>
@@ -378,7 +477,7 @@ export default function GradePage() {
                             rel="noopener noreferrer"
                             className={styles.shareBtn}
                         >
-                             Submit to Reddit
+                            🚀 Submit to Reddit
                         </a>
                         <button
                             className={styles.shareBtn}
@@ -398,9 +497,6 @@ export default function GradePage() {
                         <div className={styles.emailCaptureTitle}>
                             Want the full 5-page AI Audit?
                         </div>
-                        <p className={styles.emailCaptureSub}>
-                            Get a detailed breakdown + the &quot;Selection Badge&quot; for your site. Enter your email to save your progress.
-                        </p>
                         {emailSent ? (
                             <div className={styles.badgeSuccess}>
                                 <div className={styles.badgeInner}>
@@ -408,14 +504,14 @@ export default function GradePage() {
                                     <div className={styles.badgeCodeWrapper}>
                                         <p className={styles.badgeCodeLabel}>Your Selection Badge HTML:</p>
                                         <code className={styles.badgeCode}>
-                                            {`<a href="https://launchxact.com/grade?url=${url}" target="_blank">
-  <img src="https://launchxact.com/badges/selected-genesis.svg" alt="LaunchXact Selected Genesis Batch" width="180" />
+                                            {`<a href="https://www.launchxact.com/grade?url=${url}" target="_blank">
+  <img src="https://www.launchxact.com/badges/selected-genesis.svg" alt="LaunchXact Selected Genesis Batch" width="180" />
 </a>`}
                                         </code>
                                         <button
                                             className={styles.copyBadgeBtn}
                                             onClick={() => {
-                                                navigator.clipboard.writeText(`<a href="https://launchxact.com/grade?url=${url}" target="_blank">\n  <img src="https://launchxact.com/badges/selected-genesis.svg" alt="LaunchXact Selected Genesis Batch" width="180" />\n</a>`);
+                                                navigator.clipboard.writeText(`<a href="https://www.launchxact.com/grade?url=${url}" target="_blank">\n  <img src="https://www.launchxact.com/badges/selected-genesis.svg" alt="LaunchXact Selected Genesis Batch" width="180" />\n</a>`);
                                                 alert('Badge code copied!');
                                             }}
                                         >
@@ -444,6 +540,29 @@ export default function GradePage() {
                                 {auditError && <p className={styles.auditError}>{auditError}</p>}
                             </form>
                         )}
+                    </div>
+
+                    {/* Share Card (Visual Preview for Founders) */}
+                    <div className={styles.shareCardContainer}>
+                        <div className={styles.shareCard}>
+                            <div className={styles.shareCardHeader}>
+                                <div className={styles.shareCardBrand}>LaunchXact</div>
+                                <div className={styles.shareCardStatus}>Genesis Batch Ready</div>
+                            </div>
+                            <div className={styles.shareCardBody}>
+                                <div className={styles.shareCardScore}>
+                                    <span className={styles.shareCardNumber}>{result.total_score}</span>
+                                    <span className={styles.shareCardLabel}>Audit Score</span>
+                                </div>
+                                <div className={styles.shareCardInfo}>
+                                    <div className={styles.shareCardName}>{result.product_name || 'Your SaaS'}</div>
+                                    <div className={styles.shareCardArchetype}>{result.founder_archetype}</div>
+                                </div>
+                            </div>
+                        <div className={styles.shareCardFooter}>
+                                <p>“{result.action_items?.[0] || 'Optimized for high-growth SaaS distribution.'}”</p>
+                            </div>
+                        </div>
                     </div>
                 </section>
             )}

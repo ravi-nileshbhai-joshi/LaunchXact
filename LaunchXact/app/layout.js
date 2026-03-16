@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import SmoothScroll from '../components/SmoothScroll';
 import './globals.css';
 import { Inter, Playfair_Display } from 'next/font/google';
 import Script from 'next/script';
@@ -128,6 +129,7 @@ export default function RootLayout({ children }) {
         {/* Google Tag Manager (Implemented via @next/third-parties) */}
         <GoogleTagManager gtmId="GTM-PJRNX6SW" />
 
+        <SmoothScroll />
         <Navbar />
         <main>{children}</main>
         <Footer />
