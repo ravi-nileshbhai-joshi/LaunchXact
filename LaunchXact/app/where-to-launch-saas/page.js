@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
 import styles from './page.module.css';
 
 export const metadata = {
@@ -36,7 +34,6 @@ export default function LaunchComparison() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
-            <Navbar />
 
             <main className={styles.main}>
                 <article className={styles.article}>
@@ -103,8 +100,6 @@ export default function LaunchComparison() {
                     </section>
                 </article>
             </main>
-
-            <Footer />
         </div>
     );
 }

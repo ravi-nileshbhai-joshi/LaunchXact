@@ -394,22 +394,6 @@ export default function HomeContent() {
                 </div>
             </section>
 
-            {/* SECTION 9: FOOTER */}
-            <footer className={styles.footer}>
-                <div className={styles.links}>
-                    <Link href="/about">About</Link>
-                    <Link href="/contact">Contact</Link>
-                    <Link href="/terms">Terms</Link>
-                    <Link href="/privacy">Privacy</Link>
-                    <Link href="/refund-policy">Refunds</Link>
-                    <button onClick={() => scrollToSection('founder-form')} className={styles.linkBtn}>Founder waitlist</button>
-                    <button onClick={() => scrollToSection('buyer-form')} className={styles.linkBtn}>Buyer waitlist</button>
-                </div>
-                <p className={styles.disclaimer}>
-                    LaunchXact is a product discovery directory. We do not process payments or handle transactions between buyers and sellers. Please review products and terms on the official product websites before purchasing.
-                </p>
-                <p>&copy; {new Date().getFullYear()} LaunchXact</p>
-            </footer>
         </div>
     );
 }
