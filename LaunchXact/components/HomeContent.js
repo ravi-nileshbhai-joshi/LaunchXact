@@ -204,7 +204,7 @@ export default function HomeContent() {
                 <div className={styles.container}>
                     <h2 className={styles.sectionHeading}>You build the product. We handle the visibility.</h2>
                     <p className={styles.sectionDesc}>
-                        LaunchXact helps indie founders get early visibility, real users, and meaningful traction—without complicated launches or marketing strategies.
+                        LaunchXact helps indie founders get early visibility, real users, and meaningful traction—without complicated launches or marketing strategies. <Link href="/about" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Learn more about our mission →</Link>
                     </p>
                 </div>
             </section>
@@ -391,6 +391,11 @@ export default function HomeContent() {
                 <div className={styles.heroActions}>
                     <button onClick={() => scrollToSection('founder-form')} className={`${styles.btn} ${styles.btnPrimary}`}>Join as Founder</button>
                     <button onClick={() => scrollToSection('buyer-form')} className={`${styles.btn} ${styles.btnSecondary}`}>Join as Early User</button>
+                </div>
+                <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', opacity: 0.8 }}>
+                    <Link href="/where-to-launch-saas" className={styles.linkText}>Launch Comparison</Link>
+                    <Link href="/about" className={styles.linkText}>Our Story</Link>
+                    <Link href="/contact" className={styles.linkText}>Contact Us</Link>
                 </div>
             </section>
 
