@@ -87,6 +87,17 @@ export default async function Article({ params }) {
                     <ReactMarkdown>{contentMarkdown}</ReactMarkdown>
                 </div>
 
+                <div className={styles.articleCtaBox}>
+                    <h2 className={styles.articleCtaTitle}>Ready to launch your SaaS?</h2>
+                    <p className={styles.articleCtaDesc}>
+                        Join the next curated collection of high-value tools on LaunchXact. 
+                        Get early visibility and reach serious adopters.
+                    </p>
+                    <Link href="/grade" className="btn btn-primary" style={{ padding: '1rem 2.5rem' }}>
+                        ⚡ Grade Your Landing Page
+                    </Link>
+                </div>
+
                 <div style={{ marginTop: '5rem', textAlign: 'center', borderTop: '1px solid var(--glass-border)', paddingTop: '3rem' }}>
                     <Link href="/articles" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>
                         &larr; Back to all articles

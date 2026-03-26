@@ -1008,3 +1008,93 @@ select.input option {
         padding: 1rem 2rem !important;
     }
 }
+/* Articles Section on Homepage */
+.articlesSection {
+    padding: 6rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.articlesHeader {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.articleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.miniCard {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem;
+    height: 100%;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 1rem;
+}
+
+.miniCard:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.miniCard h4 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #fff;
+    line-height: 1.4;
+}
+
+.miniCard p {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.miniReadMore {
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Article CTA Box */
+.articleCtaBox {
+    margin-top: 5rem;
+    padding: 3rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 1.5rem;
+}
+
+.articleCtaTitle {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    margin-bottom: 1rem;
+    color: #fff;
+    font-family: var(--font-serif);
+}
+
+.articleCtaDesc {
+    font-size: 1.1rem;
+    color: #cbd5e1;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .articleGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,4 +1,5 @@
 import HomeContent from '@/components/HomeContent';
+import { getSortedArticlesData } from '@/lib/articles';
 
 export const metadata = {
     title: 'LaunchXact - Premium Curated SaaS Marketplace',
@@ -7,5 +8,6 @@ export const metadata = {
 };
 
 export default function Home() {
-    return <HomeContent />;
+    const articles = getSortedArticlesData().slice(0, 3);
+    return <HomeContent latestArticles={articles} />;
 }

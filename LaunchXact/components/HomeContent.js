@@ -25,7 +25,7 @@ const FOUNDER_TAGLINES = [
     "Ship the product. We’ll bring the early users."
 ]
 
-export default function HomeContent() {
+export default function HomeContent({ latestArticles }) {
     const [buyerTaglineIndex, setBuyerTaglineIndex] = useState(0);
     const [founderTaglineIndex, setFounderTaglineIndex] = useState(0);
 
@@ -383,6 +383,25 @@ export default function HomeContent() {
             </section>
 
 
+
+            {/* SECTION 8: LATEST ARTICLES (SEO BOOSTER) */}
+            {latestArticles && latestArticles.length > 0 && (
+                <section className={`${styles.articlesSection} ${styles.reveal}`}>
+                    <div className={styles.articlesHeader}>
+                        <h2 className={styles.sectionHeading}>Founder Insights & Resources</h2>
+                        <p className={styles.sectionDesc}>Tactical advice on launching, scaling, and succeeding in the SaaS ecosystem.</p>
+                    </div>
+                    <div className={styles.articleGrid}>
+                        {latestArticles.map((article) => (
+                            <Link href={`/articles/${article.id}`} key={article.id} className={`glass-panel ${styles.miniCard}`}>
+                                <h4>{article.title}</h4>
+                                <p>{article.description}</p>
+                                <span className={styles.miniReadMore}>Read Post &rarr;</span>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* SECTION 9: FINAL CTA */}
             <section className={`${styles.finalCta} ${styles.reveal}`}>
