@@ -3,6 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import styles from '../page.module.css';
 import Link from 'next/link';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
     const paths = getAllArticleIds();
     return paths.map((path) => ({

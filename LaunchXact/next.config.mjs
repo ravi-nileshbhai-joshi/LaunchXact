@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  outputFileTracingIncludes: {
+    '/articles/[slug]': ['./data/articles/published/**/*'],
+  },
 };
 
 export default nextConfig;
