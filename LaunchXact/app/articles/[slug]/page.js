@@ -13,7 +13,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-    const articleData = await getArticleData(params.slug);
+    const { slug } = await params;
+    const articleData = await getArticleData(slug);
     if (!articleData) {
         return { title: 'Article Not Found | LaunchXact' };
     }
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }) {
     return {
         title: `${articleData.title} | LaunchXact Articles`,
         description: articleData.description,
-        alternates: { canonical: `/articles/${params.slug}` },
+        alternates: { canonical: `/articles/${slug}` },
         openGraph: {
             title: articleData.title,
             description: articleData.description,
@@ -33,7 +34,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Article({ params }) {
-    const articleData = await getArticleData(params.slug);
+    const { slug } = await params;
+    const articleData = await getArticleData(slug);
 
     if (!articleData) {
         return (
