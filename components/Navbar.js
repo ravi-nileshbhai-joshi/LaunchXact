@@ -32,9 +32,6 @@ export default function Navbar() {
 
                     {/* Desktop Nav Links */}
                     <div className={styles.desktopLinks}>
-                        <Link href="/startup-visibility-engine" className={styles.navHighlight}>
-                            ✦ Visibility Engine
-                        </Link>
                         <Link href="/grade" className={styles.navLink}>Grade SaaS</Link>
                         <Link href="/where-to-launch-saas" className={styles.navLink}>Where to Launch</Link>
                         <Link href="/articles" className={styles.navLink}>Articles</Link>
@@ -68,9 +65,6 @@ export default function Navbar() {
                 {/* Mobile Menu */}
                 <div className={`${styles.mobileMenu} ${isOpen ? styles.mobileMenuOpen : ''}`}>
                     <div className={styles.mobileLinks}>
-                        <Link href="/startup-visibility-engine" className={styles.mobileHighlight} onClick={() => setIsOpen(false)}>
-                            ✦ Startup Visibility Engine
-                        </Link>
                         <Link href="/grade" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Grade SaaS</Link>
                         <Link href="/where-to-launch-saas" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Where to Launch</Link>
                         <Link href="/articles" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Articles & Resources</Link>

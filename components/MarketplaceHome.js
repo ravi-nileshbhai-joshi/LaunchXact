@@ -499,22 +499,6 @@ export default function MarketplaceHome({ latestArticles }) {
                 </div>
             </section>
 
-            {/* ===== 9. DEDICATED STARTUP VISIBILITY ENGINE SPOTLIGHT ===== */}
-            <section className={`${styles.engineSpotlight} ${styles.reveal}`}>
-                <div className={styles.engineCard}>
-                    <div>
-                        <span className={styles.engineBadge}>✦ THE DISTRIBUTION ENGINE</span>
-                        <h2 className={styles.engineTitle}>Startup Visibility Engine</h2>
-                        <p className={styles.engineSub}>
-                            Learn how founders build discoverability, authority, and compounding distribution systems using modern SEO, AI search optimization, Reddit, and founder-led content. <strong>No paid ads required.</strong>
-                        </p>
-                    </div>
-                    <Link href="/startup-visibility-engine" className={`${styles.btn} ${styles.engineBtn}`}>
-                        Explore the Engine →
-                    </Link>
-                </div>
-            </section>
-
             {/* ===== 10. ARTICLES & RESOURCES ===== */}
             {latestArticles && latestArticles.length > 0 && (
                 <section className={`${styles.articlesSection} ${styles.reveal}`}>
@@ -566,7 +550,6 @@ export default function MarketplaceHome({ latestArticles }) {
                         <Link href="/where-to-launch-saas">Launch Comparison</Link>
                         <Link href="/about">Our Story</Link>
                         <Link href="/contact">Contact Us</Link>
-                        <Link href="/startup-visibility-engine">Visibility Engine</Link>
                     </div>
                 </div>
             </section>

@@ -7,7 +7,6 @@ export default function Footer() {
             <div className={`container ${styles.container}`}>
                 <p>&copy; {new Date().getFullYear()} LaunchXact — A Context Forge Labs product</p>
                 <div className={styles.links}>
-                    <Link href="/startup-visibility-engine" style={{ color: 'var(--primary-light)', fontWeight: '600' }}>Startup Visibility Engine</Link>
                     <Link href="/grade">Grade Your SaaS</Link>
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>

@@ -10,6 +10,11 @@ const nextConfig = {
         destination: '/#founder-form',
         permanent: true,
       },
+      {
+        source: '/startup-visibility-engine',
+        destination: '/',
+        permanent: false,
+      },
     ];
   },
 };
