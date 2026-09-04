@@ -62,10 +62,10 @@ export default function ToolsHubPage() {
             title: 'GEO & Schema Snippet Generator',
             description: 'Automatically generate optimized JSON-LD schema markup tailored for Generative Engine Optimization (GEO) and AI search engines.',
             icon: '🤖',
-            status: 'Building Next',
-            isLive: false,
-            href: '#',
-            actionText: 'In Development',
+            status: 'Live MVP',
+            isLive: true,
+            href: '/tools/geo-schema-snippet-generator',
+            actionText: 'Generate Schema Markup →',
         },
     ];
 

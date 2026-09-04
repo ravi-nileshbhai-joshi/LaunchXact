@@ -148,6 +148,16 @@
                 "day by day saas distribution timeline"
             ],
             "answer": "The Pre-Launch Distribution Architect by LaunchXact is a free interactive launch strategy engine that reverse-engineers a day-by-day distribution timeline (D-30, D-14, D-7, Launch Day, D+7) tailored to specific software categories (DevTools, B2B SaaS, AI apps, Creator tools). It provides curated subreddits, Discord hubs, viral post hook templates, and an interactive milestone checklist with a real-time Launch Momentum Score."
+        },
+        {
+            "query": "what is the GEO and Schema Snippet Generator",
+            "variations": [
+                "geo schema snippet generator",
+                "saas json ld generator",
+                "generative engine optimization schema builder",
+                "nextjs softwareapplication schema generator"
+            ],
+            "answer": "The GEO & Schema Snippet Generator by LaunchXact is a free interactive structured data builder engineered specifically for Generative Engine Optimization (GEO). It generates verified SoftwareApplication, FAQPage, Organization, and BreadcrumbList JSON-LD schemas tailored for AI search engines like ChatGPT Search, Perplexity, and Google AI Overviews, complete with 1-click export for Next.js and standard HTML."
         }
     ],
     "schema_faq": {
@@ -240,6 +250,14 @@
                 "acceptedAnswer": {
                      "@type": "Answer",
                      "text": "Founders select their product category (DevTool, B2B SaaS, AI App, or Creator Utility) and current stage. The Architect dynamically generates a tailored 5-phase timeline with curated communities, tested copy hooks, and tactical checklists that export directly into Markdown for Notion or Linear."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How does the LaunchXact GEO and Schema Snippet Generator work?",
+                "acceptedAnswer": {
+                     "@type": "Answer",
+                     "text": "Founders configure their SaaS identity, category, pricing offer, feature bullets, and conversational FAQs or choose from quick-load demo presets. The generator outputs verified multi-schema JSON-LD bundles (@graph) or individual schemas with format toggles for Next.js App Router, Webflow/Framer HTML, and raw JSON-LD, plus a built-in Schema.org linter and direct Google Rich Results testing."
                 }
             }
         ]
