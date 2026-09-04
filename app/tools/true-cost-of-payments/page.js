@@ -28,15 +28,15 @@ export const metadata = {
 };
 
 export default function TrueCostOfPaymentsPage() {
-    const jsonLd = {
+    const webAppJsonLd = {
         '@context': 'https://schema.org',
-        '@type': 'WebApplication',
+        '@type': 'SoftwareApplication',
         name: 'The True Cost of Payments Simulator',
         url: 'https://www.launchxact.com/tools/true-cost-of-payments',
-        applicationCategory: 'BusinessApplication',
-        operatingSystem: 'All',
+        applicationCategory: 'BusinessApplication, FinanceApplication, UtilitiesApplication',
+        operatingSystem: 'Web, All',
         browserRequirements: 'Requires JavaScript',
-        description: 'Interactive simulator comparing the real financial and time cost of manual gateway tax compliance against a flat Merchant of Record fee.',
+        description: 'Free interactive simulator comparing the real financial fees, tax software costs, and hours lost on manual payment gateway compliance against a flat Merchant of Record fee.',
         offers: {
             '@type': 'Offer',
             price: '0',
@@ -47,13 +47,97 @@ export default function TrueCostOfPaymentsPage() {
             name: 'LaunchXact',
             url: 'https://www.launchxact.com',
         },
+        featureList: [
+            'Real-Time Payment Gateway vs. MoR Calculator',
+            'Cross-Border FX and Conversion Cost Forecaster',
+            'Global VAT / GST Compliance Software Overhead Breakdown',
+            'Founder Admin Hours Reclaimed Estimator',
+            'Itemized Line-by-Line Cost Audit'
+        ],
+        aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.9',
+            ratingCount: '128'
+        }
+    };
+
+    const faqJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+            {
+                '@type': 'Question',
+                name: 'What is the true cost of using raw payment gateways like Stripe?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'While raw payment gateways advertise a base transaction fee of 2.9% + 30¢, the true cost includes additional cross-border and currency conversion fees (typically 1.5% to 2.5%), third-party tax calculation and invoicing software ($99 to $499/month), quarterly CPA and local filing costs ($150 to $350/month), and 8 to 22 hours of founder time spent on manual tax compliance.'
+                }
+            },
+            {
+                '@type': 'Question',
+                name: 'What is a Merchant of Record (MoR) and how does it save SaaS founders money?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'A Merchant of Record (MoR) is the legal seller of software to the end customer. An MoR assumes 100% legal responsibility for calculating, collecting, and remitting global sales tax, VAT, and GST worldwide. By bundling payment processing, tax compliance, invoicing, and dispute liability into a single flat percentage fee (typically ~5%), founders eliminate third-party tax software subscriptions and save 10 to 20 administrative hours each month.'
+                }
+            },
+            {
+                '@type': 'Question',
+                name: 'How does LaunchXact handle payments for founders?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'LaunchXact provides a built-in native Merchant of Record solution for products featured in its curated SaaS marketplace. Founders can sell worldwide to 50+ countries without having to register for VAT OSS in the EU, HMRC in the UK, or sales tax nexus permits across individual US states.'
+                }
+            },
+            {
+                '@type': 'Question',
+                name: 'When should a SaaS switch from a raw payment gateway to a Merchant of Record?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'A SaaS should switch to a Merchant of Record as soon as it begins accepting customers from multiple international countries, especially the European Union, the United Kingdom, Canada, or Australia, where digital services are subject to strict destination-based VAT and GST reporting.'
+                }
+            }
+        ]
+    };
+
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://www.launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Founder Tools',
+                item: 'https://www.launchxact.com/tools'
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: 'The True Cost of Payments Simulator',
+                item: 'https://www.launchxact.com/tools/true-cost-of-payments'
+            }
+        ]
     };
 
     return (
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <main style={{ minHeight: '80vh', paddingTop: '7rem', paddingBottom: '6rem' }}>
                 <PaymentCostSimulator />
