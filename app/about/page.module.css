@@ -1,0 +1,71 @@
+.container {
+    padding-top: clamp(100px, 14vh, 130px);
+    padding-bottom: 5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+    background: #ffffff;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #0f0f0f 0%, #5b21b6 60%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.15rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.content {
+    padding: clamp(2rem, 5vw, 3.5rem);
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.section {
+    margin-bottom: 2.5rem;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.section h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: #0f0f0f;
+    letter-spacing: -0.02em;
+}
+
+.section p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+.section strong {
+    color: #0f0f0f;
+    font-weight: 700;
+}

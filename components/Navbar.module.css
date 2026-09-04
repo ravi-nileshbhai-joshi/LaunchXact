@@ -1,0 +1,335 @@
+/* Floating pill navbar — outrank.so inspired */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0.75rem 1rem 0;
+    pointer-events: none;
+}
+
+.navWrapper {
+    max-width: 1320px;
+    margin: 0 auto;
+    pointer-events: auto;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid #e5e7eb;
+    border-radius: 9999px;
+    padding: 0.625rem 0.75rem 0.625rem 1.25rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+}
+
+.navbarScrolled {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.rocketLogoWrapper {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    overflow: visible;
+}
+
+.rocketLogoWrapper svg {
+    height: 38px;
+    width: auto;
+}
+
+.logoMark {
+    width: 2rem;
+    height: 2rem;
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: -0.05em;
+    flex-shrink: 0;
+}
+
+.logoText {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #0f0f0f;
+    letter-spacing: -0.03em;
+}
+
+/* Desktop Links */
+.desktopLinks {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    justify-content: center;
+}
+
+@media (min-width: 1024px) {
+    .desktopLinks {
+        display: flex;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1240px) {
+    .desktopLinks {
+        gap: 0.15rem;
+    }
+    .navLink, .navHighlight {
+        font-size: 0.8125rem;
+        padding: 0.35rem 0.55rem;
+    }
+    .ctaArea {
+        gap: 0.35rem;
+    }
+    .loginBtn {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.75rem;
+    }
+    .ctaBtn {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.85rem;
+    }
+}
+
+.navLink {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #374151;
+    text-decoration: none;
+    padding: 0.4rem 0.875rem;
+    border-radius: 9999px;
+    transition: all 0.15s ease;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+.navLink:hover {
+    background: #f3f4f6;
+    color: #0f0f0f;
+}
+
+.navHighlight {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #7c3aed;
+    text-decoration: none;
+    padding: 0.4rem 0.875rem;
+    border-radius: 9999px;
+    background: rgba(124, 58, 237, 0.06);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.navHighlight:hover {
+    background: rgba(124, 58, 237, 0.12);
+    color: #5b21b6;
+}
+
+/* CTA Area */
+.ctaArea {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+    .ctaArea {
+        display: flex;
+    }
+}
+
+.loginBtn {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #374151;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    border: 1.5px solid #e5e7eb;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.loginBtn:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+    color: #0f0f0f;
+}
+
+.ctaBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #ffffff;
+    background: #7c3aed;
+    text-decoration: none;
+    padding: 0.5rem 1.125rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.ctaBtn:hover {
+    background: #5b21b6;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(91, 33, 182, 0.35);
+    color: #ffffff;
+}
+
+.ctaBtnOutline {
+    background: transparent;
+    color: #374151;
+    border: 1.5px solid #e5e7eb;
+    box-shadow: none;
+}
+
+.ctaBtnOutline:hover {
+    background: #f3f4f6;
+    color: #0f0f0f;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Mobile Toggle */
+.mobileToggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: transparent;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 9999px;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+    .mobileToggle {
+        display: none;
+    }
+}
+
+.bar {
+    display: block;
+    height: 1.5px;
+    width: 14px;
+    background: #374151;
+    border-radius: 9999px;
+    transition: all 0.25s ease;
+    transform-origin: center;
+}
+
+.barTop { transform: translateY(5.5px) rotate(45deg); }
+.barMid { opacity: 0; transform: scaleX(0); }
+.barBot { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* Mobile Menu */
+.mobileMenu {
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 1.25rem;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.mobileMenuOpen {
+    max-height: 600px;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 1rem;
+}
+
+.mobileLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.mobileLink {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #374151;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    transition: background 0.15s;
+    text-align: center;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mobileLink:last-child { border-bottom: none; }
+
+.mobileLink:hover {
+    background: #f9fafb;
+    color: #0f0f0f;
+}
+
+.mobileHighlight {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #7c3aed;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(124, 58, 237, 0.06);
+    text-align: center;
+    display: block;
+}
+
+.mobileCta {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.mobileCta > * {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+}

@@ -1,0 +1,40 @@
+.hero {
+    padding: 180px 0 100px;
+    text-align: center;
+    background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.15), transparent 60%);
+}
+
+.headline {
+    font-size: 3.5rem;
+    font-weight: 800;
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.highlight {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subheadline {
+    font-size: 1.25rem;
+    color: var(--foreground);
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .headline {
+        font-size: 2.5rem;
+    }
+}

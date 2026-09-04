@@ -1,0 +1,163 @@
+.container {
+    min-height: 100vh;
+    background: #ffffff;
+    color: #111827;
+    font-family: var(--font-sans);
+}
+
+.main {
+    padding: clamp(100px, 14vh, 130px) 20px 80px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.article {
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 1.25rem;
+    padding: clamp(24px, 5vw, 44px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #0f0f0f 0%, #5b21b6 60%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.15rem;
+    color: #4b5563;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 3rem;
+    border-radius: 0.875rem;
+    border: 1.5px solid #e5e7eb;
+}
+
+.comparisonTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.comparisonTable th {
+    background: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f0f0f;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.comparisonTable td {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.brand {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    color: #0f0f0f;
+    white-space: nowrap;
+}
+
+.highlightRow {
+    background: rgba(124, 58, 237, 0.05);
+}
+
+.highlightRow .brand {
+    color: #5b21b6;
+}
+
+.highlightRow td {
+    color: #1f2937;
+}
+
+.section {
+    margin-bottom: 2.5rem;
+}
+
+.section h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: #0f0f0f;
+    letter-spacing: -0.02em;
+}
+
+.section p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #374151;
+}
+
+.section strong {
+    color: #0f0f0f;
+    font-weight: 700;
+}
+
+.cta {
+    margin-top: 2.5rem;
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    background: #7c3aed;
+    color: #ffffff;
+    padding: 0.9rem 2.25rem;
+    border-radius: 9999px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+}
+
+.btn:hover {
+    background: #5b21b6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(91, 33, 182, 0.35);
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .article {
+        padding: 20px 16px;
+    }
+
+    .comparisonTable th,
+    .comparisonTable td {
+        font-size: 0.875rem;
+        padding: 0.75rem;
+    }
+}

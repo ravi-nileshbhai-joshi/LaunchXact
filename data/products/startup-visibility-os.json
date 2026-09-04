@@ -1,0 +1,191 @@
+{
+  "id": "startup-visibility-os",
+  "name": "Startup Visibility OS",
+  "price": 49,
+  "headline": "Built something great?",
+  "subheadline_top": "Learn how to get discovered without relying entirely on paid ads.",
+  "subheadline": "Startup Visibility OS helps founders build discoverability, authority, and distribution systems using modern SEO, AI search optimization, Reddit, and founder-led content.",
+  "ctaText": "Get Startup Visibility OS – $49",
+  "secondaryCtaText": "See What's Inside",
+  "painPoints": {
+    "title": "Does this sound familiar?",
+    "items": [
+      "You built the product... but nobody discovered it.",
+      "You launched quietly, waiting for users who never arrived.",
+      "You don't have an existing audience to share it with.",
+      "You can't spend thousands of dollars on paid ads.",
+      "Your Product Hunt launch came and went, but didn't change everything."
+    ],
+    "outcome": "If you answered yes, Startup Visibility OS was built specifically for you."
+  },
+  "outcomes": [
+    {
+      "title": "Become Discoverable in AI Search",
+      "description": "Master Modern SEO, GEO (Generative Engine Optimization), and AEO (Answer Engine Optimization) so that ChatGPT, Perplexity, and Gemini cite your SaaS when users search for tools in your niche.",
+      "icon": "faGlobe"
+    },
+    {
+      "title": "Build Authority on Reddit",
+      "description": "Establish presence and build trust in developer and founder communities without spamming. Learn the exact value-first approach to naturally plugs your SaaS where potential users are actively looking.",
+      "icon": "faUser"
+    },
+    {
+      "title": "Launch with Confidence",
+      "description": "Ditch the anxiety of a silent launch. Follow a battle-tested launch event stack and directory listing system that ensures early adopters can find you from day one.",
+      "icon": "faRocket"
+    },
+    {
+      "title": "Create Distribution Loops",
+      "description": "Design founder-led content and organic distribution channels that compound over time. Build an asset system that acts as a 24/7 promoter for your product.",
+      "icon": "faCode"
+    }
+  ],
+  "inside": [
+    {
+      "title": "Founder Positioning Framework",
+      "description": "Uncover your SaaS's unique hook and translate technical features into clear, user-centric benefits."
+    },
+    {
+      "title": "Modern SEO/GEO/AEO Playbook",
+      "description": "The exact schema and copy blueprint to get indexed, read, and recommended by AI Search engines."
+    },
+    {
+      "title": "Reddit Distribution System",
+      "description": "Actionable tactics to find high-intent conversations, comment value-first, and generate traffic without bans."
+    },
+    {
+      "title": "Launch Checklist & Directory List",
+      "description": "Step-by-step checklist and database of 100+ high-traffic directories to submit your SaaS."
+    },
+    {
+      "title": "Operating & Quick Wins Guide",
+      "description": "A 10-15 page minimal quick-start manual to secure your first distribution wins within hours."
+    },
+    {
+      "title": "AI SEO Prompt Pack",
+      "description": "Copy-paste prompts to make ChatGPT and Claude write highly optimized SEO clusters and FAQ schema."
+    },
+    {
+      "title": "Startup Visibility Database",
+      "description": "Structured Google Sheet tracking your positioning, Reddit keywords, and search engine crawling."
+    },
+    {
+      "title": "Bonus Outreach Resources",
+      "description": "Swipe files containing cold DM templates, LinkedIn/X launch formulas, and outreach checklists."
+    }
+  ],
+  "daysPlan": {
+    "title": "First 7 Days Implementation Plan",
+    "description": "This is a structured, action-oriented, day-by-day roadmap. Execute these tasks consecutively to build momentum.",
+    "days": [
+      {
+        "day": 1,
+        "title": "Positioning",
+        "tasks": [
+          "Define your target customer's acute pain points.",
+          "Isolate your product's 'One True Hook' that promises the quickest resolution.",
+          "Compare your headline against the Founder Positioning Framework.",
+          "Identify 3 competing solutions and list their positioning gaps."
+        ]
+      },
+      {
+        "day": 2,
+        "title": "Homepage Optimization",
+        "tasks": [
+          "Format your landing page sections to follow the High-Converting Formula.",
+          "Refine copy to focus on outcomes over list of features.",
+          "Inject structured FAQ JSON-LD schema into your page head.",
+          "Verify page loads in under 2 seconds to optimize for search indexers."
+        ]
+      },
+      {
+        "day": 3,
+        "title": "Reddit Authority Setup",
+        "tasks": [
+          "Identify and join the top 10 subreddits relevant to your SaaS category.",
+          "Set up automated keyword alerts for conversations mentioning problems you solve.",
+          "Draft 3 value-first comments that help users without mentioning your product.",
+          "Optimize your Reddit bio with a link to your landing page."
+        ]
+      },
+      {
+        "day": 4,
+        "title": "SEO Cluster",
+        "tasks": [
+          "Locate 3 low-difficulty informational search queries in your niche.",
+          "Outline a 3-article topic cluster that answers these queries fully.",
+          "Write and publish your first search-intent piece.",
+          "Ensure internal links point directly to your homepage conversion points."
+        ]
+      },
+      {
+        "day": 5,
+        "title": "Founder Content",
+        "tasks": [
+          "Draft your authentic Founder Story explaining why you built this SaaS.",
+          "Write 3 LinkedIn or X status updates focusing on technical lessons learned.",
+          "Identify 5 ideal early buyers and send them personalized, non-spammy direct messages.",
+          "Schedule your content to maintain consistent distribution activity."
+        ]
+      },
+      {
+        "day": 6,
+        "title": "Launch Preparation",
+        "tasks": [
+          "Submit your SaaS details to 10 high-domain-authority directories.",
+          "Prepare your launch day media (screenshots, demo video, logos).",
+          "Write your launch announcement using the Launch Thread Formula.",
+          "Queue up support from peers and early waitlist members."
+        ]
+      },
+      {
+        "day": 7,
+        "title": "Review and Iterate",
+        "tasks": [
+          "Audit your site analytics to check search, Reddit, and direct traffic.",
+          "Examine search index status using Google Search Console.",
+          "Collate feedback from early visitors and identify primary points of confusion.",
+          "Tweak headlines and SEO keywords based on search and user data."
+        ]
+      }
+    ]
+  },
+  "founderStory": {
+    "quote": "I built LaunchXact believing great products naturally got discovered. They don't. I realized discoverability itself is a system. Startup Visibility OS is the framework I wish I had when nobody knew my startup existed.",
+    "signature": "Ravi",
+    "title": "Founder, LaunchXact"
+  },
+  "faq": [
+    {
+      "question": "Who is this for?",
+      "answer": "This is built specifically for solo developers, indie hackers, and early-stage SaaS founders who have a working product but need traffic, authority, and early users without spending money on paid advertising."
+    },
+    {
+      "question": "Is this beginner friendly?",
+      "answer": "Absolutely. You do not need any marketing degree. We supply copy-paste formulas, step-by-step checklists, and structured prompts to write and launch your visibility system."
+    },
+    {
+      "question": "Will this create overnight virality?",
+      "answer": "No. Overnight virality is rare and mostly a vanity metric. We teach you a repeatable, compounding distribution system that drives sustainable organic traffic day after day."
+    },
+    {
+      "question": "Do I need paid ads?",
+      "answer": "No. The entire system is built around free, high-intent traffic sources like Reddit community support, organic SEO, AI search index listings, and founder-led content."
+    },
+    {
+      "question": "How do I access it?",
+      "answer": "As soon as you complete the checkout on our platform, you will be redirected to a secure purchase page containing direct downloads for the PDFs and access links to the Notion templates and Google Docs."
+    },
+    {
+      "question": "Are updates included?",
+      "answer": "Yes. You purchase it once and get lifetime access to all databases and prompts, including free access to all future updates and additions we make."
+    }
+  ],
+  "assets_links": {
+    "quick_wins_pdf": "/api/download?file=quick-wins-guide",
+    "founder_story_pdf": "/api/download?file=founder-story",
+    "notion_template": "https://notion.so/launchxact/Startup-Visibility-OS-Template-Mock",
+    "google_doc_templates": "https://docs.google.com/document/d/mock-google-doc-templates/edit?usp=sharing",
+    "google_sheet_database": "https://docs.google.com/spreadsheets/d/mock-google-sheets-database/edit?usp=sharing"
+  }
+}

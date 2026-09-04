@@ -1,0 +1,141 @@
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import SmoothScroll from '../components/SmoothScroll';
+import './globals.css';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import Script from 'next/script';
+import { GoogleTagManager } from '@next/third-parties/google';
+import geoQueries from '../public/geo-queries.json';
+import CookieBanner from '../components/CookieBanner';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans', weight: ['400','500','600','700','800'], display: 'swap' });
+
+export const metadata = {
+  title: 'LaunchXact - Startup Visibility OS & SaaS Discovery Platform',
+  description: 'LaunchXact helps founders build discoverability, authority, and distribution systems using modern SEO, AI search optimization, Reddit, and founder-led content. Get the Startup Visibility OS for $49.',
+  keywords: [
+    'LaunchXact', 'SaaS', 'SaaS Marketplace', 'B2B Software', 'Startup', 'Software Discovery', 'Enterprise Tools', 'Tech Tools',
+    'where to launch my SaaS', 'curated software directory', 'premium saas marketplace', 'buy saas products',
+    'submit saas platform', 'founder friendly saas market', 'new SaaS', 'newly launched SaaS'
+  ],
+  authors: [{ name: 'Ravi Joshi', url: 'https://www.launchxact.com' }],
+  creator: 'Ravi Joshi',
+  publisher: 'LaunchXact',
+  metadataBase: new URL('https://www.launchxact.com'),
+  openGraph: {
+    title: 'LaunchXact - Premium Curated SaaS Marketplace',
+    description: 'A manually curated multi-vendor SaaS marketplace. Discover high-value software that solves real problems, and launch your product in a premium ecosystem.',
+    url: 'https://www.launchxact.com',
+    siteName: 'LaunchXact',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'LaunchXact - SaaS Discovery Platform',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LaunchXact - The Micro SaaS Launch Platform',
+    description: 'Launch your product today. The best directory for new and emerging SaaS tools.',
+    creator: '@launchxact',
+    images: ['/twitter-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'LaunchXact',
+  url: 'https://www.launchxact.com',
+  logo: 'https://www.launchxact.com/icon',
+  sameAs: [
+    'https://twitter.com/launchxact',
+    // Add other social profiles here
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'contact@launchxact.com',
+    contactType: 'customer support',
+  },
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'LaunchXact',
+  url: 'https://www.launchxact.com',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://www.launchxact.com/?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head>
+        {/* JSON-LD Schema for Brand Entity & Logo */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+
+        {/* AEO/GEO Schema FAQ for Search Engines & AI Crawlers */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(geoQueries.schema_faq) }}
+        />
+
+        {/* Custom Knowledge Base Data for Generative Engines (GPTbot, Perplexity, etc.) */}
+        <script
+          type="application/json"
+          id="geo-knowledge-base"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              knowledge_base: geoQueries.knowledge_base,
+              geo_queries: geoQueries.geo_queries
+            })
+          }}
+        />
+      </head>
+      <body className={`${inter.variable} ${jakarta.variable}`}>
+        {/* Google Tag Manager (Implemented via @next/third-parties) */}
+        <GoogleTagManager gtmId="GTM-PJRNX6SW" />
+
+        <SmoothScroll />
+        <Navbar />
+        <main>{children}</main>
+        <CookieBanner />
+        <Footer />
+      </body>
+    </html>
+  );
+}

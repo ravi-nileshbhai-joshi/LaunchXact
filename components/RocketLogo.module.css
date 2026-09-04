@@ -1,0 +1,157 @@
+.logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.logoText {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    fill: #0f0f0f;
+}
+
+.accentX {
+    fill: #7c3aed;
+}
+
+.rocketGroup {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: launchSequence 2.5s ease-out forwards;
+}
+
+.rocketBody {
+    fill: url(#rocketGradient);
+}
+
+.rocketFlame {
+    fill: #f59e0b;
+    opacity: 0;
+    animation: flameFlicker 0.1s infinite alternate, flameFade 2.5s ease-out forwards;
+}
+
+.trail {
+    stroke: url(#trailGradient);
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: trailDraw 2.5s ease-out forwards;
+}
+
+.spark {
+    fill: #fbbf24;
+    opacity: 0;
+    transform-origin: center;
+    animation: sparkFlash 0.5s 2.2s ease-out forwards;
+}
+
+/* Animations */
+@keyframes launchSequence {
+    0% {
+        transform: translate(-10px, 20px) scale(0.8) rotate(-45deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes flameFlicker {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0.4;
+    }
+}
+
+@keyframes flameFade {
+    0% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes trailDraw {
+    0% {
+        stroke-dashoffset: 100;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.6;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes sparkFlash {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Hover Effects */
+.logoContainer:hover .rocketGroup {
+    animation: none;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    transition: transform 0.3s ease;
+}
+
+.logoContainer:hover .rocketBody {
+    filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));
+}
+
+.logoContainer:hover .rocketGroup {
+    animation: hoverPulse 2s infinite ease-in-out;
+}
+
+@keyframes hoverPulse {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}

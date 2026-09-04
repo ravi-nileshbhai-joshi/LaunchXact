@@ -1,0 +1,221 @@
+.container {
+    padding-top: clamp(100px, 14vh, 130px);
+    padding-bottom: 6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+    background: #ffffff;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 4.5rem;
+}
+
+.title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    background: linear-gradient(135deg, #0f0f0f 0%, #5b21b6 50%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.15rem;
+    color: #4b5563;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 2rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 2.25rem;
+    height: 100%;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    color: inherit;
+}
+
+.card:hover {
+    border-color: #7c3aed;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(124, 58, 237, 0.12);
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.cardTitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 0.85rem;
+    color: #0f0f0f;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+}
+
+.cardDesc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.readMore {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #7c3aed;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: gap 0.2s;
+}
+
+.card:hover .readMore {
+    color: #5b21b6;
+    gap: 0.65rem;
+}
+
+/* ============================================================
+   Article Detail Styles
+   ============================================================ */
+.articleContainer {
+    max-width: 840px;
+    margin: 0 auto;
+    padding-top: clamp(100px, 14vh, 130px);
+    padding-bottom: 6rem;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+    background: #ffffff;
+}
+
+.articleHeader {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.articleMeta {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    color: #6b7280;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.content {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.85;
+    color: #1f2937;
+}
+
+.content h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+    font-weight: 800;
+    color: #0f0f0f;
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+}
+
+.content h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 2rem;
+    margin-bottom: 0.875rem;
+    letter-spacing: -0.02em;
+}
+
+.content p {
+    color: #374151;
+    margin-bottom: 1.6rem;
+}
+
+.content ul, .content ol {
+    margin-bottom: 1.6rem;
+    padding-left: 1.75rem;
+}
+
+.content li {
+    color: #374151;
+    margin-bottom: 0.6rem;
+    line-height: 1.7;
+}
+
+.content strong {
+    color: #0f0f0f;
+    font-weight: 700;
+}
+
+.content a {
+    color: #7c3aed;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.content a:hover {
+    color: #5b21b6;
+}
+
+.content blockquote {
+    border-left: 3px solid #7c3aed;
+    background: #f8fafc;
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 0.75rem 0.75rem 0;
+    margin-bottom: 1.75rem;
+    color: #4b5563;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .container, .articleContainer {
+        padding-top: 90px;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card {
+        padding: 1.75rem;
+    }
+}
