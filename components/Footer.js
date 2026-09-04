@@ -9,7 +9,8 @@ export default function Footer() {
                 <div className={styles.links}>
                     <Link href="/grade">Grade Your SaaS</Link>
                     <Link href="/tools/true-cost-of-payments">Payment Cost Simulator</Link>
-                    <Link href="/tools/franken-stack-cost-forecaster" style={{ color: 'var(--primary)', fontWeight: '600' }}>Franken-Stack Forecaster</Link>
+                    <Link href="/tools/franken-stack-cost-forecaster">Franken-Stack Forecaster</Link>
+                    <Link href="/tools/pre-launch-distribution-architect" style={{ color: 'var(--primary)', fontWeight: '600' }}>Pre-Launch Architect</Link>
                     <Link href="/tools">Founder Tools</Link>
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>

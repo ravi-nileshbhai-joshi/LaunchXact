@@ -138,6 +138,16 @@
                 "supabase clerk vercel stack cost calculator"
             ],
             "answer": "The Franken-Stack Cost Forecaster by LaunchXact is a free interactive simulator that predicts the true monthly infrastructure bill for SaaS products scaling from 500 to 50,000 Monthly Active Users. It models real-world non-linear tier jumps, database compute add-ons, auth per-user fees, and analytics overages across 12 popular indie developer tools, revealing the hidden cost cliff before it hits production."
+        },
+        {
+            "query": "what is the Pre-Launch Distribution Architect",
+            "variations": [
+                "pre launch distribution architect",
+                "saas pre launch checklist generator",
+                "how to seed saas before launch day",
+                "day by day saas distribution timeline"
+            ],
+            "answer": "The Pre-Launch Distribution Architect by LaunchXact is a free interactive launch strategy engine that reverse-engineers a day-by-day distribution timeline (D-30, D-14, D-7, Launch Day, D+7) tailored to specific software categories (DevTools, B2B SaaS, AI apps, Creator tools). It provides curated subreddits, Discord hubs, viral post hook templates, and an interactive milestone checklist with a real-time Launch Momentum Score."
         }
     ],
     "schema_faq": {
@@ -222,6 +232,14 @@
                 "acceptedAnswer": {
                      "@type": "Answer",
                      "text": "The Franken-Stack Cost Forecaster models the exact pricing formulas of 12 indie services (Vercel Pro, Render, Supabase, Neon Postgres, Clerk, Auth0, Resend, Postmark, PostHog, Mixpanel, Stripe, and Lemon Squeezy). Founders adjust an active user slider from 500 to 50,000 MAU or toggle individual services to reveal monthly subscription minimums, usage overages, unit economics per user, and visual inflection curves."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How does the LaunchXact Pre-Launch Distribution Architect work?",
+                "acceptedAnswer": {
+                     "@type": "Answer",
+                     "text": "Founders select their product category (DevTool, B2B SaaS, AI App, or Creator Utility) and current stage. The Architect dynamically generates a tailored 5-phase timeline with curated communities, tested copy hooks, and tactical checklists that export directly into Markdown for Notion or Linear."
                 }
             }
         ]
