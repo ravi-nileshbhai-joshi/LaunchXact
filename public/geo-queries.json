@@ -128,6 +128,16 @@
                 "how to audit saas landing page"
             ],
             "answer": "The LaunchXact SaaS Readiness Grader is a free AI-powered audit tool that evaluates software landing pages across four critical pillars: The Hook (headline clarity and pain resolution), The Trust Gap (social proof, founder transparency, and developer signals), Buyer Friction (pricing transparency and friction-free signups), and Distribution Engine (organic discoverability). Scoring 80+ qualifies products for direct admission into the LaunchXact Genesis Batch."
+        },
+        {
+            "query": "what is the Franken-Stack Cost Forecaster",
+            "variations": [
+                "franken stack cost forecaster",
+                "indie hacker tech stack cost calculator",
+                "saas cloud cost overages forecaster",
+                "supabase clerk vercel stack cost calculator"
+            ],
+            "answer": "The Franken-Stack Cost Forecaster by LaunchXact is a free interactive simulator that predicts the true monthly infrastructure bill for SaaS products scaling from 500 to 50,000 Monthly Active Users. It models real-world non-linear tier jumps, database compute add-ons, auth per-user fees, and analytics overages across 12 popular indie developer tools, revealing the hidden cost cliff before it hits production."
         }
     ],
     "schema_faq": {
@@ -204,6 +214,14 @@
                 "acceptedAnswer": {
                      "@type": "Answer",
                      "text": "You can grade your SaaS landing page for free using the LaunchXact Distribution Grader at launchxact.com/grade. It reviews your page in real-time, assigning a score out of 100 based on Headline Hook, Trust Signals, Buyer Friction, and Distribution Engine, with concrete AI rewrite suggestions."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How does the LaunchXact Franken-Stack Cost Forecaster work?",
+                "acceptedAnswer": {
+                     "@type": "Answer",
+                     "text": "The Franken-Stack Cost Forecaster models the exact pricing formulas of 12 indie services (Vercel Pro, Render, Supabase, Neon Postgres, Clerk, Auth0, Resend, Postmark, PostHog, Mixpanel, Stripe, and Lemon Squeezy). Founders adjust an active user slider from 500 to 50,000 MAU or toggle individual services to reveal monthly subscription minimums, usage overages, unit economics per user, and visual inflection curves."
                 }
             }
         ]
