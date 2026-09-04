@@ -518,20 +518,23 @@
 }
 
 .handoffHeadline {
+    color: #ffffff !important;
     font-size: clamp(1.4rem, 2.5vw, 1.85rem);
     font-weight: 800;
     line-height: 1.3;
     margin-bottom: 0.75rem;
     position: relative;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .handoffDesc {
-    font-size: 1rem;
-    color: #cbd5e1;
+    font-size: 1.05rem;
+    color: #f1f5f9 !important;
     max-width: 620px;
     margin: 0 auto 2rem auto;
-    line-height: 1.6;
+    line-height: 1.65;
     position: relative;
+    opacity: 0.95;
 }
 
 .handoffActions {
@@ -548,7 +551,7 @@
     align-items: center;
     gap: 0.5rem;
     background: #7c3aed;
-    color: #ffffff;
+    color: #ffffff !important;
     font-weight: 700;
     font-size: 1rem;
     padding: 0.9rem 1.75rem;
@@ -562,6 +565,7 @@
 
 .btnPrimary:hover {
     background: #6d28d9;
+    color: #ffffff !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
 }
@@ -570,20 +574,21 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff !important;
     font-weight: 600;
     font-size: 0.95rem;
     padding: 0.9rem 1.5rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .btnSecondary:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff !important;
 }
 
 /* FAQ / SEO Section */
