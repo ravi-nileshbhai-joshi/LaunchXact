@@ -8,6 +8,8 @@ export default function Footer() {
                 <p>&copy; {new Date().getFullYear()} LaunchXact — A Context Forge Labs product</p>
                 <div className={styles.links}>
                     <Link href="/grade">Grade Your SaaS</Link>
+                    <Link href="/tools/true-cost-of-payments" style={{ color: 'var(--primary)', fontWeight: '600' }}>Payment Cost Simulator</Link>
+                    <Link href="/tools">Founder Tools</Link>
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>
                     <Link href="/where-to-launch-saas">Where to Launch</Link>

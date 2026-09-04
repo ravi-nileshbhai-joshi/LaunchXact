@@ -33,6 +33,7 @@ export default function Navbar() {
                     {/* Desktop Nav Links */}
                     <div className={styles.desktopLinks}>
                         <Link href="/grade" className={styles.navLink}>Grade SaaS</Link>
+                        <Link href="/tools" className={styles.navLink}>Tools</Link>
                         <Link href="/where-to-launch-saas" className={styles.navLink}>Where to Launch</Link>
                         <Link href="/articles" className={styles.navLink}>Articles</Link>
                         <Link href="/about" className={styles.navLink}>About</Link>
@@ -66,6 +67,7 @@ export default function Navbar() {
                 <div className={`${styles.mobileMenu} ${isOpen ? styles.mobileMenuOpen : ''}`}>
                     <div className={styles.mobileLinks}>
                         <Link href="/grade" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Grade SaaS</Link>
+                        <Link href="/tools" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Founder Tools</Link>
                         <Link href="/where-to-launch-saas" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Where to Launch</Link>
                         <Link href="/articles" className={styles.mobileLink} onClick={() => setIsOpen(false)}>Articles & Resources</Link>
                         <Link href="/about" className={styles.mobileLink} onClick={() => setIsOpen(false)}>About</Link>

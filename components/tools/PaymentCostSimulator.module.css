@@ -1,0 +1,580 @@
+/* PaymentCostSimulator.module.css - LaunchXact Design System */
+
+.container {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+/* Header */
+.toolHeader {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto 3rem auto;
+}
+
+.toolBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 9999px;
+    color: #7c3aed;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.toolTitle {
+    font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+    margin-bottom: 1rem;
+}
+
+.gradientAccent {
+    background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.toolSubtitle {
+    font-size: 1.125rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+/* Main Grid Layout */
+.simulatorGrid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.3fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 900px) {
+    .simulatorGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Inputs / Controls Card */
+.controlsCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.cardHeader {
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+.cardDesc {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+/* Control Group */
+.controlGroup {
+    margin-bottom: 2rem;
+}
+
+.controlGroup:last-of-type {
+    margin-bottom: 1rem;
+}
+
+.labelRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.controlLabel {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.inputBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.6rem;
+}
+
+.inputPrefix {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.numberInput {
+    width: 80px;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    outline: none;
+    text-align: right;
+    font-family: inherit;
+}
+
+.sliderWrap {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.rangeSlider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.rangeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #7c3aed;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.rangeSlider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.5);
+}
+
+.rangeSlider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #7c3aed;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+    cursor: pointer;
+}
+
+.presetsRow {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.presetBtn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.presetBtn:hover {
+    background: #ede9fe;
+    border-color: #c4b5fd;
+    color: #6d28d9;
+}
+
+.presetBtnActive {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #ffffff;
+}
+
+/* Results / Comparison Card */
+.resultsCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+/* HUD Metric Cards */
+.hudGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.hudCard {
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hudCardHighlight {
+    background: linear-gradient(145deg, #f5f3ff 0%, #ede9fe 100%);
+    border-color: #c4b5fd;
+}
+
+.hudLabel {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-bottom: 0.35rem;
+}
+
+.hudCardHighlight .hudLabel {
+    color: #6d28d9;
+}
+
+.hudValue {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+.hudValueSavings {
+    color: #059669;
+}
+
+.hudValueHours {
+    color: #7c3aed;
+}
+
+/* Chart Container */
+.chartContainer {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.chartTitleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.chartHeading {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.chartScale {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* Horizontal Bar Comparison */
+.barComparison {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.barRow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.barLabelArea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.barName {
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.barTagManual {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 0.25rem;
+}
+
+.barTagMor {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    background: #ede9fe;
+    color: #6d28d9;
+    border-radius: 0.25rem;
+}
+
+.barAmount {
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.amountManual {
+    color: #dc2626;
+}
+
+.amountMor {
+    color: #7c3aed;
+}
+
+.trackBg {
+    width: 100%;
+    height: 36px;
+    background: #e2e8f0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.barFillManual {
+    height: 100%;
+    background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+    border-radius: 0.5rem;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.75rem;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.barFillMor {
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+    border-radius: 0.5rem;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.75rem;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Itemized Breakdown Toggle */
+.breakdownToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #7c3aed;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    border-top: 1px dashed #e2e8f0;
+    margin-top: 0.5rem;
+}
+
+.breakdownToggle:hover {
+    color: #5b21b6;
+}
+
+.breakdownTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+}
+
+.breakdownTable th {
+    text-align: left;
+    padding: 0.5rem 0.25rem;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+}
+
+.breakdownTable td {
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+}
+
+.breakdownTable td:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+/* Conversion Handoff Card */
+.handoffCard {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    border-radius: 1.25rem;
+    padding: 2.5rem 2rem;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.3);
+}
+
+.handoffGlow {
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.handoffHeadline {
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.handoffDesc {
+    font-size: 1rem;
+    color: #cbd5e1;
+    max-width: 620px;
+    margin: 0 auto 2rem auto;
+    line-height: 1.6;
+    position: relative;
+}
+
+.handoffActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.btnPrimary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #7c3aed;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.9rem 1.75rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btnPrimary:hover {
+    background: #6d28d9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+.btnSecondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btnSecondary:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* FAQ / Education Accordion */
+.faqSection {
+    max-width: 820px;
+    margin: 4rem auto 0 auto;
+}
+
+.faqHeading {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.faqItem {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.faqQuestion {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+}
+
+.faqAnswer {
+    font-size: 0.925rem;
+    color: #475569;
+    line-height: 1.6;
+}
