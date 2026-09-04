@@ -8,6 +8,11 @@ const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
 const staticRoutes = [
     { loc: '', priority: '1.0', changefreq: 'daily' },
     { loc: '/grade', priority: '0.9', changefreq: 'daily' },
+    { loc: '/tools', priority: '0.9', changefreq: 'weekly' },
+    { loc: '/tools/true-cost-of-payments', priority: '0.9', changefreq: 'weekly' },
+    { loc: '/tools/franken-stack-cost-forecaster', priority: '0.9', changefreq: 'weekly' },
+    { loc: '/tools/pre-launch-distribution-architect', priority: '0.9', changefreq: 'weekly' },
+    { loc: '/tools/geo-schema-snippet-generator', priority: '0.9', changefreq: 'weekly' },
     { loc: '/where-to-launch-saas', priority: '0.7', changefreq: 'monthly' },
     { loc: '/saas-marketplace-guide', priority: '0.8', changefreq: 'monthly' },
     { loc: '/articles', priority: '0.8', changefreq: 'daily' },
