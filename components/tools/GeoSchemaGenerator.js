@@ -494,11 +494,10 @@ ${jsonString}
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Price & Currency</label>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div className={styles.priceCurrencyRow}>
                                 <input
                                     type="text"
-                                    className={styles.input}
-                                    style={{ width: '40%' }}
+                                    className={styles.currencyInput}
                                     value={currency}
                                     onChange={(e) => setCurrency(e.target.value)}
                                     placeholder="USD"
@@ -506,8 +505,7 @@ ${jsonString}
                                 />
                                 <input
                                     type="number"
-                                    className={styles.input}
-                                    style={{ width: '60%' }}
+                                    className={styles.priceInput}
                                     value={price}
                                     onChange={(e) => setPrice(e.target.value)}
                                     placeholder="29"
@@ -565,7 +563,7 @@ ${jsonString}
                             </div>
                         ))}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                    <div className={styles.featureAddRow}>
                         <input
                             type="text"
                             className={styles.featureInput}
@@ -578,7 +576,7 @@ ${jsonString}
                             type="button"
                             className={styles.presetBtn}
                             onClick={addFeature}
-                            style={{ background: '#7c3aed', color: '#fff', borderColor: '#7c3aed' }}
+                            style={{ background: '#7c3aed', color: '#fff', borderColor: '#7c3aed', minWidth: '70px' }}
                         >
                             + Add
                         </button>
@@ -640,7 +638,7 @@ ${jsonString}
                             className={`${styles.schemaTab} ${schemaTab === 'bundle' ? styles.schemaTabActive : ''}`}
                             onClick={() => setSchemaTab('bundle')}
                         >
-                            🌐 All-in-One GEO Bundle
+                            🌐 All-in-One Bundle
                         </button>
                         <button
                             type="button"
