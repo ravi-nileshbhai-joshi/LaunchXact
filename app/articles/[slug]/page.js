@@ -2,6 +2,7 @@ import { getArticleData, getAllArticleIds } from '@/lib/articles';
 import ReactMarkdown from 'react-markdown';
 import styles from '../page.module.css';
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const dynamicParams = false;
 
@@ -16,15 +17,15 @@ export async function generateMetadata({ params }) {
     const { slug } = await params;
     const articleData = await getArticleData(slug);
     if (!articleData) {
-        return { title: 'Article Not Found | LaunchXact' };
+        return { title: 'Article Not Found' };
     }
 
     return {
-        title: `${articleData.title} | LaunchXact Articles`,
+        title: articleData.title,
         description: articleData.description,
         alternates: { canonical: `/articles/${slug}` },
         openGraph: {
-            title: articleData.title,
+            title: `${articleData.title} | LaunchXact`,
             description: articleData.description,
             type: 'article',
             publishedTime: articleData.date,
@@ -52,6 +53,14 @@ export default async function Article({ params }) {
         '@type': 'BlogPosting',
         headline: title,
         datePublished: date,
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://www.launchxact.com/articles/${slug}`
+        },
         author: {
             '@type': 'Person',
             name: author || 'LaunchXact Team',
@@ -59,11 +68,37 @@ export default async function Article({ params }) {
         publisher: {
             '@type': 'Organization',
             name: 'LaunchXact',
+            url: 'https://www.launchxact.com',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://www.launchxact.com/icon'
+                url: 'https://www.launchxact.com/icon.png'
             }
         }
+    };
+
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://www.launchxact.com'
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Articles',
+                item: 'https://www.launchxact.com/articles'
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: title,
+                item: `https://www.launchxact.com/articles/${slug}`
+            }
+        ]
     };
 
     return (
@@ -72,8 +107,16 @@ export default async function Article({ params }) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
             
             <article className={styles.articleContainer}>
+                <Breadcrumb items={[
+                    { label: 'Articles', href: '/articles' },
+                    { label: title }
+                ]} />
                 <header className={styles.articleHeader}>
                     <h1 className={styles.title} style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>{title}</h1>
                     <div className={styles.articleMeta}>

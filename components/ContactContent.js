@@ -1,4 +1,5 @@
 'use client';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from '@/app/contact/page.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXTwitter, faLinkedin, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
@@ -11,6 +12,7 @@ export default function ContactContent() {
 
     return (
         <div className={styles.container}>
+            <Breadcrumb items={[{ label: 'Contact' }]} />
             <header className={styles.header}>
                 <h1 className={styles.title}>Contact Us</h1>
                 <p className={styles.subtitle}>Have a question or want to partner? Get in touch.</p>

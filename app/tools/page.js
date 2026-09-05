@@ -1,14 +1,15 @@
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './tools.module.css';
 
 export const metadata = {
-    title: 'Free Founder & SaaS Traffic Generation Tools | LaunchXact',
+    title: 'Founder Toolkit: Free SaaS Calculators & Growth Engines',
     description: 'Free calculators, AI landing page graders, schema generators, and distribution frameworks engineered to help indie founders scale revenue, audit conversion, and streamline global tax.',
     alternates: {
         canonical: '/tools',
     },
     openGraph: {
-        title: 'Free Founder & SaaS Traffic Generation Tools | LaunchXact',
+        title: 'Founder Toolkit: Free SaaS Calculators & Growth Engines | LaunchXact',
         description: 'Free AI graders, payment simulators, and distribution engines built to eliminate founder friction and accelerate launch traction.',
         url: 'https://www.launchxact.com/tools',
         type: 'website',
@@ -74,6 +75,10 @@ export default function ToolsHubPage() {
         '@type': 'CollectionPage',
         name: 'LaunchXact Free SaaS & Founder Growth Tools',
         url: 'https://www.launchxact.com/tools',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
         description: 'Collection of free engineering-led growth tools for SaaS founders, including landing page graders and payment cost simulators.',
         mainEntity: {
             '@type': 'ItemList',
@@ -100,7 +105,7 @@ export default function ToolsHubPage() {
             {
                 '@type': 'ListItem',
                 position: 2,
-                name: 'Tools',
+                name: 'Founder Tools',
                 item: 'https://www.launchxact.com/tools',
             },
         ],
@@ -118,6 +123,7 @@ export default function ToolsHubPage() {
             />
             <main style={{ minHeight: '80vh', paddingTop: '7rem', paddingBottom: '6rem' }}>
                 <div className={styles.container}>
+                    <Breadcrumb items={[{ label: 'Founder Tools' }]} />
                     <header className={styles.header}>
                         <span className={styles.badge}>✦ High Traffic Tools Suite</span>
                         <h1 className={styles.title}>

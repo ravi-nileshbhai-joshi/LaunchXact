@@ -42,6 +42,10 @@ const graderJsonLd = {
     applicationCategory: 'BusinessApplication, DeveloperApplication, UtilitiesApplication',
     operatingSystem: 'Web',
     url: 'https://www.launchxact.com/grade',
+    isPartOf: {
+        '@type': 'WebSite',
+        '@id': 'https://www.launchxact.com/#website'
+    },
     description: 'Free AI-powered SaaS landing page grader. Analyzes conversion psychology, trust signals, buyer friction, and distribution potential.',
     offers: {
         '@type': 'Offer',

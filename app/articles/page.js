@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { getSortedArticlesData } from '@/lib/articles';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 
 export const metadata = {
-    title: 'SaaS Launch Articles & Founder Resources | LaunchXact',
+    title: 'SaaS Launch Articles & Growth Playbooks',
     description: 'Read the latest guides, founder interviews, and tactical resources for launching and scaling high-value SaaS products.',
     alternates: { canonical: '/articles' }
 };
@@ -30,13 +31,30 @@ export default function ArticlesHub() {
         ]
     };
 
+    const collectionJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'LaunchXact Articles & Resources',
+        url: 'https://www.launchxact.com/articles',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
+        description: 'Tactical guides, SEO deep-dives, and real-world advice for building, launching, and scaling your SaaS.'
+    };
+
     return (
         <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+            />
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <div className={styles.container}>
+                <Breadcrumb items={[{ label: 'Articles' }]} />
                 <header className={styles.header}>
                     <h1 className={styles.title}>Articles & Resources</h1>
                     <p className={styles.subtitle}>

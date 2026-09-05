@@ -1,7 +1,8 @@
 import GeoSchemaGenerator from '@/components/tools/GeoSchemaGenerator';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const metadata = {
-    title: 'GEO & Schema Snippet Generator | JSON-LD Structured Data for AI Search & Google',
+    title: 'GEO & Schema Snippet Generator: JSON-LD for AI Search',
     description: 'Free JSON-LD schema markup generator for SaaS and indie founders. Generate verified SoftwareApplication, FAQPage, and Organization schemas optimized for Google AI Overviews, Perplexity, and ChatGPT Search.',
     keywords: [
         'geo schema generator',
@@ -34,6 +35,10 @@ export default function GeoSchemaSnippetGeneratorPage() {
         '@type': 'SoftwareApplication',
         name: 'The GEO & Schema Snippet Generator',
         url: 'https://www.launchxact.com/tools/geo-schema-snippet-generator',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
         applicationCategory: 'BusinessApplication, DeveloperApplication, UtilitiesApplication',
         operatingSystem: 'Web, All',
         browserRequirements: 'Requires JavaScript',
@@ -145,6 +150,12 @@ export default function GeoSchemaSnippetGeneratorPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <main style={{ minHeight: '80vh', paddingTop: '7rem', paddingBottom: '6rem' }}>
+                <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <Breadcrumb items={[
+                        { label: 'Founder Tools', href: '/tools' },
+                        { label: 'GEO Schema Snippet Generator' }
+                    ]} />
+                </div>
                 <GeoSchemaGenerator />
             </main>
         </>

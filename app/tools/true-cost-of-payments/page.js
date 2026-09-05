@@ -1,7 +1,8 @@
 import PaymentCostSimulator from '@/components/tools/PaymentCostSimulator';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const metadata = {
-    title: 'The True Cost of Payments Simulator | Merchant of Record vs. Gateway Calculator',
+    title: 'Payment Cost Simulator: Merchant of Record vs Gateway',
     description: 'Calculate the hidden costs of raw payment gateways: international VAT/GST compliance, tax software fees, and hours lost per month compared to a flat Merchant of Record fee.',
     keywords: [
         'payment cost calculator',
@@ -22,7 +23,7 @@ export const metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'The True Cost of Payments Simulator',
+        title: 'The True Cost of Payments Simulator | LaunchXact',
         description: 'Compare raw gateway tax overhead with flat Merchant of Record fees for your SaaS.',
     },
 };
@@ -33,6 +34,10 @@ export default function TrueCostOfPaymentsPage() {
         '@type': 'SoftwareApplication',
         name: 'The True Cost of Payments Simulator',
         url: 'https://www.launchxact.com/tools/true-cost-of-payments',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
         applicationCategory: 'BusinessApplication, FinanceApplication, UtilitiesApplication',
         operatingSystem: 'Web, All',
         browserRequirements: 'Requires JavaScript',
@@ -140,6 +145,12 @@ export default function TrueCostOfPaymentsPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <main style={{ minHeight: '80vh', paddingTop: '7rem', paddingBottom: '6rem' }}>
+                <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <Breadcrumb items={[
+                        { label: 'Founder Tools', href: '/tools' },
+                        { label: 'Payment Cost Simulator' }
+                    ]} />
+                </div>
                 <PaymentCostSimulator />
             </main>
         </>

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 
 const LOADING_QUIPS = [
@@ -192,6 +193,12 @@ export default function GradePage() {
 
     return (
         <div className={styles.page}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+                <Breadcrumb items={[
+                    { label: 'Founder Tools', href: '/tools' },
+                    { label: 'SaaS Launch Readiness Grader' }
+                ]} />
+            </div>
             {/* HERO */}
             <section className={styles.hero}>
                 <h1 className={styles.heroTitle}>

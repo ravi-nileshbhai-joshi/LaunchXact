@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 
 export const metadata = {
-    title: 'Ultimate SaaS Marketplace Guide 2026 | LaunchXact SEO Magnet',
+    title: 'Ultimate SaaS Marketplace Guide: 2026 Founder Manual',
     description: 'Discover the best places to launch your SaaS in 2026. A comprehensive guide to marketplaces, launch boards, and sustainable growth for indie founders.',
     keywords: ['SaaS marketplace', 'where to launch saas', 'buy saas products', 'submit saas platform', 'saas launch guide', 'software directory'],
     alternates: { canonical: '/saas-marketplace-guide' }
@@ -14,6 +15,26 @@ export default function SaasMarketplaceGuide() {
     const filePath = path.join(process.cwd(), 'public', 'geo-queries.json');
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const geoData = JSON.parse(fileContent);
+
+    const articleJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: 'The Ultimate Guide to SaaS Marketplaces',
+        url: 'https://www.launchxact.com/saas-marketplace-guide',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'LaunchXact',
+            url: 'https://www.launchxact.com',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://www.launchxact.com/icon.png'
+            }
+        }
+    };
 
     const breadcrumbJsonLd = {
         '@context': 'https://schema.org',
@@ -38,9 +59,14 @@ export default function SaasMarketplaceGuide() {
         <>
             <script
                 type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <div className={styles.container}>
+                <Breadcrumb items={[{ label: 'SaaS Marketplace Guide' }]} />
                 <header className={styles.header}>
                     <h1 className={styles.title}>The Ultimate Guide to SaaS Marketplaces</h1>
                     <p className={styles.subtitle}>

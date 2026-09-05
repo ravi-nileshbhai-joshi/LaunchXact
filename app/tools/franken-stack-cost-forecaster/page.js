@@ -1,7 +1,8 @@
 import FrankenStackForecaster from '@/components/tools/FrankenStackForecaster';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const metadata = {
-    title: 'The "Franken-Stack" Cost Forecaster | Hidden SaaS Infrastructure & Overages Calculator',
+    title: 'Franken-Stack Forecaster: SaaS Infrastructure Overages Calculator',
     description: 'Foresee the hidden cliff when your indie hacker tech stack scales. Simulate overages, compute add-ons, auth tiers, and email costs from 500 to 50,000 MAU.',
     keywords: [
         'saas tech stack cost calculator',
@@ -22,7 +23,7 @@ export const metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'The "Franken-Stack" Cost Forecaster',
+        title: 'The "Franken-Stack" Cost Forecaster | LaunchXact',
         description: 'Predict the hidden cost cliff of fragmented hosting, databases, auth, and analytics as your SaaS scales.',
     },
 };
@@ -33,6 +34,10 @@ export default function FrankenStackCostForecasterPage() {
         '@type': 'SoftwareApplication',
         name: 'The Franken-Stack Cost Forecaster',
         url: 'https://www.launchxact.com/tools/franken-stack-cost-forecaster',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
         applicationCategory: 'BusinessApplication, DeveloperApplication, UtilitiesApplication',
         operatingSystem: 'Web, All',
         browserRequirements: 'Requires JavaScript',
@@ -141,6 +146,12 @@ export default function FrankenStackCostForecasterPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <main style={{ minHeight: '80vh', paddingTop: '7rem', paddingBottom: '6rem' }}>
+                <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <Breadcrumb items={[
+                        { label: 'Founder Tools', href: '/tools' },
+                        { label: 'Franken-Stack Forecaster' }
+                    ]} />
+                </div>
                 <FrankenStackForecaster />
             </main>
         </>

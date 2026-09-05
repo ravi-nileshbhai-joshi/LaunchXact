@@ -1,12 +1,33 @@
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 
 export const metadata = {
-    title: 'About LaunchXact | The Premium SaaS Marketplace',
+    title: 'About Our Mission & Marketplace',
     description: 'Learn about LaunchXact mission to empower founders through manual curation and sustained traction. We are the premium multi-vendor marketplace for high-value SaaS.',
     alternates: { canonical: '/about' }
 };
 
 export default function About() {
+    const aboutPageJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'About LaunchXact',
+        url: 'https://www.launchxact.com/about',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'LaunchXact',
+            url: 'https://www.launchxact.com',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://www.launchxact.com/icon.png'
+            }
+        }
+    };
+
     const breadcrumbJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -30,9 +51,14 @@ export default function About() {
         <>
             <script
                 type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <div className={styles.container}>
+            <Breadcrumb items={[{ label: 'About' }]} />
             <header className={styles.header}>
                 <h1 className={styles.title}>About LaunchXact</h1>
                 <p className={styles.subtitle}>Empowering the next generation of indie hackers.</p>

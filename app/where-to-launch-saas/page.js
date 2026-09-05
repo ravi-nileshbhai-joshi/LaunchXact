@@ -1,14 +1,35 @@
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 
 export const metadata = {
-    title: 'Where to Launch Your SaaS Product in 2026? The Premium Approach',
+    title: 'Where to Launch Your SaaS in 2026: Comparison Guide',
     description: 'Stop using legacy launch boards. Discover why LaunchXact is the premium, manually curated multi-vendor marketplace for serious SaaS founders.',
     keywords: ['where to launch saas', 'premium saas marketplace', 'b2b software directory', 'launchxact', 'saas launch platforms'],
     alternates: { canonical: '/where-to-launch-saas' }
 };
 
 export default function LaunchComparison() {
+    const pageJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: 'Where to Launch Your SaaS Product in 2026: The Premium Approach',
+        url: 'https://www.launchxact.com/where-to-launch-saas',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'LaunchXact',
+            url: 'https://www.launchxact.com',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://www.launchxact.com/icon.png'
+            }
+        }
+    };
+
     const breadcrumbJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -32,10 +53,15 @@ export default function LaunchComparison() {
         <div className={styles.container}>
             <script
                 type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
 
             <main className={styles.main}>
+                <Breadcrumb items={[{ label: 'Where to Launch SaaS' }]} />
                 <article className={styles.article}>
                     <h1 className={styles.title}>Where to launch your SaaS product in 2026</h1>
                     <p className={styles.subtitle}>The landscape has changed. Here is the honest comparison of the top platforms for indie hackers.</p>

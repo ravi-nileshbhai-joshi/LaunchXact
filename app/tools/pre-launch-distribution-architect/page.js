@@ -1,7 +1,8 @@
 import DistributionArchitect from '@/components/tools/DistributionArchitect';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const metadata = {
-    title: 'The Pre-Launch Distribution Architect | Day-by-Day SaaS Launch Timeline & Playbook',
+    title: 'Pre-Launch Distribution Architect: SaaS Launch Playbook',
     description: 'Reverse-engineer a tactical, day-by-day SaaS launch strategy (D-30, D-14, D-7, Launch Day). Curated distribution channels, viral copy hooks, and interactive checklists for indie founders.',
     keywords: [
         'saas launch checklist',
@@ -22,7 +23,7 @@ export const metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'The Pre-Launch Distribution Architect',
+        title: 'The Pre-Launch Distribution Architect | LaunchXact',
         description: 'Actionable day-by-day pre-launch distribution timeline for devtools, B2B SaaS, and AI apps.',
     },
 };
@@ -33,6 +34,10 @@ export default function PreLaunchDistributionArchitectPage() {
         '@type': 'SoftwareApplication',
         name: 'The Pre-Launch Distribution Architect',
         url: 'https://www.launchxact.com/tools/pre-launch-distribution-architect',
+        isPartOf: {
+            '@type': 'WebSite',
+            '@id': 'https://www.launchxact.com/#website'
+        },
         applicationCategory: 'BusinessApplication, MarketingApplication, UtilitiesApplication',
         operatingSystem: 'Web, All',
         browserRequirements: 'Requires JavaScript',
@@ -143,6 +148,12 @@ export default function PreLaunchDistributionArchitectPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <main style={{ minHeight: '80vh', paddingTop: '7rem', paddingBottom: '6rem' }}>
+                <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <Breadcrumb items={[
+                        { label: 'Founder Tools', href: '/tools' },
+                        { label: 'Pre-Launch Distribution Architect' }
+                    ]} />
+                </div>
                 <DistributionArchitect />
             </main>
         </>
