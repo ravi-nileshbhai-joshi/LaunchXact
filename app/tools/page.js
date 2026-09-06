@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
+import ToolSocialProof from '@/components/tools/ToolSocialProof';
 import styles from './tools.module.css';
 
 export const metadata = {
@@ -160,6 +161,9 @@ export default function ToolsHubPage() {
                             );
                         })}
                     </div>
+
+                    {/* Live Benchmarks & Verified Founder Testimonials */}
+                    <ToolSocialProof />
                 </div>
             </main>
         </>

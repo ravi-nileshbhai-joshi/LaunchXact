@@ -67,10 +67,14 @@ export default function MarketplaceHome({ latestArticles }) {
         email: '',
         productName: '',
         website: '',
-        category: '',
+        category: 'AI & DevTools',
         social: '',
-        description: ''
+        description: '',
+        stage: 'MVP',
+        monthlyRevenue: 'Pre-revenue ($0)',
+        biggestProblem: 'Distribution'
     });
+
 
     const [buyerForm, setBuyerForm] = useState({
         email: '',
@@ -79,6 +83,25 @@ export default function MarketplaceHome({ latestArticles }) {
 
     const [founderStatus, setFounderStatus] = useState('idle'); // 'idle' | 'submitting' | 'success'
     const [buyerStatus, setBuyerStatus] = useState('idle');
+
+    // Handle query params pre-filling from Grader
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const idea = params.get('idea') || params.get('website');
+            const weakness = params.get('weakness');
+            const desc = params.get('description');
+
+            if (idea || weakness || desc) {
+                setFounderForm(prev => ({
+                    ...prev,
+                    productName: idea || prev.productName,
+                    biggestProblem: weakness?.includes('Distribution') ? 'Distribution' : (weakness?.includes('Moat') ? 'Infrastructure' : (weakness || prev.biggestProblem)),
+                    description: desc || prev.description
+                }));
+            }
+        }
+    }, []);
 
     const handleFounderSubmit = async (e) => {
         e.preventDefault();
@@ -302,11 +325,13 @@ export default function MarketplaceHome({ latestArticles }) {
                 </div>
             </section>
 
-            {/* ===== 5. FOUNDER FORM ===== */}
+            {/* ===== 5. UPGRADED FOUNDER WAITLIST FORM ===== */}
             <section id="founder-form" className={`${styles.section} ${styles.reveal}`}>
                 <div className={styles.formCard}>
-                    <h2>Join the LaunchXact founder waitlist</h2>
-                    <p className={styles.formSub}>Be part of the first curated launch collection.</p>
+                    <h2>Apply for the Genesis Launch Batch</h2>
+                    <p className={styles.formSub}>
+                        Be part of our curated Q1 2026 debut. We hand-select 40 breakout SaaS products for zero-fee launch day distribution.
+                    </p>
 
                     <Link href="/grade" className={styles.gradeNudge}>
                         ⚡ Grade your SaaS first — score 80+ and your submission gets fast-tracked. <span>Get your free score →</span>
@@ -337,80 +362,199 @@ export default function MarketplaceHome({ latestArticles }) {
 
                     {founderStatus === 'success' ? (
                         <div className={styles.successBox}>
-                            <h3>Application Received!</h3>
-                            <p>Check your email for confirmation. Good luck!</p>
+                            <span className={styles.successBadgePill}>🎉 Application Received</span>
+                            <h3>Application Received, {founderForm.founderName}!</h3>
+                            <p>
+                                <strong>{founderForm.productName}</strong> has been logged into the <strong>Genesis Batch review queue</strong>.
+                            </p>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: '0 0 1.5rem', lineHeight: '1.6' }}>
+                                We manually audit every product for real utility, technical stability, and founder authenticity. Only 40 tools are accepted into the Genesis cohort.
+                            </p>
+
+                            <div className={styles.successActions}>
+                                <a
+                                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just applied to the @LaunchXact Genesis Batch with ${founderForm.productName}! Excited to launch in a curated SaaS marketplace. 🚀`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.shareXBtn}
+                                >
+                                    <FontAwesomeIcon icon={faXTwitter} style={{ marginRight: '6px' }} /> Share on 𝕏 (+2x Priority Review)
+                                </a>
+                            </div>
+
+                            <p className={styles.successNote}>Check your inbox ({founderForm.email}) for your application confirmation & review next steps.</p>
                         </div>
                     ) : (
                         <form onSubmit={handleFounderSubmit}>
                             <div className={styles.formGrid}>
-                                <input 
-                                    className={styles.input} 
-                                    placeholder="Founder Name" 
-                                    required
-                                    value={founderForm.founderName} 
-                                    onChange={e => setFounderForm({ ...founderForm, founderName: e.target.value })} 
-                                />
-                                <input 
-                                    className={styles.input} 
-                                    placeholder="Founder Email" 
-                                    type="email" 
-                                    required
-                                    value={founderForm.email} 
-                                    onChange={e => setFounderForm({ ...founderForm, email: e.target.value })} 
-                                />
-                                <input 
-                                    className={styles.input} 
-                                    placeholder="Product Name" 
-                                    required
-                                    value={founderForm.productName} 
-                                    onChange={e => setFounderForm({ ...founderForm, productName: e.target.value })} 
-                                />
-                                <input 
-                                    className={styles.input} 
-                                    placeholder="Website URL" 
-                                    type="url" 
-                                    required
-                                    value={founderForm.website} 
-                                    onChange={e => setFounderForm({ ...founderForm, website: e.target.value })} 
-                                />
-                                <select 
-                                    className={styles.input} 
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Founder Name *</label>
+                                    <input 
+                                        className={styles.input} 
+                                        placeholder="e.g. Gabriel Lawson" 
+                                        required
+                                        value={founderForm.founderName} 
+                                        onChange={e => setFounderForm({ ...founderForm, founderName: e.target.value })} 
+                                    />
+                                </div>
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Work Email *</label>
+                                    <input 
+                                        className={styles.input} 
+                                        placeholder="founder@company.com" 
+                                        type="email" 
+                                        required
+                                        value={founderForm.email} 
+                                        onChange={e => setFounderForm({ ...founderForm, email: e.target.value })} 
+                                    />
+                                </div>
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Product Name *</label>
+                                    <input 
+                                        className={styles.input} 
+                                        placeholder="e.g. SQLNinja AI" 
+                                        required
+                                        value={founderForm.productName} 
+                                        onChange={e => setFounderForm({ ...founderForm, productName: e.target.value })} 
+                                    />
+                                </div>
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>
+                                        Website / Prototype URL
+                                        <span className={styles.fieldLabelHint}>Optional</span>
+                                    </label>
+                                    <input 
+                                        className={styles.input} 
+                                        placeholder="https://yoursaas.com or pre-launch" 
+                                        value={founderForm.website} 
+                                        onChange={e => setFounderForm({ ...founderForm, website: e.target.value })} 
+                                    />
+                                </div>
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Category / Vertical *</label>
+                                    <select 
+                                        className={styles.input} 
+                                        required 
+                                        value={founderForm.category} 
+                                        onChange={e => setFounderForm({ ...founderForm, category: e.target.value })}
+                                    >
+                                        <option value="AI & DevTools">AI & DevTools</option>
+                                        <option value="B2B SaaS">B2B SaaS</option>
+                                        <option value="Marketing & Sales">Marketing & Sales</option>
+                                        <option value="Fintech & Payments">Fintech & Payments</option>
+                                        <option value="Productivity & Ops">Productivity & Ops</option>
+                                        <option value="Creator Economy">Creator Economy</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>
+                                        Founder Social / 𝕏 Handle
+                                        <span className={styles.fieldLabelHint}>Optional</span>
+                                    </label>
+                                    <input 
+                                        className={styles.input} 
+                                        placeholder="@handle or LinkedIn URL"
+                                        value={founderForm.social} 
+                                        onChange={e => setFounderForm({ ...founderForm, social: e.target.value })} 
+                                    />
+                                </div>
+                            </div>
+
+                            {/* What are you building? */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>
+                                    What are you building? *
+                                    <span className={styles.fieldLabelHint}>1-2 sentences</span>
+                                </label>
+                                <textarea 
+                                    className={styles.textarea} 
+                                    placeholder="What core problem does your SaaS solve and for whom?" 
                                     required 
-                                    value={founderForm.category} 
-                                    onChange={e => setFounderForm({ ...founderForm, category: e.target.value })}
-                                >
-                                    <option value="">Category</option>
-                                    <option value="DevTools">DevTools</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Productivity">Productivity</option>
-                                    <option value="Design">Design</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                                <input 
-                                    className={styles.input} 
-                                    placeholder="Social Profile (Optional)"
-                                    value={founderForm.social} 
-                                    onChange={e => setFounderForm({ ...founderForm, social: e.target.value })} 
+                                    rows={2}
+                                    value={founderForm.description} 
+                                    onChange={e => setFounderForm({ ...founderForm, description: e.target.value })} 
                                 />
                             </div>
 
-                            <textarea 
-                                className={styles.textarea} 
-                                placeholder="Short Description of your product" 
-                                required 
-                                rows={3}
-                                value={founderForm.description} 
-                                onChange={e => setFounderForm({ ...founderForm, description: e.target.value })} 
-                            />
+                            {/* Current Stage Pills */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>Current Product Stage *</label>
+                                <div className={styles.pillGroup}>
+                                    {[
+                                        { id: 'Idea', label: '💡 Idea' },
+                                        { id: 'MVP', label: '🔨 MVP' },
+                                        { id: 'Live', label: '🚀 Live' },
+                                        { id: 'Already generating revenue', label: '💰 Generating Revenue' }
+                                    ].map(st => (
+                                        <button
+                                            key={st.id}
+                                            type="button"
+                                            className={`${styles.pillBtn} ${founderForm.stage === st.id ? styles.pillBtnActive : ''}`}
+                                            onClick={() => setFounderForm({ ...founderForm, stage: st.id })}
+                                        >
+                                            {st.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Monthly Revenue Pills */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>Monthly Revenue (MRR) *</label>
+                                <div className={styles.pillGroup}>
+                                    {[
+                                        'Pre-revenue ($0)',
+                                        '< $1,000 / mo',
+                                        '$1,000 – $5,000 / mo',
+                                        '$5,000 – $20,000 / mo',
+                                        '$20,000+ / mo'
+                                    ].map(rev => (
+                                        <button
+                                            key={rev}
+                                            type="button"
+                                            className={`${styles.pillBtn} ${founderForm.monthlyRevenue === rev ? styles.pillBtnActive : ''}`}
+                                            onClick={() => setFounderForm({ ...founderForm, monthlyRevenue: rev })}
+                                        >
+                                            {rev}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Biggest Problem Pills */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>What is your biggest problem right now? *</label>
+                                <div className={styles.pillGroup}>
+                                    {[
+                                        { id: 'Building', label: '🔨 Building' },
+                                        { id: 'Infrastructure', label: '⚙️ Infrastructure' },
+                                        { id: 'Payments', label: '💳 Payments & Tax' },
+                                        { id: 'Distribution', label: '📢 Distribution' },
+                                        { id: 'Discovery', label: '🔍 Discovery & SEO' },
+                                        { id: 'Other', label: '⚡ Other' }
+                                    ].map(prob => (
+                                        <button
+                                            key={prob.id}
+                                            type="button"
+                                            className={`${styles.pillBtn} ${founderForm.biggestProblem === prob.id ? styles.pillBtnActive : ''}`}
+                                            onClick={() => setFounderForm({ ...founderForm, biggestProblem: prob.id })}
+                                        >
+                                            {prob.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
 
                             <button 
                                 type="submit" 
                                 disabled={founderStatus === 'submitting'} 
                                 className={`${styles.btn} ${styles.btnPrimary}`}
                             >
-                                {founderStatus === 'submitting' ? 'Submitting Application...' : 'Join Founder Waitlist'}
+                                {founderStatus === 'submitting' ? 'Submitting Application...' : '🚀 Apply to Genesis Batch →'}
                             </button>
-                            <p className={styles.smallText}>Selected products will be featured on launch day.</p>
+                            <p className={styles.smallText}>Zero commission • Keep 100% of your revenue • Strict quality curation</p>
                         </form>
                     )}
                 </div>

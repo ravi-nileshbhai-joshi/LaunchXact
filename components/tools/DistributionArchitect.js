@@ -1,6 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import ToolShareCard from './ToolShareCard';
 import styles from './DistributionArchitect.module.css';
 
 const CATEGORIES = [
@@ -827,23 +828,52 @@ export default function DistributionArchitect() {
         return list.filter((p) => p.key === activeTab);
     }, [activeTab, activeTimeline]);
 
+    const scrollToTool = () => {
+        const el = document.getElementById('tool-stage');
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    const activeCatObj = CATEGORIES.find((c) => c.id === selectedCategory) || CATEGORIES[0];
+    const activeStageObj = STAGES.find((s) => s.id === selectedStage) || STAGES[0];
+
     return (
         <div className={styles.container}>
-            {/* Header */}
+            {/* =========================================================
+                LAYER 1 — BIG PAINFUL PROBLEM
+               ========================================================= */}
             <header className={styles.toolHeader}>
-                <div className={styles.toolBadge}>
-                    <span>✦ Interactive Launch Strategy Engine</span>
-                </div>
+                <span className={styles.toolBadge}>✦ Layer 1 · Launch Distribution Void</span>
                 <h1 className={styles.toolTitle}>
                     The Pre-Launch <span className={styles.gradientAccent}>Distribution Architect</span>
                 </h1>
-                <p className={styles.toolSubtitle}>
-                    Never launch to crickets. Reverse-engineer a tactical, day-by-day distribution timeline with curated communities, viral post hooks, and community playbooks.
+                <p className={styles.painHookHero}>
+                    Building is easy. Zero-budget distribution is brutal.
                 </p>
+                <p className={styles.toolSubtitle}>
+                    Most indie SaaS founders launch to crickets because they rely on a single Product Hunt drop. Architect an organic 30-day pre-launch distribution roadmap across Reddit, X, Discord, and niche developer communities before launch day.
+                </p>
+
+                <div className={styles.heroActionArea}>
+                    <button
+                        type="button"
+                        onClick={scrollToTool}
+                        className={styles.heroCtaBtn}
+                        id="architect-launch-plan-hero-btn"
+                    >
+                        Architect My Launch Plan ↓
+                    </button>
+                    <span className={styles.noEmailNote}>
+                        ⚡ 100% Free · Immediate Value · No email required upfront
+                    </span>
+                </div>
             </header>
 
-            {/* Selectors */}
-            <div className={styles.selectorCard}>
+            {/* =========================================================
+                LAYER 2 — THE INTERACTIVE TOOL
+               ========================================================= */}
+            <div id="tool-stage" className={styles.selectorCard}>
                 <div className={styles.sectionTitle}>
                     <span>1. Select Your Product Category</span>
                 </div>
@@ -1037,7 +1067,67 @@ export default function DistributionArchitect() {
                 ))}
             </div>
 
-            {/* Conversion Handoff Card */}
+            {/* =========================================================
+                LAYER 3 — THE "AHA!" MOMENT (Personalized Diagnosis)
+               ========================================================= */}
+            <section className={styles.ahaDiagnosisCard}>
+                <div className={styles.ahaBadge}>✦ Layer 3 · Personalized Diagnosis</div>
+                
+                <h2 className={styles.ahaHeadline}>
+                    Your SaaS requires an estimated ~8–12 founder-hours/week of targeted distribution to escape the zero-traction graveyard.
+                </h2>
+                
+                <p className={styles.ahaSubtext}>
+                    Relying on a single launch day has a <strong>91% failure rate</strong>. Organic distribution requires pre-seeding target communities 30 days before asking for a credit card.
+                </p>
+
+                <div className={styles.pivotDivider}>
+                    <span className={styles.pivotQuestion}>What if you didn&apos;t have to launch alone?</span>
+                </div>
+
+                <p className={styles.ahaBridge}>
+                    That&apos;s where <strong>LaunchXact</strong> enters. LaunchXact is being built to collapse this fragmented stack and give you guaranteed built-in distribution to verified SaaS buyers.
+                </p>
+
+                <div className={styles.ahaActionRow}>
+                    <Link href="/#founder-form" className={styles.btnAhaGenesis}>
+                        Join the Genesis Batch →
+                    </Link>
+                    <span className={styles.genesisGuarantees}>
+                        ✓ Guaranteed buyer distribution · 0 cold DMs · The Vault permanent indexing
+                    </span>
+                </div>
+            </section>
+
+            {/* =========================================================
+                LAYER 4 — THE "SHARE MY RESULT" VIRAL LOOP
+               ========================================================= */}
+            <ToolShareCard
+                badge="Pre-Launch Distribution Roadmap"
+                statHighlight="30-Day Launch Plan"
+                statLabel="Zero-Budget Organic Playbook"
+                subMetrics={[
+                    { label: 'Category', value: activeCatObj.name },
+                    { label: 'Stage Focus', value: activeStageObj.name },
+                    { label: 'Momentum', value: `${momentumScore}% Ready` },
+                    { label: 'Founder Effort', value: '~8-12 hrs/wk' }
+                ]}
+                quote={`I just mapped my 30-day pre-launch distribution roadmap across 8 tactical channels for my SaaS (${activeCatObj.name}). No paid ads.`}
+                toolName="Distribution Architect"
+                toolUrl="https://www.launchxact.com/tools/pre-launch-distribution-architect"
+                shareTextX={`I just mapped my 30-day pre-launch distribution roadmap across 8 tactical channels for my SaaS (${activeCatObj.name}). No paid ads.\n\nPlan yours → https://www.launchxact.com/tools/pre-launch-distribution-architect`}
+                shareTitleReddit={`Reverse-engineered my 30-day SaaS distribution plan (${activeCatObj.name})`}
+                shareTextReddit={`I mapped out my organic launch distribution strategy across Reddit, X, and Dev Discords:\n\n• Category: ${activeCatObj.name}\n• Target Stage: ${activeStageObj.name}\n• Traction Score: ${momentumScore}%\n• Target Founder Effort: ~8-12 hrs/week\n\nGenerate your 30-day launch roadmap here: https://www.launchxact.com/tools/pre-launch-distribution-architect`}
+                copySummaryText={`🚀 LaunchXact Pre-Launch Distribution Roadmap:
+• Category: ${activeCatObj.name} | Stage: ${activeStageObj.name}
+• Launch Momentum Score: ${momentumScore}%
+• Target Founder Effort: ~8-12 hrs/week across 8+ channels
+Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-architect`}
+            />
+
+            {/* =========================================================
+                LAYER 5 — GENESIS BATCH COLLAPSE & SEO FAQS
+               ========================================================= */}
             <section className={styles.handoffCard}>
                 <div className={styles.handoffGlow} />
                 <h3 className={styles.handoffHeadline}>

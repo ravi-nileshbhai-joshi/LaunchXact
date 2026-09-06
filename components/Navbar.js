@@ -31,13 +31,25 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop Nav Links */}
-                    <div className={styles.desktopLinks}>
-                        <Link href="/grade" className={styles.navLink}>Grade SaaS</Link>
-                        <Link href="/tools" className={styles.navLink}>Tools</Link>
-                        <Link href="/where-to-launch-saas" className={styles.navLink}>Where to Launch</Link>
-                        <Link href="/articles" className={styles.navLink}>Articles</Link>
-                        <Link href="/about" className={styles.navLink}>About</Link>
-                        <Link href="/contact" className={styles.navLink}>Contact</Link>
+                    <div className={styles.desktopLinks} itemScope itemType="https://schema.org/SiteNavigationElement">
+                        <Link href="/grade" className={styles.navLink} itemProp="url">
+                            <span itemProp="name">Grade SaaS</span>
+                        </Link>
+                        <Link href="/tools" className={styles.navLink} itemProp="url">
+                            <span itemProp="name">Tools</span>
+                        </Link>
+                        <Link href="/where-to-launch-saas" className={styles.navLink} itemProp="url">
+                            <span itemProp="name">Where to Launch</span>
+                        </Link>
+                        <Link href="/articles" className={styles.navLink} itemProp="url">
+                            <span itemProp="name">Articles</span>
+                        </Link>
+                        <Link href="/about" className={styles.navLink} itemProp="url">
+                            <span itemProp="name">About</span>
+                        </Link>
+                        <Link href="/contact" className={styles.navLink} itemProp="url">
+                            <span itemProp="name">Contact</span>
+                        </Link>
                     </div>
 
                     {/* Desktop CTA Area */}

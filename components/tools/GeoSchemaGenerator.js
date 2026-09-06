@@ -1,6 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import ToolShareCard from './ToolShareCard';
 import styles from './GeoSchemaGenerator.module.css';
 
 // Preset configurations for instant founder exploration
@@ -366,20 +367,50 @@ ${jsonString}
         };
     }, [name, url, description, features, pricingModel, price, currency, faqs, currentSchemaObj]);
 
+    const scrollToTool = () => {
+        const el = document.getElementById('tool-stage');
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     return (
         <div className={styles.container}>
-            {/* Header */}
+            {/* =========================================================
+                LAYER 1 — BIG PAINFUL PROBLEM
+               ========================================================= */}
             <header className={styles.header}>
-                <span className={styles.badge}>✦ High Traffic Tools Suite</span>
+                <span className={styles.badge}>✦ Layer 1 · AI Engine Optimization (AEO)</span>
                 <h1 className={styles.title}>
-                    GEO & Schema Snippet <span style={{ color: '#7c3aed' }}>Generator</span>
+                    AI Search & <span style={{ color: '#7c3aed' }}>Geo Schema Generator</span>
                 </h1>
-                <p className={styles.subtitle}>
-                    Generate verified JSON-LD structured data tailored for Generative Engine Optimization (GEO). Get cited by ChatGPT Search, Perplexity, and Google AI Overviews.
+                <p className={styles.painHookHero}>
+                    If AI search engines can&apos;t parse your SaaS, you don&apos;t exist.
                 </p>
+                <p className={styles.subtitle}>
+                    SearchGPT, Perplexity, and Google Gemini don&apos;t read landing page marketing fluff—they read structured JSON-LD entities. Generate validated schemas that force AI models to cite your SaaS accurately.
+                </p>
+
+                <div className={styles.heroActionArea}>
+                    <button
+                        type="button"
+                        onClick={scrollToTool}
+                        className={styles.heroCtaBtn}
+                        id="generate-ai-schema-hero-btn"
+                    >
+                        Generate My AI Schema ↓
+                    </button>
+                    <span className={styles.noEmailNote}>
+                        ⚡ 100% Free · Immediate Value · No email required upfront
+                    </span>
+                </div>
             </header>
 
-            {/* Quick-Load Presets Bar */}
+            {/* =========================================================
+                LAYER 2 — THE INTERACTIVE TOOL
+               ========================================================= */}
+            <div id="tool-stage">
+                {/* Quick-Load Presets Bar */}
             <div className={styles.presetsBar}>
                 <span className={styles.presetsLabel}>🚀 Quick-Load Demo Presets:</span>
                 {PRESETS.map((p) => (
@@ -754,6 +785,65 @@ ${jsonString}
                     </div>
                 </div>
             </div>
+            </div>
+
+            {/* =========================================================
+                LAYER 3 — THE "AHA!" MOMENT (Personalized Diagnosis)
+               ========================================================= */}
+            <section className={styles.ahaDiagnosisCard}>
+                <div className={styles.ahaBadge}>✦ Layer 3 · Personalized Diagnosis</div>
+                
+                <h2 className={styles.ahaHeadline}>
+                    Your SaaS is currently ~85% invisible to autonomous AI search engines without verified JSON-LD entity markup.
+                </h2>
+                
+                <p className={styles.ahaSubtext}>
+                    LLM search bots like Perplexity, ChatGPT, and Gemini <strong>hallucinate pricing, feature limits, and security credentials</strong> when forced to guess from raw, unstructured HTML.
+                </p>
+
+                <div className={styles.pivotDivider}>
+                    <span className={styles.pivotQuestion}>What if your SaaS was indexed and cited automatically?</span>
+                </div>
+
+                <p className={styles.ahaBridge}>
+                    That&apos;s where <strong>LaunchXact</strong> enters. LaunchXact is being built to collapse this fragmented stack and automatically index and syndicate your product directly into AI answer engines and curated SaaS buyer channels.
+                </p>
+
+                <div className={styles.ahaActionRow}>
+                    <Link href="/#founder-form" className={styles.btnAhaGenesis}>
+                        Join the Genesis Batch →
+                    </Link>
+                    <span className={styles.genesisGuarantees}>
+                        ✓ Guaranteed AI indexing · Verified entity syndication · Permanent Vault listing
+                    </span>
+                </div>
+            </section>
+
+            {/* =========================================================
+                LAYER 4 — THE "SHARE MY RESULT" VIRAL LOOP
+               ========================================================= */}
+            <ToolShareCard
+                badge="AI Engine Schema Validation"
+                statHighlight={`${validationStatus.passedCount}/${validationStatus.totalCount} Validated`}
+                statLabel="Generative Engine Optimization (AEO)"
+                subMetrics={[
+                    { label: 'SaaS Entity', value: name || 'SaaS Product' },
+                    { label: 'Token Density', value: `~${validationStatus.estimatedTokens} tokens` },
+                    { label: 'Pricing Model', value: pricingModel || 'Freemium' },
+                    { label: 'Hallucination Guard', value: '100% Guarded' }
+                ]}
+                quote={`Just generated a validated AI-indexing Schema & Knowledge Graph for ${name || 'my SaaS'}. 0% hallucination risk on Perplexity, SearchGPT, and Gemini!`}
+                toolName="Geo Schema Generator"
+                toolUrl="https://www.launchxact.com/tools/geo-schema-snippet-generator"
+                shareTextX={`Just generated a validated AI-indexing Schema & Knowledge Graph for ${name || 'my SaaS'}. 0% hallucination risk on Perplexity, SearchGPT, and Gemini!\n\nGenerate yours → https://www.launchxact.com/tools/geo-schema-snippet-generator`}
+                shareTitleReddit={`Generated validated JSON-LD schema for ${name || 'my SaaS'} (AI Search Optimization)`}
+                shareTextReddit={`Generated structured JSON-LD entity markup for AI engines (Perplexity, SearchGPT, Gemini):\n\n• Product: ${name || 'SaaS Product'}\n• Schema Types: SoftwareApplication + FAQPage + Organization\n• Validation Status: ${validationStatus.passedCount}/${validationStatus.totalCount} Recommended fields\n\nGenerate your free AEO schema: https://www.launchxact.com/tools/geo-schema-snippet-generator`}
+                copySummaryText={`🤖 LaunchXact Geo Schema & AI Entity Audit:
+• Product: ${name || 'SaaS Product'} (${url || 'https://yourdomain.com'})
+• Validation Health: ${validationStatus.passedCount}/${validationStatus.totalCount} Recommended fields valid
+• Character Size: ${validationStatus.charCount} chars (~${validationStatus.estimatedTokens} tokens)
+Generate your schema: https://www.launchxact.com/tools/geo-schema-snippet-generator`}
+            />
 
             {/* Educational Explainer Grid */}
             <section className={styles.explainerSection}>

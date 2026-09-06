@@ -1,0 +1,414 @@
+/* ============================================================
+   LaunchXact Dynamic SaaS Showcase Page Styling
+   Modern, Clean Light Aesthetic with Purple & Slate Accents
+   ============================================================ */
+
+.showcasePage {
+    min-height: 100vh;
+    padding-top: clamp(80px, 12vh, 120px);
+    padding-bottom: 5rem;
+    position: relative;
+    background: #ffffff;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb Wrapper */
+.breadcrumbWrapper {
+    margin-bottom: 2rem;
+}
+
+/* Hero Section */
+.heroSection {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.04) 0%, rgba(245, 158, 11, 0.03) 50%, rgba(124, 58, 237, 0.02) 100%);
+    border: 1.5px solid #e5e7eb;
+    border-radius: 1.75rem;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 2.5rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.heroTopRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.genesisBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 9999px;
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    color: #6d28d9;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.stageBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.categoryPill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.productTitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.15;
+    margin: 0 0 1rem 0;
+    letter-spacing: -0.03em;
+}
+
+.productTagline {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+    color: #475569;
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+    max-width: 800px;
+}
+
+/* Actions */
+.heroActions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.primaryCta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.95rem 2rem;
+    background: #7c3aed;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+}
+
+.primaryCta:hover {
+    background: #5b21b6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(91, 33, 182, 0.4);
+    color: #ffffff;
+}
+
+.secondaryCta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.95rem 1.75rem;
+    background: #ffffff;
+    color: #334155;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    border: 1.5px solid #e2e8f0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.secondaryCta:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.verifiedStrip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.verifiedIcon {
+    color: #16a34a;
+    font-weight: 800;
+}
+
+/* ============================================================
+   GRID DETAILS SECTION
+   ============================================================ */
+.detailsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.detailCard {
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.cardIcon {
+    font-size: 1.2rem;
+}
+
+.cardHeading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.cardText {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Features List */
+.featuresList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.featureItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.featureCheck {
+    color: #7c3aed;
+    font-weight: 800;
+}
+
+/* ============================================================
+   FOUNDER & ARCHITECTURE CARD
+   ============================================================ */
+.founderCard {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 1.5rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.founderInfo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.founderAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.founderDetails h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.25rem 0;
+}
+
+.founderDetails p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0 0 0.4rem 0;
+}
+
+.socialLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: #7c3aed;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.socialLink:hover {
+    text-decoration: underline;
+}
+
+.founderStats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.statBox {
+    text-align: right;
+}
+
+.statValue {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.statLabel {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* ============================================================
+   BOTTOM CTA BANNER
+   ============================================================ */
+.bottomBanner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    border-radius: 1.5rem;
+    padding: clamp(2rem, 5vw, 3rem);
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+}
+
+.bottomHeading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 800;
+    margin: 0 0 0.75rem 0;
+}
+
+.bottomSub {
+    font-size: 1rem;
+    color: #cbd5e1;
+    max-width: 600px;
+    margin: 0 auto 1.75rem;
+    line-height: 1.6;
+}
+
+.bottomBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.95rem 2.2rem;
+    background: #7c3aed;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.bottomBtn:hover {
+    background: #6d28d9;
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .detailsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .founderCard {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .founderStats {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .statBox {
+        text-align: left;
+    }
+
+    .heroActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .primaryCta, .secondaryCta {
+        justify-content: center;
+        width: 100%;
+    }
+}

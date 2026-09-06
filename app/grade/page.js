@@ -1,40 +1,111 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
+import ToolShareCard from '@/components/tools/ToolShareCard';
 import styles from './page.module.css';
 
 const LOADING_QUIPS = [
-    "Scanning for trust signals...",
-    "Checking if your CTA is hiding...",
-    "Judging your headline choices...",
-    "Looking for social proof...",
-    "Simulating a buyer's journey...",
-    "Calculating your founder archetype...",
+    "Checking if OpenAI can kill this in their next keynote...",
+    "Measuring willingness to pull out a corporate credit card...",
+    "Stress-testing your distribution strategy against realistic CAC...",
+    "Searching for your actual defensibility moat...",
+    "Analyzing if this is a $10k painkiller or a $5 vitamin...",
+    "Simulating 1,000 cold customer conversations...",
+    "Calculating unit economics against LLM inference costs...",
+    "Determining your founder archetype...",
+];
+
+const PRESETS = [
+    {
+        name: '🤖 AI SQL Data Analyst',
+        badge: 'DevTool / Data',
+        data: {
+            ideaName: 'SQLNinja AI',
+            targetCustomer: 'Non-technical Product Managers & BizOps teams at Series A-B startups',
+            pricing: '$49/mo per seat with up to 5,000 query conversions',
+            description: 'Converts natural English into optimized Postgres & Snowflake SQL queries with auto-visualizations and Slack scheduled reports.',
+            competitors: 'ChatGPT Plus, Text2SQL.ai, Metabase AI, internal data engineers',
+            distribution: 'Cold LinkedIn outreach to Heads of Product, Product Hunt launch, open-source Github repository with 2,000 stars.',
+            url: 'https://sqlninja.demo.dev',
+        }
+    },
+    {
+        name: '⚡ Chargeback Defense Bot',
+        badge: 'Fintech / E-com',
+        data: {
+            ideaName: 'ChargeShield AI',
+            targetCustomer: 'Shopify & Stripe merchants generating $30k–$200k/mo GMV with high dispute rates',
+            pricing: '$199/mo base subscription + 15% of successfully recovered dispute revenue',
+            description: 'Scrapes dispute transaction logs, gathers tracking evidence automatically, writes bank-specific rebuttal letters via fine-tuned LLM, and submits directly via Stripe API.',
+            competitors: 'Chargeflow, Midigator, manual founder dispute handling via Stripe Dashboard',
+            distribution: 'Shopify App Store ranking, Stripe Apps ecosystem listing, revenue-share partnerships with e-commerce accounting agencies.',
+            url: 'https://chargeshield.io',
+        }
+    },
+    {
+        name: '🎨 Localized Video Dubber',
+        badge: 'Creator / Media',
+        data: {
+            ideaName: 'PolyglotStudio AI',
+            targetCustomer: 'YouTube creators, course creators, and podcasters with 10k–500k followers looking to expand to Spanish and Japanese',
+            pricing: '$79/mo for 120 minutes of voice-cloned video translation and burned-in captions',
+            description: 'Translates video voice tracks into 30+ languages using voice cloning, lip-sync correction, and automated SRT subtitle generation.',
+            competitors: 'ElevenLabs Dubbing, HeyGen, Rask.ai, manual human dubbing agencies',
+            distribution: 'Build in public on X with viral side-by-side clips, free 1-minute sample watermark videos, direct DM outreach to top 200 educational YouTubers.',
+            url: '',
+        }
+    }
 ];
 
 export default function GradePage() {
+    // Form fields
+    const [ideaName, setIdeaName] = useState('');
+    const [targetCustomer, setTargetCustomer] = useState('');
+    const [pricing, setPricing] = useState('');
+    const [description, setDescription] = useState('');
+    const [competitors, setCompetitors] = useState('');
+    const [distribution, setDistribution] = useState('');
     const [url, setUrl] = useState('');
+
+    // Dynamic founder count from Supabase
+    const [founderCount, setFounderCount] = useState(14);
+
+    // Flow states
     const [status, setStatus] = useState('idle'); // idle | loading | done | error
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
     const [loadingQuip, setLoadingQuip] = useState(LOADING_QUIPS[0]);
     const [animatedScore, setAnimatedScore] = useState(0);
+
+    // Email blueprint capture
     const [emailSent, setEmailSent] = useState(false);
     const [auditEmail, setAuditEmail] = useState('');
     const [isAuditing, setIsAuditing] = useState(false);
     const [auditError, setAuditError] = useState('');
+
     const resultsRef = useRef(null);
 
+    // Fetch real live founder count from Supabase on mount
+    useEffect(() => {
+        fetch('/api/grade')
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.founderCount) {
+                    setFounderCount(data.founderCount);
+                }
+            })
+            .catch((err) => console.warn('Could not load founder count:', err));
+    }, []);
+
+    // Smooth scroll to results once completed
     useEffect(() => {
         if (status === 'done' && resultsRef.current) {
-            const yOffset = -120; // Increased offset to ensure it stops before touching nav bar
+            const yOffset = -90;
             const elementY = resultsRef.current.getBoundingClientRect().top;
             const targetY = elementY + window.scrollY + yOffset;
-            
-            // Custom Ease-In-Out Smooth Scroll
-            const duration = 1500; // 1.5 seconds for a slower, premium feel
+
+            const duration = 1200;
             const startY = window.scrollY;
             const distance = targetY - startY;
             let startTime = null;
@@ -49,14 +120,13 @@ export default function GradePage() {
             const animation = (currentTime) => {
                 if (startTime === null) startTime = currentTime;
                 const timeElapsed = currentTime - startTime;
-                
                 const nextY = easeInOutQuad(timeElapsed, startY, distance, duration);
                 window.scrollTo(0, nextY);
 
                 if (timeElapsed < duration) {
                     requestAnimationFrame(animation);
                 } else {
-                    window.scrollTo(0, targetY); // Ensure it lands exactly on the target
+                    window.scrollTo(0, targetY);
                 }
             };
 
@@ -64,44 +134,66 @@ export default function GradePage() {
         }
     }, [status]);
 
+    // Handle Preset selection
+    const applyPreset = (preset) => {
+        setIdeaName(preset.data.ideaName);
+        setTargetCustomer(preset.data.targetCustomer);
+        setPricing(preset.data.pricing);
+        setDescription(preset.data.description);
+        setCompetitors(preset.data.competitors);
+        setDistribution(preset.data.distribution);
+        setUrl(preset.data.url);
+        setError('');
+    };
+
+    // Submit for brutal grading
     const handleGrade = async (e) => {
         e.preventDefault();
-        if (!url.trim()) return;
+        if (!ideaName.trim() && !description.trim() && !url.trim()) {
+            setError('Please enter at least your SaaS Idea Name or Description.');
+            return;
+        }
 
         setStatus('loading');
         setError('');
         setResult(null);
         setAnimatedScore(0);
 
-        // Rotate quips
         let quipIdx = 0;
         const quipInterval = setInterval(() => {
             quipIdx = (quipIdx + 1) % LOADING_QUIPS.length;
             setLoadingQuip(LOADING_QUIPS[quipIdx]);
-        }, 2000);
+        }, 2200);
 
         try {
             const res = await fetch('/api/grade', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: url.trim() }),
+                body: JSON.stringify({
+                    ideaName: ideaName.trim(),
+                    targetCustomer: targetCustomer.trim(),
+                    pricing: pricing.trim(),
+                    description: description.trim(),
+                    competitors: competitors.trim(),
+                    distribution: distribution.trim(),
+                    url: url.trim(),
+                }),
             });
 
             const data = await res.json();
-
             clearInterval(quipInterval);
 
             if (!res.ok) {
-                throw new Error(data.error || 'Something went wrong');
+                throw new Error(data.error || 'Something went wrong while grading.');
             }
 
             setResult(data);
             setStatus('done');
 
-            // Animate score counter
-            const target = data.total_score || 0;
+            // Animated score counter
+            const target = data.overall_score || 0;
             let current = 0;
-            const step = Math.max(1, Math.floor(target / 50));
+            const step = Math.max(1, Math.floor(target / 40));
             const scoreInterval = setInterval(() => {
                 current += step;
                 if (current >= target) {
@@ -109,7 +201,7 @@ export default function GradePage() {
                     clearInterval(scoreInterval);
                 }
                 setAnimatedScore(current);
-            }, 25);
+            }, 30);
 
         } catch (err) {
             clearInterval(quipInterval);
@@ -118,6 +210,7 @@ export default function GradePage() {
         }
     };
 
+    // Handle Full Email Blueprint
     const handleFullAudit = async (e) => {
         e.preventDefault();
         if (!auditEmail.trim()) return;
@@ -130,14 +223,20 @@ export default function GradePage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    url: url.trim(),
                     email: auditEmail.trim(),
-                    summaryResult: result
+                    ideaName: ideaName.trim(),
+                    targetCustomer: targetCustomer.trim(),
+                    pricing: pricing.trim(),
+                    description: description.trim(),
+                    competitors: competitors.trim(),
+                    distribution: distribution.trim(),
+                    url: url.trim(),
+                    summaryResult: result,
                 }),
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Audit failed');
+            if (!res.ok) throw new Error(data.error || 'Failed to send blueprint');
 
             setEmailSent(true);
         } catch (err) {
@@ -147,430 +246,518 @@ export default function GradePage() {
         }
     };
 
-    const getScoreColor = (score) => {
-        if (score >= 80) return 'Green';
-        if (score >= 50) return 'Amber';
-        return 'Red';
+    // Color indicators
+    const getScoreColorClass = (score) => {
+        if (score >= 75) return styles.scoreGreen;
+        if (score >= 50) return styles.scoreAmber;
+        return styles.scoreRed;
     };
 
     const getScoreEmoji = (score) => {
-        if (score >= 90) return '🔥';
-        if (score >= 80) return '🚀';
-        if (score >= 60) return '⚡';
-        if (score >= 40) return '🔧';
+        if (score >= 85) return '🔥';
+        if (score >= 70) return '🚀';
+        if (score >= 50) return '⚡';
+        if (score >= 35) return '⚠️';
         return '🚨';
     };
 
-    // SVG circle math
-    const radius = 88;
+    // Pillar configuration
+    const pillars = [
+        {
+            key: 'market_potential',
+            label: 'Market Potential',
+            desc: 'TAM size, expansion velocity, and urgency of budget.',
+        },
+        {
+            key: 'problem_severity',
+            label: 'Problem Severity',
+            desc: 'Bleeding-neck painkiller ($10k+ problem) vs optional vitamin.',
+        },
+        {
+            key: 'competition_moat',
+            label: 'Competition & Moat',
+            desc: 'Defensibility against OpenAI native models & incumbent cloning.',
+        },
+        {
+            key: 'distribution',
+            label: 'Distribution Reality',
+            desc: 'Repeatable acquisition channel vs wishful thinking.',
+        },
+        {
+            key: 'monetization',
+            label: 'Monetization Power',
+            desc: 'Willingness to pay, margin health against LLM inference.',
+        },
+        {
+            key: 'ai_defensibility',
+            label: 'AI Defensibility',
+            desc: 'Proprietary workflows & switching costs vs thin API wrapper.',
+        },
+    ];
+
+    // Weakest pillar information
+    const weakestKey = result?.weakest_pillar || 'distribution';
+    const weakestScore = result?.pillar_scores?.[weakestKey] ?? 0;
+    const weakestName = result?.weakest_pillar_name || 'Distribution Strategy';
+
+    // SVG circle calculations
+    const radius = 90;
     const circumference = 2 * Math.PI * radius;
     const scorePercent = result ? (animatedScore / 100) : 0;
     const dashOffset = circumference * (1 - scorePercent);
-
-    const getTweetText = () => {
-        if (!result) return '';
-
-        const score = result.total_score;
-        const archetype = result.founder_archetype;
-        const url_clean = 'www.launchxact.com/grade';
-        const officialTags = '@LaunchXact @Ravi_Nileshbhai';
-
-        if (score >= 85) {
-            return `Just got a ${score}/100 on the ${officialTags} AI Auditor. Apparently, I'm "${archetype}." 🚀\n\nMy primary headline was weak, but the AI rewrite is fire. Check your SaaS readiness: ${url_clean}`;
-        }
-
-        return `I just got my LaunchXact Readiness Score: ${score}/100 ${getScoreEmoji(score)}\n\nMy Founder Archetype: "${archetype}"\n\nCheck yours here (via ${officialTags}) → ${url_clean}`;
-    };
-
-    const tweetText = getTweetText();
-
-    const pillarConfig = [
-        { key: 'hook', name: 'The Hook', weight: '30%' },
-        { key: 'trust', name: 'Trust Signal', weight: '30%' },
-        { key: 'friction', name: 'Buyer Friction', weight: '20%' },
-        { key: 'distribution', name: 'Distribution', weight: '20%' },
-    ];
 
     return (
         <div className={styles.page}>
             <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
                 <Breadcrumb items={[
                     { label: 'Founder Tools', href: '/tools' },
-                    { label: 'SaaS Launch Readiness Grader' }
+                    { label: 'AI SaaS Viability Grader' }
                 ]} />
             </div>
-            {/* HERO */}
+
+            {/* LAYER 1: THE BRUTAL ACQUISITION HOOK */}
             <section className={styles.hero}>
+                <div className={styles.badgeRow}>
+                    <span className={styles.topBadge}>
+                        🔥 60-SECOND BRUTAL AUDIT · TOP OF FUNNEL
+                    </span>
+                </div>
                 <h1 className={styles.heroTitle}>
-                    Is Your SaaS Ready for<br />the Genesis Batch?
+                    Will Your AI SaaS Idea<br />Actually Work?
                 </h1>
                 <p className={styles.heroSub}>
-                    Free AI-powered audit of your landing page. Get scored on conversion psychology,
-                    trust signals, and distribution readiness — by a founder, not a robot.
+                    Get brutally graded before you burn 6 months and $20,000 building something nobody wants.
+                    Scored on <strong>Market Potential, Problem Severity, Defensibility, Distribution, Monetization, and Moat</strong>.
                 </p>
-                <span className={styles.qualifier}>
-                    ⚡ Score 80+ to fast-track your application
-                </span>
+
+                {/* Real-time Founder Proof Banner */}
+                <div className={styles.socialProofBar}>
+                    <span className={styles.proofDot} />
+                    <span className={styles.proofText}>
+                        <strong>{founderCount} founders</strong> have already joined the Genesis Batch. Real-time founder intelligence · 0% generic fluff.
+                    </span>
+                </div>
             </section>
 
-            {/* URL INPUT */}
-            <section className={styles.inputSection}>
-                <form onSubmit={handleGrade}>
-                    <div className={styles.inputWrapper}>
-                        <input
-                            id="grade-url-input"
-                            type="text"
-                            className={styles.urlInput}
-                            placeholder="Paste your landing page URL..."
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                            disabled={status === 'loading'}
-                        />
+            {/* LAYER 2: THE INTERACTIVE PROFILE INPUT */}
+            <section className={styles.formContainer}>
+                {/* Quick Presets Bar */}
+                <div className={styles.presetsBar}>
+                    <span className={styles.presetsLabel}>⚡ Quick Presets:</span>
+                    <div className={styles.presetsList}>
+                        {PRESETS.map((preset, idx) => (
+                            <button
+                                key={idx}
+                                type="button"
+                                className={styles.presetChip}
+                                onClick={() => applyPreset(preset)}
+                            >
+                                <span>{preset.name}</span>
+                                <span className={styles.presetBadge}>{preset.badge}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <form onSubmit={handleGrade} className={styles.graderForm}>
+                    <div className={styles.formGrid}>
+                        {/* 1. Idea Name */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="idea-name" className={styles.inputLabel}>
+                                1. SaaS / Idea Name <span className={styles.required}>*</span>
+                            </label>
+                            <input
+                                id="idea-name"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="e.g. SQLNinja AI, ChargeShield, AutoBrief..."
+                                value={ideaName}
+                                onChange={(e) => setIdeaName(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 2. Target Customer */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="target-customer" className={styles.inputLabel}>
+                                2. Target Customer (ICP) <span className={styles.required}>*</span>
+                            </label>
+                            <input
+                                id="target-customer"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="e.g. Solo founders, B2B sales reps, Shopify stores doing $50k+/mo..."
+                                value={targetCustomer}
+                                onChange={(e) => setTargetCustomer(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 3. Pricing Model */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="pricing-model" className={styles.inputLabel}>
+                                3. Pricing Model & Price Point <span className={styles.required}>*</span>
+                            </label>
+                            <input
+                                id="pricing-model"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="e.g. $49/mo subscription, Usage-based $0.02/token, $299/mo enterprise..."
+                                value={pricing}
+                                onChange={(e) => setPricing(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 4. Known Competitors */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="competitors" className={styles.inputLabel}>
+                                4. Competitors & Existing Alternatives
+                            </label>
+                            <input
+                                id="competitors"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="e.g. ChatGPT, Gong, Gorgias, manual spreadsheets..."
+                                value={competitors}
+                                onChange={(e) => setCompetitors(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 5. Problem & Description (Full width) */}
+                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                            <label htmlFor="idea-desc" className={styles.inputLabel}>
+                                5. Problem & Solution Description <span className={styles.required}>*</span>
+                            </label>
+                            <textarea
+                                id="idea-desc"
+                                className={styles.textArea}
+                                rows={3}
+                                placeholder="What urgent, expensive problem are you solving? How does your AI workflow actually work under the hood?"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 6. Distribution Strategy (Full width) */}
+                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                            <label htmlFor="distribution-strategy" className={styles.inputLabel}>
+                                6. Distribution Strategy (How will you get your first 100 paying customers?) <span className={styles.required}>*</span>
+                            </label>
+                            <input
+                                id="distribution-strategy"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="e.g. Cold outbound on LinkedIn, Product Hunt launch, Shopify App store ranking, niche Discord community..."
+                                value={distribution}
+                                onChange={(e) => setDistribution(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 7. Optional Live URL */}
+                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                            <label htmlFor="live-url" className={styles.inputLabel}>
+                                7. Live Landing Page or Prototype URL <span className={styles.optional}>(Optional)</span>
+                            </label>
+                            <input
+                                id="live-url"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="https://your-startup.com (we'll scrape H1, CTAs & proof signals if available)"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+                    </div>
+
+                    {error && <p className={styles.errorMessage}>{error}</p>}
+
+                    <div className={styles.submitRow}>
                         <button
                             id="grade-submit-btn"
                             type="submit"
-                            className={styles.gradeBtn}
-                            disabled={status === 'loading' || !url.trim()}
+                            className={styles.submitBtn}
+                            disabled={status === 'loading'}
                         >
-                            {status === 'loading' ? 'Grading...' : 'Grade My SaaS'}
+                            {status === 'loading' ? 'Analyzing 6 Viability Pillars...' : '🔥 Brutally Grade My AI SaaS in 60s →'}
                         </button>
                     </div>
-                    {error && <p className={styles.errorMsg}>{error}</p>}
                 </form>
             </section>
 
-            {/* LOADING */}
+            {/* LOADING STATE */}
             {status === 'loading' && (
                 <section className={styles.loadingSection}>
-                    <div className={styles.spinner} />
-                    <p className={styles.loadingText}>Auditing your landing page...</p>
-                    <p className={styles.loadingWit}>{loadingQuip}</p>
+                    <div className={styles.scannerWrapper}>
+                        <div className={styles.spinner} />
+                        <div className={styles.scannerPulse} />
+                    </div>
+                    <p className={styles.loadingTitle}>Conducting Ruthless Viability Audit...</p>
+                    <p className={styles.loadingQuip}>{loadingQuip}</p>
                 </section>
             )}
 
+            {/* LAYER 3: THE "AHA" MOMENT & RESULTS */}
             {status === 'done' && result && (
-                <section ref={resultsRef} className={styles.results}>
+                <section ref={resultsRef} className={styles.resultsSection}>
 
-                    {/* Demo Banner */}
-                    {result.is_demo && (
-                        <div className={styles.demoBanner}>
-                            📋 This is a demo result. Connect an OpenAI API key for live AI grading.
-                        </div>
-                    )}
-
-                    {/* Score Ring */}
-                    <div className={styles.scoreSection}>
-                        <div className={styles.scoreRing}>
-                            <svg className={styles.scoreRingSvg} viewBox="0 0 200 200">
-                                <circle className={styles.scoreTrack} cx="100" cy="100" r={radius} />
+                    {/* OVERALL VIABILITY SCORE HUD */}
+                    <div className={styles.scoreHud}>
+                        <div className={styles.scoreRingWrapper}>
+                            <svg className={styles.scoreRingSvg} viewBox="0 0 220 220">
+                                <circle className={styles.scoreTrack} cx="110" cy="110" r={radius} />
                                 <circle
-                                    className={`${styles.scoreFill} ${styles[`scoreFill${getScoreColor(result.total_score)}`]}`}
-                                    cx="100" cy="100" r={radius}
+                                    className={`${styles.scoreFill} ${getScoreColorClass(result.overall_score)}`}
+                                    cx="110" cy="110" r={radius}
                                     strokeDasharray={circumference}
                                     strokeDashoffset={dashOffset}
                                 />
                             </svg>
-                            <div className={styles.scoreValue}>
-                                <div className={`${styles.scoreNumber} ${styles[`scoreNumber${getScoreColor(result.total_score)}`]}`}>
+                            <div className={styles.scoreCenter}>
+                                <div className={`${styles.scoreNumber} ${getScoreColorClass(result.overall_score)}`}>
                                     {animatedScore}
                                 </div>
-                                <div className={styles.scoreLabel}>Launch Score</div>
+                                <div className={styles.scoreScale}>/ 100</div>
+                                <div className={styles.scoreCaption}>Overall Viability</div>
                             </div>
                         </div>
 
-                        {/* Archetype Badge */}
-                        <div className={styles.archetypeBadge}>
-                            <span className={styles.archetypeIcon}>{getScoreEmoji(result.total_score)}</span>
-                            {result.founder_archetype}
-                        </div>
-                    </div>
-
-                    {/* Launch Readiness Meter */}
-                    <div className={styles.readinessSection}>
-                        <div className={styles.readinessHeader}>
-                            <h3 className={styles.readinessTitle}>Launch Readiness</h3>
-                            <div className={styles.readinessOverall}>
-                                <span className={styles.readinessValue}>{(animatedScore / 10).toFixed(1)}</span>
-                                <span className={styles.readinessMax}>/10</span>
+                        <div className={styles.hudMeta}>
+                            <div className={styles.archetypeBadge}>
+                                <span className={styles.archetypeIcon}>{getScoreEmoji(result.overall_score)}</span>
+                                <span className={styles.archetypeName}>{result.founder_archetype}</span>
                             </div>
-                        </div>
-                        
-                        <div className={styles.readinessMeter}>
-                            <div 
-                                className={`${styles.readinessBar} ${styles[`readinessBar${getScoreColor(animatedScore)}`]}`}
-                                style={{ width: `${animatedScore}%` }}
-                            />
-                        </div>
 
-                        <div className={styles.readinessGuidance}>
-                            {animatedScore < 65 && "🚨 Improve messaging and trust signals before launch."}
-                            {animatedScore >= 65 && animatedScore < 80 && "✨ You're close. Optimize a few elements to hit the Genesis Batch bar."}
-                            {animatedScore >= 80 && "🚀 Ready for Genesis Batch submission. High conversion potential."}
-                        </div>
+                            <h2 className={styles.verdictTitle}>
+                                “{result.verdict_headline}”
+                            </h2>
 
-                        <div className={styles.readinessGrid}>
-                            <div className={styles.readinessItem}>
-                                <div className={styles.readinessItemLabel}>Landing Page Clarity</div>
-                                <div className={styles.readinessItemTrack}>
-                                    <div className={styles.readinessItemFill} style={{ width: `${(result.pillar_scores?.hook + result.pillar_scores?.friction) / 2 || 0}%` }} />
-                                </div>
-                            </div>
-                            <div className={styles.readinessItem}>
-                                <div className={styles.readinessItemLabel}>Messaging Strength</div>
-                                <div className={styles.readinessItemTrack}>
-                                    <div className={styles.readinessItemFill} style={{ width: `${result.pillar_scores?.distribution || 0}%` }} />
-                                </div>
-                            </div>
-                            <div className={styles.readinessItem}>
-                                <div className={styles.readinessItemLabel}>Conversion Potential</div>
-                                <div className={styles.readinessItemTrack}>
-                                    <div className={styles.readinessItemFill} style={{ width: `${result.pillar_scores?.trust || 0}%` }} />
+                            <div className={styles.weakestWarning}>
+                                <span className={styles.warningIcon}>🚨</span>
+                                <div>
+                                    <strong className={styles.warningLabel}>Single Fatal Bottleneck:</strong>
+                                    <span className={styles.warningPillar}>
+                                        {' '}{result.weakest_pillar_name} ({result.pillar_scores?.[result.weakest_pillar]}/100)
+                                    </span>
+                                    <p className={styles.warningDiagnosis}>
+                                        {result.weakness_diagnosis}
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Roast Summary */}
-                    <div className={styles.roastCard}>
-                        <div className={styles.roastLabel}>The Verdict</div>
-                        <p className={styles.roastText}>{result.roast_summary}</p>
-                    </div>
-
-                    {/* Pillar Breakdown */}
-                    <div className={styles.pillarsGrid}>
-                        {pillarConfig.map((pillar) => (
-                            <div key={pillar.key} className={styles.pillarCard}>
-                                <div className={`${styles.pillarScore} ${styles[`scoreNumber${getScoreColor(result.pillar_scores?.[pillar.key] || 0)}`]}`}>
-                                    {result.pillar_scores?.[pillar.key] || '—'}
-                                </div>
-                                <div className={styles.pillarName}>{pillar.name}</div>
-                                <div className={styles.pillarWeight}>{pillar.weight} weight</div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Headline Rewrite */}
-                    {result.ai_rewrite_h1 && (
-                        <div className={styles.headlineRewrite}>
-                            <div className={styles.headlineLabel}>AI Headline Rewrite</div>
-                            <div className={styles.headlineCompare}>
-                                <div className={styles.headlineBefore}>
-                                    <div className={`${styles.headlineTag} ${styles.headlineTagBefore}`}>Current</div>
-                                    <p className={styles.headlineText}>{result.original_h1 || 'No H1 found'}</p>
-                                </div>
-                                <div className={styles.headlineAfter}>
-                                    <div className={`${styles.headlineTag} ${styles.headlineTagAfter}`}>AI Suggestion</div>
-                                    <p className={styles.headlineText}>{result.ai_rewrite_h1}</p>
-                                </div>
-                            </div>
+                    {/* 6-PILLAR SCORECARD GRID */}
+                    <div className={styles.pillarsSection}>
+                        <div className={styles.pillarsHeader}>
+                            <h3 className={styles.pillarsTitle}>The 6 Core Viability Pillars</h3>
+                            <span className={styles.pillarsSub}>Ruthless score per dimension</span>
                         </div>
-                    )}
 
-                    {/* Action Items */}
-                    {result.action_items && result.action_items.length > 0 && (
-                        <div className={styles.actionItems}>
-                            <div className={styles.actionItemsTitle}>Top 3 Things to Fix</div>
-                            {result.action_items.map((item, i) => (
-                                <div key={i} className={styles.actionItem}>
-                                    <div className={styles.actionNumber}>{i + 1}</div>
-                                    <p className={styles.actionText}>{item}</p>
-                                </div>
+                        <div className={styles.pillarsGrid}>
+                            {pillars.map((p) => {
+                                const score = result.pillar_scores?.[p.key] ?? 0;
+                                const isWeakest = result.weakest_pillar === p.key;
+
+                                return (
+                                    <div
+                                        key={p.key}
+                                        className={`${styles.pillarCard} ${isWeakest ? styles.pillarCardWeakest : ''}`}
+                                    >
+                                        {isWeakest && (
+                                            <div className={styles.weakestBadgeTag}>
+                                                🚨 FATAL BOTTLENECK
+                                            </div>
+                                        )}
+                                        <div className={styles.pillarTop}>
+                                            <span className={styles.pillarName}>{p.label}</span>
+                                            <span className={`${styles.pillarScoreVal} ${getScoreColorClass(score)}`}>
+                                                {score}<small>/100</small>
+                                            </span>
+                                        </div>
+
+                                        <div className={styles.pillarMeterTrack}>
+                                            <div
+                                                className={`${styles.pillarMeterBar} ${getScoreColorClass(score)}`}
+                                                style={{ width: `${score}%` }}
+                                            />
+                                        </div>
+
+                                        <p className={styles.pillarDescription}>{p.desc}</p>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* BRUTAL CRITIQUE DEEP-DIVE */}
+                    <div className={styles.critiqueCard}>
+                        <div className={styles.critiqueHeader}>
+                            <span className={styles.critiqueBadge}>Senior Founder Review</span>
+                            <h3 className={styles.critiqueHeading}>The Raw, Unvarnished Truth</h3>
+                        </div>
+                        <div className={styles.critiqueBody}>
+                            {result.brutal_critique?.split('\n\n').map((para, i) => (
+                                <p key={i}>{para}</p>
                             ))}
                         </div>
+                    </div>
+
+                    {/* "HERE'S WHAT WE'D CHANGE" PIVOT PLAYBOOK */}
+                    {result.action_items && result.action_items.length > 0 && (
+                        <div className={styles.pivotCard}>
+                            <h3 className={styles.pivotTitle}>Here&apos;s What We&apos;d Change Before Writing Code</h3>
+                            <div className={styles.actionItemsList}>
+                                {result.action_items.map((item, idx) => (
+                                    <div key={idx} className={styles.actionItemRow}>
+                                        <span className={styles.actionIndex}>{idx + 1}</span>
+                                        <p className={styles.actionText}>{item}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {result.ai_pricing_advice && (
+                                <div className={styles.pricingAdviceBox}>
+                                    <div className={styles.pricingAdviceLabel}>💰 Pricing Power & Margin Recommendation</div>
+                                    <p className={styles.pricingAdviceText}>{result.ai_pricing_advice}</p>
+                                </div>
+                            )}
+                        </div>
                     )}
 
-                    {/* Visual Launch Roadmap */}
-                    <div className={styles.roadmapSection}>
-                        <h3 className={styles.roadmapTitle}>What happens if you launch on LaunchXact?</h3>
-                        <div className={styles.roadmapLine}>
-                            <div className={styles.roadmapStep}>
-                                <div className={styles.roadmapStepIcon}>1</div>
-                                <div className={styles.roadmapCard}>
-                                    <h4>Genesis Batch Launch</h4>
-                                    <p>Your product launches with a curated batch of new SaaS tools.</p>
+                    {/* LAYER 4: DEDICATED GENESIS BATCH TRANSITION FUNNEL */}
+                    <div className={styles.genesisFunnelCard}>
+                        <div className={styles.genesisGlow} />
+                        <div className={styles.genesisHeader}>
+                            <span className={styles.genesisPill}>✦ Dedicated Founder Transition</span>
+                            <h3 className={styles.genesisTitle}>Want to fix the weaknesses?</h3>
+                            <p className={styles.genesisSub}>
+                                Join the LaunchXact Genesis Batch. We don&apos;t just diagnose fatal bottlenecks — we solve them with native B2B infrastructure.
+                            </p>
+                        </div>
+
+                        {/* Highlight weakest score specifically */}
+                        <div className={styles.genesisBottleneckCallout}>
+                            <div className={styles.bottleneckIcon}>⚡</div>
+                            <div className={styles.bottleneckContent}>
+                                <h4 className={styles.bottleneckHeading}>
+                                    {weakestName}: {weakestScore}/100
+                                </h4>
+                                <p className={styles.bottleneckMessage}>
+                                    That&apos;s probably the single biggest existential risk to <strong>{result.idea_name || 'your idea'}</strong>.
+                                    We&apos;re building LaunchXact for exactly this: zero-overhead global payments, built-in directory distribution,
+                                    and enterprise compliance so you can focus on engineering defensibility.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Genesis Batch Perks List */}
+                        <div className={styles.perksGrid}>
+                            <div className={styles.perkItem}>
+                                <span className={styles.perkCheck}>✓</span>
+                                <div>
+                                    <strong>0% launch platform fees</strong>
+                                    <p>Zero platform fees on all marketplace transactions for your first 90 days.</p>
                                 </div>
                             </div>
-                            <div className={styles.roadmapStep}>
-                                <div className={styles.roadmapStepIcon}>2</div>
-                                <div className={styles.roadmapCard}>
-                                    <h4>Visibility Cycles</h4>
-                                    <p>Your product enters the Founder Visibility Engine for guaranteed exposure.</p>
+                            <div className={styles.perkItem}>
+                                <span className={styles.perkCheck}>✓</span>
+                                <div>
+                                    <strong>Direct distribution push</strong>
+                                    <p>Featured exposure to our network of 400+ verified B2B software buyers.</p>
                                 </div>
                             </div>
-                            <div className={styles.roadmapStep}>
-                                <div className={styles.roadmapStepIcon}>3</div>
-                                <div className={styles.roadmapCard}>
-                                    <h4>Proof of Life</h4>
-                                    <p>Connect GitHub or payment platforms to verify active development.</p>
+                            <div className={styles.perkItem}>
+                                <span className={styles.perkCheck}>✓</span>
+                                <div>
+                                    <strong>1-on-1 architecture review</strong>
+                                    <p>Deep-dive with senior SaaS architects to lock down AI defensibility.</p>
                                 </div>
                             </div>
-                            <div className={styles.roadmapStep}>
-                                <div className={styles.roadmapStepIcon}>4</div>
-                                <div className={styles.roadmapCard}>
-                                    <h4>AI Discovery</h4>
-                                    <p>Your tool becomes indexable by intent-based AI semantic search.</p>
-                                </div>
-                            </div>
-                            <div className={styles.roadmapStep}>
-                                <div className={styles.roadmapStepIcon}>5</div>
-                                <div className={styles.roadmapCard}>
-                                    <h4>Discovery Map</h4>
-                                    <p>Buyers find your product inside real-world B2B workflows.</p>
+                            <div className={styles.perkItem}>
+                                <span className={styles.perkCheck}>✓</span>
+                                <div>
+                                    <strong>Unified multi-region billing</strong>
+                                    <p>Instant Merchant of Record support with 100% automated international VAT/sales tax.</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Bridge CTA */}
-                    <div className={styles.bridgeCta}>
-                        {result.total_score >= 80 ? (
-                            <>
-                                <p className={styles.bridgeText}>
-                                    🎉 <strong>Congratulations! You scored {result.total_score}/100.</strong> Your SaaS qualifies for fast-track
-                                    submission to the Genesis Batch. We&apos;ve pre-filled your application based on this audit.
-                                </p>
-                                <Link
-                                    href={`/?website=${encodeURIComponent(url)}&description=${encodeURIComponent(result.ai_rewrite_h1 || '')}&grade_score=${result.total_score}&archetype=${encodeURIComponent(result.founder_archetype || '')}&from_grader=true#founder-form`}
-                                    className={styles.bridgeBtn}
-                                >
-                                    🚀 Submit to Genesis Batch — Fast-Tracked
-                                </Link>
-
-                                <div className={styles.benefitsBox}>
-                                    <h4 className={styles.benefitsTitle}>Genesis Batch Benefits</h4>
-                                    <ul className={styles.benefitsList}>
-                                        <li><span>✓</span> Curated launch alongside premium tools</li>
-                                        <li><span>✓</span> Lifetime discovery cycles</li>
-                                        <li><span>✓</span> Semantic search discovery integration</li>
-                                        <li><span>✓</span> Proof-of-life verification badge</li>
-                                        <li><span>✓</span> Optional native checkout & hosting</li>
-                                        <li><span>✓</span> LaunchXact ecosystem tool inclusion</li>
-                                    </ul>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <p className={styles.bridgeText}>
-                                    We&apos;ve analyzed your landing page. <strong>To maintain the quality of the Genesis Batch,
-                                        we only accept products with a score of 80+.</strong> Use the action items above to improve,
-                                    then grade again or submit anyway.
-                                </p>
-                                <Link
-                                    href={`/?website=${encodeURIComponent(url)}&description=${encodeURIComponent(result.ai_rewrite_h1 || '')}&grade_score=${result.total_score}&archetype=${encodeURIComponent(result.founder_archetype || '')}&from_grader=true#founder-form`}
-                                    className={styles.bridgeBtn}
-                                >
-                                    📝 Submit Anyway
-                                </Link>
-                            </>
-                        )}
-                        {result.ecosystem_nudge && (
-                            <p className={styles.ecosystemNudge}>{result.ecosystem_nudge}</p>
-                        )}
-                    </div>
-
-                    {/* Share */}
-                    <div className={styles.shareRow}>
-                        <a
-                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.shareBtn}
-                        >
-                            𝕏 Share on X
-                        </a>
-                        <a
-                            href={`https://www.reddit.com/submit?title=${encodeURIComponent(`My SaaS got a ${result.total_score}/100 Launch Score! 🚀`)}&text=${encodeURIComponent(`I just used the LaunchXact AI Grader to audit my landing page.\n\nScore: ${result.total_score}/100\nArchetype: ${result.founder_archetype}\n\nCheck your SaaS readiness: https://launchxact.com/grade`)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.shareBtn}
-                        >
-                            🚀 Submit to Reddit
-                        </a>
-                        <button
-                            className={styles.shareBtn}
-                            onClick={() => {
-                                navigator.clipboard?.writeText(
-                                    `My LaunchXact Readiness Score: ${result.total_score}/100 — "${result.founder_archetype}" 🚀\nhttps://launchxact.com/grade`
-                                );
-                                alert('Copied to clipboard!');
-                            }}
-                        >
-                            📋 Copy Score
-                        </button>
-                    </div>
-
-                    {/* Email Capture */}
-                    <div className={styles.emailCapture}>
-                        <div className={styles.emailCaptureTitle}>
-                            Want the full 5-page AI Audit?
-                        </div>
-                        {emailSent ? (
-                            <div className={styles.badgeSuccess}>
-                                <div className={styles.badgeInner}>
-                                    <p className={styles.badgeSuccessMsg}>✓ Audit sent to <strong>{auditEmail}</strong>!</p>
-                                    <div className={styles.badgeCodeWrapper}>
-                                        <p className={styles.badgeCodeLabel}>Your Selection Badge HTML:</p>
-                                        <code className={styles.badgeCode}>
-                                            {`<a href="https://www.launchxact.com/grade?url=${url}" target="_blank">
-  <img src="https://www.launchxact.com/badges/selected-genesis.svg" alt="LaunchXact Selected Genesis Batch" width="180" />
-</a>`}
-                                        </code>
-                                        <button
-                                            className={styles.copyBadgeBtn}
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(`<a href="https://www.launchxact.com/grade?url=${url}" target="_blank">\n  <img src="https://www.launchxact.com/badges/selected-genesis.svg" alt="LaunchXact Selected Genesis Batch" width="180" />\n</a>`);
-                                                alert('Badge code copied!');
-                                            }}
-                                        >
-                                            Copy Code
-                                        </button>
-                                    </div>
-                                </div>
+                        {/* Dynamic Honest Founder Counter & CTA */}
+                        <div className={styles.genesisCtaRow}>
+                            <div className={styles.genesisCounterBadge}>
+                                <span className={styles.pulseDot} />
+                                <span><strong>{founderCount} founders</strong> have already joined</span>
                             </div>
-                        ) : (
-                            <form
-                                className={styles.emailForm}
-                                onSubmit={handleFullAudit}
+
+                            <Link
+                                href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
+                                className={styles.genesisApplyBtn}
                             >
+                                Apply for Genesis Batch →
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* LAYER 5: VIRAL GROWTH LOOP (ToolShareCard) */}
+                    <div style={{ margin: '3rem 0' }}>
+                        <ToolShareCard
+                            badge="AI SaaS Viability Audit"
+                            statHighlight={`${result.overall_score}/100`}
+                            statLabel="Launch Viability Score"
+                            subMetrics={[
+                                { label: 'Archetype', value: result.founder_archetype || 'Builder' },
+                                { label: 'Weakest Link', value: `${weakestName} (${weakestScore})` },
+                                { label: 'Moat Rating', value: `${result.pillar_scores?.competition_moat || 0}/100` },
+                            ]}
+                            quote={result.verdict_headline}
+                            toolName="AI SaaS Viability Grader"
+                            toolUrl="https://www.launchxact.com/grade"
+                            shareTextX={`Just put my SaaS idea "${result.idea_name || 'project'}" through the @LaunchXact Brutal AI Grader.\n\nViability: ${result.overall_score}/100 ${getScoreEmoji(result.overall_score)}\nArchetype: "${result.founder_archetype}"\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\n\nGrade your AI SaaS in 60s:`}
+                            shareTitleReddit={`My AI SaaS idea just got a ${result.overall_score}/100 brutal viability score 💀`}
+                            shareTextReddit={`I just ran my SaaS idea ("${result.idea_name || 'My Project'}") through the LaunchXact Brutal AI Grader.\n\nOverall Score: ${result.overall_score}/100\nVerdict: ${result.verdict_headline}\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\n\nCheck your startup viability here: https://www.launchxact.com/grade`}
+                            copySummaryText={`LaunchXact AI Viability Audit: ${result.idea_name || 'My SaaS'}\nOverall Score: ${result.overall_score}/100\nArchetype: "${result.founder_archetype}"\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\nVerdict: ${result.verdict_headline}\nhttps://www.launchxact.com/grade`}
+                        />
+                    </div>
+
+                    {/* EMAIL CAPTURE: FULL 5-PAGE BLUEPRINT */}
+                    <div className={styles.emailCaptureCard}>
+                        <h4 className={styles.emailTitle}>Want the full 5-page AI Viability & Distribution Blueprint?</h4>
+                        <p className={styles.emailSub}>
+                            We&apos;ll send you the deep-dive positioning teardown, 30-day validation sprint checklist, and technical moat blueprint directly to your inbox.
+                        </p>
+
+                        {emailSent ? (
+                            <div className={styles.emailSuccess}>
+                                ✓ Blueprint dispatched to <strong>{auditEmail}</strong>! Check your inbox in 2 minutes.
+                            </div>
+                        ) : (
+                            <form onSubmit={handleFullAudit} className={styles.emailForm}>
                                 <input
                                     type="email"
                                     className={styles.emailInput}
-                                    placeholder="founder@example.com"
+                                    placeholder="founder@yourcompany.com"
                                     required
                                     value={auditEmail}
                                     onChange={(e) => setAuditEmail(e.target.value)}
                                     disabled={isAuditing}
                                 />
-                                <button type="submit" className={styles.emailSubmit} disabled={isAuditing}>
-                                    {isAuditing ? 'Generating Audit...' : 'Get Full Audit'}
+                                <button
+                                    type="submit"
+                                    className={styles.emailBtn}
+                                    disabled={isAuditing}
+                                >
+                                    {isAuditing ? 'Generating Blueprint...' : 'Send Me The Full Dossier →'}
                                 </button>
-                                {auditError && <p className={styles.auditError}>{auditError}</p>}
                             </form>
                         )}
+                        {auditError && <p className={styles.emailErrorMsg}>{auditError}</p>}
                     </div>
 
-                    {/* Share Card (Visual Preview for Founders) */}
-                    <div className={styles.shareCardContainer}>
-                        <div className={styles.shareCard}>
-                            <div className={styles.shareCardHeader}>
-                                <div className={styles.shareCardBrand}>LaunchXact</div>
-                                <div className={styles.shareCardStatus}>Genesis Batch Ready</div>
-                            </div>
-                            <div className={styles.shareCardBody}>
-                                <div className={styles.shareCardScore}>
-                                    <span className={styles.shareCardNumber}>{result.total_score}</span>
-                                    <span className={styles.shareCardLabel}>Audit Score</span>
-                                </div>
-                                <div className={styles.shareCardInfo}>
-                                    <div className={styles.shareCardName}>{result.product_name || 'Your SaaS'}</div>
-                                    <div className={styles.shareCardArchetype}>{result.founder_archetype}</div>
-                                </div>
-                            </div>
-                        <div className={styles.shareCardFooter}>
-                                <p>“{result.action_items?.[0] || 'Optimized for high-growth SaaS distribution.'}”</p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
             )}
         </div>
