@@ -70,12 +70,23 @@ status: "${isPublishDirect ? 'published' : 'draft'}"
 `;
 
     try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: 'user', content: prompt }],
-            model: 'qwen/qwen3.8-27b',
-            temperature: 0.72,
-            max_tokens: 4000,
-        });
+        let chatCompletion;
+        try {
+            chatCompletion = await groq.chat.completions.create({
+                messages: [{ role: 'user', content: prompt }],
+                model: 'qwen/qwen3.8-27b',
+                temperature: 0.72,
+                max_tokens: 4000,
+            });
+        } catch (qwenErr) {
+            console.warn('⚠️ qwen/qwen3.8-27b failed, falling back to openai/gpt-oss-120b:', qwenErr.message);
+            chatCompletion = await groq.chat.completions.create({
+                messages: [{ role: 'user', content: prompt }],
+                model: 'openai/gpt-oss-120b',
+                temperature: 0.72,
+                max_tokens: 4000,
+            });
+        }
 
         let articleContent = chatCompletion.choices[0]?.message?.content || '';
         
