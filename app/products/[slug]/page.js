@@ -93,6 +93,11 @@ export async function generateMetadata({ params }) {
             url: `https://www.launchxact.com/products/${slug}`,
             siteName: 'LaunchXact',
             type: 'website'
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${product.name} — LaunchXact Genesis Showcase`,
+            description: product.tagline || product.description,
         }
     };
 }

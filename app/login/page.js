@@ -26,7 +26,7 @@ export default function LoginPage() {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/startup-visibility-os/success?session_id=mock_google_session`
+                    redirectTo: `${window.location.origin}/`
                 }
             });
             if (error) throw error;
@@ -47,7 +47,7 @@ export default function LoginPage() {
                 const { error } = await supabase.auth.signInWithOtp({
                     email,
                     options: {
-                        emailRedirectTo: `${window.location.origin}/startup-visibility-os/success?session_id=mock_magic_link`
+                        emailRedirectTo: `${window.location.origin}/`
                     }
                 });
                 if (error) throw error;
@@ -60,7 +60,7 @@ export default function LoginPage() {
                         email,
                         password,
                         options: {
-                            emailRedirectTo: `${window.location.origin}/startup-visibility-os/success?session_id=mock_signup`
+                            emailRedirectTo: `${window.location.origin}/`
                         }
                     });
                     if (error) throw error;
@@ -73,8 +73,8 @@ export default function LoginPage() {
                         password
                     });
                     if (error) throw error;
-                    // Redirect to success page or home
-                    window.location.href = `/startup-visibility-os/success?session_id=mock_login_session`;
+                    // Redirect to home
+                    window.location.href = `/`;
                 }
             }
         } catch (e) {
@@ -106,7 +106,7 @@ export default function LoginPage() {
                             {useMagicLink ? 'Login with Magic Link' : isSignUp ? 'Create your Account' : 'Welcome Back'}
                         </h2>
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                            Access your Startup Visibility OS dashboard and purchases.
+                            Access your LaunchXact founder dashboard and listing status.
                         </p>
                     </div>
 

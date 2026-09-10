@@ -5,7 +5,6 @@ export default function Footer() {
     return (
         <footer className={styles.footer}>
             <div className={`container ${styles.container}`}>
-                <p>&copy; {new Date().getFullYear()} LaunchXact — A Context Forge Labs product</p>
                 <div className={styles.links}>
                     <Link href="/grade">Grade Your SaaS</Link>
                     <Link href="/tools/true-cost-of-payments">Payment Cost Simulator</Link>
@@ -23,6 +22,24 @@ export default function Footer() {
                     <Link href="/privacy">Privacy</Link>
                     <Link href="/refund-policy">Refunds</Link>
                 </div>
+                <div className={styles.badgeWrapper}>
+                    <a
+                        href="https://spacerrapps.com/apps/launchxact?utm_source=badge&utm_medium=referral&utm_campaign=featured"
+                        target="_blank"
+                        rel="noopener"
+                        className={styles.badgeLink}
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="https://spacerrapps.com/badge/launchxact.svg?v=2"
+                            alt="LaunchXact is featured on Spacerr"
+                            width="192"
+                            height="54"
+                            className={styles.badgeImg}
+                        />
+                    </a>
+                </div>
+                <p>&copy; {new Date().getFullYear()} LaunchXact — A Context Forge Labs product</p>
             </div>
         </footer>
     );

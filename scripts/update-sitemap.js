@@ -46,6 +46,7 @@ if (fs.existsSync(productsDir)) {
     const productFiles = fs.readdirSync(productsDir).filter(f => f.endsWith('.json'));
     for (const file of productFiles) {
         const slug = file.replace('.json', '');
+        if (slug === 'startup-visibility-os') continue; // Exclude unreleased OS product until ready
         sitemapXml += `  <url>\n    <loc>https://www.launchxact.com/products/${slug}</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
     }
 }

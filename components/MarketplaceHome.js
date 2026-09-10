@@ -12,11 +12,17 @@ import {
     faCompass, 
     faShieldHalved,
     faArrowRight,
-    faCheck
+    faCheck,
+    faShieldAlt,
+    faCheckCircle,
+    faExclamationTriangle,
+    faBolt,
+    faExternalLinkAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { faXTwitter, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import FloatingRocket from '@/components/FloatingRocket';
 import FloatingTelescope from '@/components/FloatingTelescope';
+import ToolUrlAutoFill from '@/components/tools/ToolUrlAutoFill';
 import styles from './MarketplaceHome.module.css';
 
 const BUYER_TAGLINES = [
@@ -72,7 +78,9 @@ export default function MarketplaceHome({ latestArticles }) {
         description: '',
         stage: 'MVP',
         monthlyRevenue: 'Pre-revenue ($0)',
-        biggestProblem: 'Distribution'
+        biggestProblem: 'Distribution',
+        reviewTier: 'standard', // 'standard' | 'fast_track'
+        logoUrl: ''
     });
 
 
@@ -83,6 +91,86 @@ export default function MarketplaceHome({ latestArticles }) {
 
     const [founderStatus, setFounderStatus] = useState('idle'); // 'idle' | 'submitting' | 'success'
     const [buyerStatus, setBuyerStatus] = useState('idle');
+
+    // Badge Verification States for Free Tier
+    const [badgeStatus, setBadgeStatus] = useState('idle'); // 'idle' | 'verifying' | 'verified' | 'failed'
+    const [badgeError, setBadgeError] = useState('');
+    const [copiedBadge, setCopiedBadge] = useState(false);
+
+    const checkBadgeLive = async (websiteUrl) => {
+        const urlToTest = websiteUrl || founderForm.website;
+        if (!urlToTest) {
+            setBadgeError('Please enter your website URL in the form above first.');
+            setBadgeStatus('failed');
+            return false;
+        }
+
+        setBadgeStatus('verifying');
+        setBadgeError('');
+        try {
+            const res = await fetch('/api/waitlist/verify-badge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ website: urlToTest })
+            });
+            const data = await res.json();
+            if (data.verified) {
+                setBadgeStatus('verified');
+                setBadgeError('');
+                return true;
+            } else {
+                setBadgeStatus('failed');
+                setBadgeError(data.message || 'LaunchXact badge was not detected on your website footer.');
+                return false;
+            }
+        } catch (err) {
+            setBadgeStatus('failed');
+            setBadgeError('Could not connect to website: ' + err.message);
+            return false;
+        }
+    };
+
+    // 𝕏 Tweet Verification States
+    const [tweetUrlInput, setTweetUrlInput] = useState('');
+    const [tweetStatus, setTweetStatus] = useState('idle'); // 'idle' | 'verifying' | 'verified' | 'failed'
+    const [tweetMessage, setTweetMessage] = useState('');
+    const [verifiedAuthor, setVerifiedAuthor] = useState('');
+
+    const handleVerifyTweet = async (e) => {
+        e?.preventDefault();
+        const trimmed = tweetUrlInput.trim();
+        if (!trimmed) {
+            setTweetMessage('Please paste your 𝕏 post link.');
+            setTweetStatus('failed');
+            return;
+        }
+
+        setTweetStatus('verifying');
+        setTweetMessage('');
+        try {
+            const res = await fetch('/api/waitlist/verify-tweet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: founderForm.email,
+                    productName: founderForm.productName,
+                    tweetUrl: trimmed
+                })
+            });
+            const data = await res.json();
+            if (data.verified) {
+                setTweetStatus('verified');
+                setTweetMessage(data.message || '+2x Priority Boost Activated!');
+                setVerifiedAuthor(data.authorName || '');
+            } else {
+                setTweetStatus('failed');
+                setTweetMessage(data.message || 'Could not verify this post on 𝕏.');
+            }
+        } catch (err) {
+            setTweetStatus('failed');
+            setTweetMessage('Verification error: ' + err.message);
+        }
+    };
 
     // Handle query params pre-filling from Grader
     useEffect(() => {
@@ -105,6 +193,25 @@ export default function MarketplaceHome({ latestArticles }) {
 
     const handleFounderSubmit = async (e) => {
         e.preventDefault();
+
+        // 1. If Free Tier (Standard), enforce badge verification on their website
+        if (founderForm.reviewTier === 'standard') {
+            if (!founderForm.website?.trim()) {
+                alert('Please enter your product website URL.');
+                return;
+            }
+
+            if (badgeStatus !== 'verified') {
+                const verified = await checkBadgeLive(founderForm.website);
+                if (!verified) {
+                    // Stop submission and highlight badge requirement
+                    const badgeElem = document.getElementById('badge-verification-section');
+                    if (badgeElem) badgeElem.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+        }
+
         setFounderStatus('submitting');
         try {
             const res = await fetch('/api/waitlist', {
@@ -113,14 +220,43 @@ export default function MarketplaceHome({ latestArticles }) {
                 body: JSON.stringify({ type: 'founder', data: founderForm })
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Submission failed');
+            if (!res.ok) {
+                if (data.error === 'badge_not_detected') {
+                    setBadgeStatus('failed');
+                    setBadgeError(data.message);
+                    const badgeElem = document.getElementById('badge-verification-section');
+                    if (badgeElem) badgeElem.scrollIntoView({ behavior: 'smooth' });
+                    throw new Error(data.message);
+                }
+                throw new Error(data.error || 'Submission failed');
+            }
             setFounderStatus('success');
+            setTimeout(() => {
+                const target = document.getElementById('fast-track-step-2') 
+                    || document.getElementById('founder-form');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 80);
         } catch (err) {
             console.error(err);
-            alert(err.message);
             setFounderStatus('idle');
         }
     };
+
+    // Auto-scroll to Step 2 Fast-Track CTA as soon as founderStatus becomes success
+    useEffect(() => {
+        if (founderStatus === 'success') {
+            const timer = setTimeout(() => {
+                const target = document.getElementById('fast-track-step-2') 
+                    || document.getElementById('founder-form');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 120);
+            return () => clearTimeout(timer);
+        }
+    }, [founderStatus]);
 
     const handleBuyerSubmit = async (e) => {
         e.preventDefault();
@@ -337,25 +473,25 @@ export default function MarketplaceHome({ latestArticles }) {
                         ⚡ Grade your SaaS first — score 80+ and your submission gets fast-tracked. <span>Get your free score →</span>
                     </Link>
 
-                    {/* Transparent Pricing Guarantee */}
+                    {/* Zero-Commission Marketplace Guarantee */}
                     <div className={styles.pricingBanner}>
-                        <span className={styles.pricingTag}>Transparent Pricing Guarantee</span>
+                        <span className={styles.pricingTag}>Zero-Commission Marketplace Guarantee</span>
                         <div className={styles.pricingDetails}>
                             <div className={styles.pricePoint}>
-                                <strong>$0 Free</strong>
-                                <span>Genesis Batch Listing</span>
+                                <strong>0% Commission</strong>
+                                <span>$0 Listing Fee for Accepted Tools</span>
                             </div>
                             <div className={styles.pricePerk}>
                                 <FontAwesomeIcon icon={faCheck} style={{ color: '#16a34a', marginRight: '6px' }} />
-                                0% Commission • Keep 100% MRR
+                                Keep 100% of your revenue — zero platform cuts
                             </div>
                             <div className={styles.pricePerk}>
                                 <FontAwesomeIcon icon={faCheck} style={{ color: '#16a34a', marginRight: '6px' }} />
-                                No forced lifetime discounts
+                                Permanent canonical DoFollow backlink on launch
                             </div>
                             <div className={styles.pricePerk}>
                                 <FontAwesomeIcon icon={faCheck} style={{ color: '#16a34a', marginRight: '6px' }} />
-                                Permanent canonical DoFollow backlink
+                                Standard review is 100% Free ($0) for all applicants
                             </div>
                         </div>
                     </div>
@@ -382,10 +518,126 @@ export default function MarketplaceHome({ latestArticles }) {
                                 </a>
                             </div>
 
+                            {/* 𝕏 Post Verification Card & Automated Priority Claimer */}
+                            <div className={styles.tweetVerificationCard}>
+                                {tweetStatus === 'verified' ? (
+                                    <div className={styles.tweetVerifiedBanner}>
+                                        <FontAwesomeIcon icon={faCheckCircle} className={styles.tweetVerifiedIcon} />
+                                        <div>
+                                            <strong>+2x Priority Review Boost Activated! 🎉</strong>
+                                            <p>
+                                                Verified 𝕏 post by <strong>@{verifiedAuthor || 'you'}</strong>. Your application for <strong>{founderForm.productName}</strong> has been tagged with priority review in our queue!
+                                            </p>
+                                            <a href={tweetUrlInput} target="_blank" rel="noopener noreferrer" className={styles.viewTweetLink}>
+                                                View Verified 𝕏 Post <FontAwesomeIcon icon={faExternalLinkAlt} style={{ marginLeft: '4px', fontSize: '0.75rem' }} />
+                                            </a>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={styles.claimPriorityBox}>
+                                        <div className={styles.claimPriorityHeader}>
+                                            <span className={styles.claimPriorityBadge}>⚡ Automated Priority Boost</span>
+                                            <span className={styles.claimPriorityTitle}>Already posted on 𝕏? Paste your post link to claim +2x queue priority:</span>
+                                        </div>
+                                        <form onSubmit={handleVerifyTweet} className={styles.tweetInputGroup}>
+                                            <input
+                                                type="url"
+                                                className={styles.tweetUrlInput}
+                                                placeholder="Paste your 𝕏 post link (e.g. https://x.com/username/status/...)"
+                                                value={tweetUrlInput}
+                                                onChange={(e) => setTweetUrlInput(e.target.value)}
+                                                required
+                                            />
+                                            <button
+                                                type="submit"
+                                                disabled={tweetStatus === 'verifying'}
+                                                className={styles.claimPriorityBtn}
+                                            >
+                                                {tweetStatus === 'verifying' ? 'Verifying with 𝕏... ⏳' : 'Claim +2x Priority 🚀'}
+                                            </button>
+                                        </form>
+                                        {tweetStatus === 'failed' && (
+                                            <div className={styles.tweetErrorText}>
+                                                <FontAwesomeIcon icon={faExclamationTriangle} style={{ marginRight: '6px' }} />
+                                                {tweetMessage}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            {founderForm.reviewTier === 'fast_track' ? (
+                                <div 
+                                    id="fast-track-step-2" 
+                                    style={{ 
+                                        margin: '22px 0 16px', 
+                                        padding: '26px 24px', 
+                                        background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(245, 158, 11, 0.08))', 
+                                        border: '2px solid #7c3aed', 
+                                        borderRadius: '16px', 
+                                        textAlign: 'center',
+                                        boxShadow: '0 10px 35px rgba(124, 58, 237, 0.22)',
+                                        scrollMarginTop: '120px'
+                                    }}
+                                >
+                                    <span style={{ background: 'linear-gradient(135deg, #7c3aed, #f59e0b)', color: '#fff', fontSize: '0.74rem', fontWeight: 800, padding: '4px 12px', borderRadius: '9999px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'inline-block' }}>
+                                        ⚡ Action Required
+                                    </span>
+                                    <h4 style={{ margin: '14px 0 8px', color: '#0f172a', fontSize: '1.35rem', fontWeight: 800 }}>
+                                        Step 2: Complete Your $99 Fast-Track Review Pass
+                                    </h4>
+                                    <p style={{ margin: '0 0 20px', color: '#475569', fontSize: '0.92rem', lineHeight: 1.55, maxWidth: '520px', marginLeft: 'auto', marginRight: 'auto' }}>
+                                        Your application for <strong>{founderForm.productName}</strong> is saved! Complete payment below to activate your guaranteed 48-hour SLA review and comprehensive positioning teardown.
+                                    </p>
+                                    <a
+                                        href={process.env.NEXT_PUBLIC_DODO_FAST_TRACK_URL || `/checkout/fast-track?product=${encodeURIComponent(founderForm.productName)}&email=${encodeURIComponent(founderForm.email)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'linear-gradient(135deg, #7c3aed, #6366f1)', color: '#fff', padding: '14px 34px', borderRadius: '12px', fontWeight: 800, fontSize: '0.98rem', textDecoration: 'none', boxShadow: '0 8px 25px rgba(124, 58, 237, 0.4)', transition: 'transform 0.2s ease' }}
+                                    >
+                                        Complete $99 Fast-Track Pass & Jump Queue →
+                                    </a>
+                                </div>
+                            ) : (
+                                <div style={{ margin: '18px 0 14px', padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', textAlign: 'center' }}>
+                                    <p style={{ margin: '0 0 8px', fontSize: '0.85rem', color: '#475569', fontWeight: 500 }}>
+                                        Want to skip the 14-day queue and guarantee a 48h teardown?
+                                    </p>
+                                    <a
+                                        href={process.env.NEXT_PUBLIC_DODO_FAST_TRACK_URL || `/checkout/fast-track?product=${encodeURIComponent(founderForm.productName)}&email=${encodeURIComponent(founderForm.email)}`}
+                                        target={process.env.NEXT_PUBLIC_DODO_FAST_TRACK_URL ? "_blank" : "_self"}
+                                        rel="noopener noreferrer"
+                                        style={{ display: 'inline-block', background: '#0f172a', color: '#fff', padding: '8px 18px', borderRadius: '7px', fontWeight: 700, fontSize: '0.82rem', textDecoration: 'none' }}
+                                    >
+                                        ⚡ Upgrade to 48h Fast-Track Pass ($99) →
+                                    </a>
+                                </div>
+                            )}
+
                             <p className={styles.successNote}>Check your inbox ({founderForm.email}) for your application confirmation & review next steps.</p>
                         </div>
                     ) : (
                         <form onSubmit={handleFounderSubmit}>
+                            {/* Instant AI URL Auto-Fill for Genesis Founders */}
+                            <ToolUrlAutoFill
+                                toolType="onboarding"
+                                title="Auto-Fill Genesis Application from Website"
+                                subtitle="Drop your product link below. Our AI Agent crawls your site, catches your brand logo in Supabase, and fills in your product name, category, and pitch automatically."
+                                buttonText="Auto-Fill Application ✨"
+                                onSuccess={(extractedData) => {
+                                    setFounderForm(prev => ({
+                                        ...prev,
+                                        productName: extractedData.productName || extractedData.name || prev.productName,
+                                        website: extractedData.website || extractedData.url || prev.website,
+                                        description: extractedData.description || prev.description,
+                                        category: extractedData.category || prev.category,
+                                        stage: extractedData.stage || prev.stage,
+                                        monthlyRevenue: extractedData.monthlyRevenue || prev.monthlyRevenue,
+                                        biggestProblem: extractedData.biggestProblem || prev.biggestProblem
+                                    }));
+                                }}
+                            />
+
                             <div className={styles.formGrid}>
                                 <div className={styles.fieldGroup}>
                                     <label className={styles.fieldLabel}>Founder Name *</label>
@@ -547,14 +799,158 @@ export default function MarketplaceHome({ latestArticles }) {
                             </div>
 
 
+                            {/* Review Speed & Fast-Track Selection */}
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.fieldLabel}>
+                                    Review Queue & Turnaround Speed *
+                                    <span className={styles.fieldLabelHint}>Listing is always $0 free. Choose your review preference:</span>
+                                </label>
+                                <div className={styles.reviewTierGrid}>
+                                    <button
+                                        type="button"
+                                        className={`${styles.reviewTierCard} ${founderForm.reviewTier === 'standard' ? styles.reviewTierActive : ''}`}
+                                        onClick={() => setFounderForm({ ...founderForm, reviewTier: 'standard' })}
+                                    >
+                                        <div className={styles.reviewTierHeader}>
+                                            <span className={styles.reviewTierTitle}>Standard Review</span>
+                                            <span className={styles.reviewTierPrice}>$0 Free</span>
+                                        </div>
+                                        <p className={styles.reviewTierDesc}>
+                                            14–21 business day queue. Free listing, zero commission, and permanent backlink upon editorial acceptance.
+                                        </p>
+                                        <div className={styles.reviewTierReqBadge}>
+                                            ⚠️ Requires LaunchXact Genesis Badge in footer
+                                        </div>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className={`${styles.reviewTierCard} ${styles.reviewTierFastTrack} ${founderForm.reviewTier === 'fast_track' ? styles.reviewTierActive : ''}`}
+                                        onClick={() => setFounderForm({ ...founderForm, reviewTier: 'fast_track' })}
+                                    >
+                                        <div className={styles.fastTrackBadge}>⚡ ALL-INCLUSIVE GROWTH PASS</div>
+                                        <div className={styles.reviewTierHeader}>
+                                            <span className={styles.reviewTierTitle}>⚡ Fast-Track 48h Launch Pass</span>
+                                            <span className={styles.reviewTierPrice}>$99 <small>one-time</small></span>
+                                        </div>
+                                        <p className={styles.reviewTierDesc} style={{ marginBottom: '6px' }}>
+                                            Guaranteed 48h SLA turnaround, in-depth positioning teardown, and maximum platform launch visibility:
+                                        </p>
+                                        <ul className={styles.fastTrackPerksList}>
+                                            <li>⚡ Guaranteed 48-Hour SLA Review & Teardown</li>
+                                            <li>🌐 Dedicated AEO, GEO & SEO Optimized Product Page</li>
+                                            <li>♾️ Lifetime Platform Visibility (never archived)</li>
+                                            <li>🏠 Featured Homepage Showcase Placement</li>
+                                            <li>📈 Dedicated Referral Traffic Directly to Your SaaS</li>
+                                            <li>🚀 Zero Badge Requirement (Skip backlink)</li>
+                                        </ul>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Free Tier: Interactive Embed Badge & Live Verification Box */}
+                            {founderForm.reviewTier === 'standard' && (
+                                <div id="badge-verification-section" className={styles.badgeEmbedBox}>
+                                    <div className={styles.badgeEmbedHeader}>
+                                        <div>
+                                            <h4>
+                                                <FontAwesomeIcon icon={faShieldAlt} style={{ color: '#7c3aed', marginRight: '8px' }} />
+                                                Step 1: Add Genesis Badge to Your Website Footer
+                                            </h4>
+                                            <p>
+                                                Standard curation is 100% free with zero platform commission. In exchange, free cohort candidates must place our verified Genesis badge on their website footer before submission.
+                                            </p>
+                                        </div>
+                                        {badgeStatus === 'verified' && (
+                                            <span className={styles.badgeVerifiedPill}>
+                                                <FontAwesomeIcon icon={faCheckCircle} /> Badge Verified ✅
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className={styles.badgeSnippetContainer}>
+                                        <div className={styles.badgePreviewCard}>
+                                            <span className={styles.badgePreviewLabel}>Live Badge Preview:</span>
+                                            <img 
+                                                src="/badges/launchxact-badge.svg" 
+                                                alt="Featured on LaunchXact | Genesis Batch" 
+                                                width="200" 
+                                                height="56"
+                                                className={styles.badgePreviewImg}
+                                            />
+                                        </div>
+
+                                        <div className={styles.badgeCodeWrapper}>
+                                            <div className={styles.badgeCodeHeader}>
+                                                <span>HTML Embed Snippet (Paste in your footer)</span>
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(`<a href="https://launchxact.com" target="_blank" rel="noopener"><img src="https://launchxact.com/badges/launchxact-badge.svg" alt="Featured on LaunchXact | Genesis Batch" width="200" height="56" /></a>`);
+                                                        setCopiedBadge(true);
+                                                        setTimeout(() => setCopiedBadge(false), 2500);
+                                                    }}
+                                                    className={styles.copyBadgeBtn}
+                                                >
+                                                    {copiedBadge ? 'Copied! ✅' : 'Copy Code 📋'}
+                                                </button>
+                                            </div>
+                                            <pre className={styles.badgeCodePre}>
+                                                <code>{`<a href="https://launchxact.com" target="_blank" rel="noopener">\n  <img src="https://launchxact.com/badges/launchxact-badge.svg" alt="Featured on LaunchXact | Genesis Batch" width="200" height="56" />\n</a>`}</code>
+                                            </pre>
+                                        </div>
+                                    </div>
+
+                                    {/* Verification Status & Live Trigger */}
+                                    <div className={styles.badgeVerifyActionRow}>
+                                        <button
+                                            type="button"
+                                            disabled={badgeStatus === 'verifying'}
+                                            onClick={() => checkBadgeLive(founderForm.website)}
+                                            className={styles.verifyBadgeBtn}
+                                        >
+                                            {badgeStatus === 'verifying' 
+                                                ? 'Scanning Your Website for Badge...' 
+                                                : badgeStatus === 'verified'
+                                                    ? '✅ Badge Verified (Click to Re-scan)'
+                                                    : '🔍 Check My Website for Badge Now'}
+                                        </button>
+                                        <span className={styles.badgeOrUpgradeText}>
+                                            Don't want to place a badge? <button type="button" onClick={() => setFounderForm(prev => ({ ...prev, reviewTier: 'fast_track' }))} className={styles.switchFastTrackLink}>Switch to ⚡ Fast-Track ($99) →</button>
+                                        </span>
+                                    </div>
+
+                                    {badgeError && (
+                                        <div className={styles.badgeErrorAlert}>
+                                            <FontAwesomeIcon icon={faExclamationTriangle} className={styles.badgeErrorIcon} />
+                                            <div>
+                                                <strong>Badge Not Detected on {founderForm.website || 'Your Website'}</strong>
+                                                <p>{badgeError}</p>
+                                                <small>Make sure your site is online, copy the code snippet above, paste it into your footer HTML, and click "Check My Website for Badge Now" or choose Fast-Track.</small>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <button 
                                 type="submit" 
                                 disabled={founderStatus === 'submitting'} 
                                 className={`${styles.btn} ${styles.btnPrimary}`}
                             >
-                                {founderStatus === 'submitting' ? 'Submitting Application...' : '🚀 Apply to Genesis Batch →'}
+                                {founderStatus === 'submitting' 
+                                    ? 'Submitting Application...' 
+                                    : founderForm.reviewTier === 'fast_track' 
+                                        ? '⚡ Submit Application & Get 48h Fast-Track ($99) →' 
+                                        : badgeStatus === 'verified'
+                                            ? '🚀 Submit Free Application (Badge Verified ✅) →'
+                                            : '🔍 Verify Badge & Submit Application (Free) →'}
                             </button>
-                            <p className={styles.smallText}>Zero commission • Keep 100% of your revenue • Strict quality curation</p>
+                            <p className={styles.smallText}>
+                                {founderForm.reviewTier === 'fast_track'
+                                    ? '⚡ Guaranteed 48h turnaround SLA • Dedicated AEO/GEO product page • Homepage showcase • Zero badge required'
+                                    : '✓ 100% Free listing • 0% commission • Verified badge in footer required for standard queue'}
+                            </p>
                         </form>
                     )}
                 </div>

@@ -30,6 +30,11 @@ export async function generateMetadata({ params }) {
             type: 'article',
             publishedTime: articleData.date,
             authors: [articleData.author || 'LaunchXact'],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${articleData.title} | LaunchXact`,
+            description: articleData.description,
         }
     };
 }

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
 import ToolShareCard from '@/components/tools/ToolShareCard';
+import ToolUrlAutoFill from '@/components/tools/ToolUrlAutoFill';
 import styles from './page.module.css';
 
 const LOADING_QUIPS = [
@@ -67,6 +68,7 @@ export default function GradePage() {
     const [competitors, setCompetitors] = useState('');
     const [distribution, setDistribution] = useState('');
     const [url, setUrl] = useState('');
+    const [capturedLogo, setCapturedLogo] = useState('');
 
     // Dynamic founder count from Supabase
     const [founderCount, setFounderCount] = useState(14);
@@ -147,9 +149,20 @@ export default function GradePage() {
     };
 
     // Submit for brutal grading
-    const handleGrade = async (e) => {
-        e.preventDefault();
-        if (!ideaName.trim() && !description.trim() && !url.trim()) {
+    const handleGrade = async (e, customPayload = null) => {
+        if (e && e.preventDefault) e.preventDefault();
+
+        const payload = customPayload || {
+            ideaName: ideaName.trim(),
+            targetCustomer: targetCustomer.trim(),
+            pricing: pricing.trim(),
+            description: description.trim(),
+            competitors: competitors.trim(),
+            distribution: distribution.trim(),
+            url: url.trim(),
+        };
+
+        if (!payload.ideaName && !payload.description && !payload.url) {
             setError('Please enter at least your SaaS Idea Name or Description.');
             return;
         }
@@ -169,15 +182,7 @@ export default function GradePage() {
             const res = await fetch('/api/grade', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ideaName: ideaName.trim(),
-                    targetCustomer: targetCustomer.trim(),
-                    pricing: pricing.trim(),
-                    description: description.trim(),
-                    competitors: competitors.trim(),
-                    distribution: distribution.trim(),
-                    url: url.trim(),
-                }),
+                body: JSON.stringify(payload),
             });
 
             const data = await res.json();
@@ -341,6 +346,38 @@ export default function GradePage() {
 
             {/* LAYER 2: THE INTERACTIVE PROFILE INPUT */}
             <section className={styles.formContainer}>
+                {/* Instant AI Auto-Fill & Audit Bar */}
+                <ToolUrlAutoFill
+                    toolType="grader"
+                    title="Instant Viability Audit from Website URL"
+                    subtitle="Don't want to type? Paste your SaaS link below. Our AI Agent crawls your landing page, catches and caches your brand logo in Supabase, extracts your customer ICP & value prop, and can grade your idea instantly."
+                    buttonText="Auto-Fill Inputs ✨"
+                    autoTriggerText="Auto-Fill & Audit ⚡"
+                    onSuccess={(extractedData, logo) => {
+                        if (extractedData.ideaName) setIdeaName(extractedData.ideaName);
+                        if (extractedData.targetCustomer) setTargetCustomer(extractedData.targetCustomer);
+                        if (extractedData.pricing) setPricing(extractedData.pricing);
+                        if (extractedData.description) setDescription(extractedData.description);
+                        if (extractedData.competitors) setCompetitors(extractedData.competitors);
+                        if (extractedData.distribution) setDistribution(extractedData.distribution);
+                        if (extractedData.url) setUrl(extractedData.url);
+                        if (logo || extractedData.logoUrl) setCapturedLogo(logo || extractedData.logoUrl);
+                        setError('');
+                    }}
+                    onAutoTrigger={(extractedData) => {
+                        const payload = {
+                            ideaName: extractedData.ideaName || '',
+                            targetCustomer: extractedData.targetCustomer || '',
+                            pricing: extractedData.pricing || '',
+                            description: extractedData.description || '',
+                            competitors: extractedData.competitors || '',
+                            distribution: extractedData.distribution || '',
+                            url: extractedData.url || '',
+                        };
+                        handleGrade(null, payload);
+                    }}
+                />
+
                 {/* Quick Presets Bar */}
                 <div className={styles.presetsBar}>
                     <span className={styles.presetsLabel}>⚡ Quick Presets:</span>
@@ -461,16 +498,28 @@ export default function GradePage() {
                         <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                             <label htmlFor="live-url" className={styles.inputLabel}>
                                 7. Live Landing Page or Prototype URL <span className={styles.optional}>(Optional)</span>
+                                {capturedLogo && (
+                                    <span style={{ marginLeft: '8px', fontSize: '0.75rem', color: '#16a34a', fontWeight: 700 }}>
+                                        ✓ Logo Cached in Supabase
+                                    </span>
+                                )}
                             </label>
-                            <input
-                                id="live-url"
-                                type="text"
-                                className={styles.textInput}
-                                placeholder="https://your-startup.com (we'll scrape H1, CTAs & proof signals if available)"
-                                value={url}
-                                onChange={(e) => setUrl(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                {capturedLogo && (
+                                    <div style={{ width: '42px', height: '42px', borderRadius: '8px', border: '1px solid #cbd5e1', padding: '4px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                                        <img src={capturedLogo} alt="Product Logo" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                                    </div>
+                                )}
+                                <input
+                                    id="live-url"
+                                    type="text"
+                                    className={styles.textInput}
+                                    placeholder="https://your-startup.com (we'll scrape H1, CTAs & proof signals if available)"
+                                    value={url}
+                                    onChange={(e) => setUrl(e.target.value)}
+                                    disabled={status === 'loading'}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -527,6 +576,21 @@ export default function GradePage() {
                         </div>
 
                         <div className={styles.hudMeta}>
+                            {capturedLogo && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#fff', border: '1px solid #e2e8f0', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', flexShrink: 0 }}>
+                                        <img src={capturedLogo} alt="Product Logo" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                                    </div>
+                                    <div>
+                                        <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', display: 'block' }}>
+                                            {result.idea_name || ideaName}
+                                        </span>
+                                        <span style={{ fontSize: '0.72rem', color: '#16a34a', fontWeight: 700 }}>
+                                            ✓ Verified Candidate Staged in Supabase
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
                             <div className={styles.archetypeBadge}>
                                 <span className={styles.archetypeIcon}>{getScoreEmoji(result.overall_score)}</span>
                                 <span className={styles.archetypeName}>{result.founder_archetype}</span>
@@ -700,6 +764,103 @@ export default function GradePage() {
                             >
                                 Apply for Genesis Batch →
                             </Link>
+                        </div>
+                    </div>
+
+                    {/* MONETIZATION: FIX YOUR FATAL BOTTLENECK UPSELL */}
+                    <div style={{
+                        marginTop: '2.5rem',
+                        marginBottom: '2.5rem',
+                        padding: '2.25rem 2.5rem',
+                        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+                        border: '2px solid #7c3aed',
+                        borderRadius: '16px',
+                        boxShadow: '0 20px 40px -15px rgba(124, 58, 237, 0.3)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        color: '#ffffff'
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            background: 'linear-gradient(135deg, #7c3aed, #f59e0b)',
+                            color: '#fff',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            padding: '4px 14px',
+                            borderBottomLeftRadius: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
+                        }}>
+                            ⚡ The Antidote Playbook
+                        </div>
+
+                        <div style={{ maxWidth: '820px' }}>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                                Don&apos;t Let This Bottleneck Kill Your Startup
+                            </span>
+                            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '8px 0 12px', color: '#ffffff', lineHeight: 1.25 }}>
+                                Fix Your <span style={{ color: '#f59e0b' }}>{weakestName}</span> with LaunchXact
+                            </h3>
+                            <p style={{ color: '#cbd5e1', fontSize: '0.98rem', lineHeight: 1.6, margin: '0 0 1.5rem' }}>
+                                Our AI flagged <strong>{weakestName} ({weakestScore}/100)</strong> as your single existential point of failure.
+                                LaunchXact gives your SaaS permanent discoverability, high-intent buyer traffic, and dedicated AEO/GEO indexing without paid ad burn. Apply to the Genesis Batch today.
+                            </p>
+
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                                gap: '1rem',
+                                marginBottom: '1.75rem'
+                            }}>
+                                <div style={{ background: 'rgba(255,255,255,0.06)', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                    <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#f8fafc', marginBottom: '4px' }}>🎯 Positioning Framework</div>
+                                    <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>Turn raw features into $10k painkiller copy that commands high willingness-to-pay.</p>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.06)', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                    <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#f8fafc', marginBottom: '4px' }}>🤖 Modern GEO & AEO</div>
+                                    <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>Schema blueprints to force ChatGPT, Perplexity, and Gemini to cite your SaaS.</p>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.06)', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                    <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#f8fafc', marginBottom: '4px' }}>📢 Organic Distribution</div>
+                                    <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>Permanent marketplace showcase and 100+ vetted directory launch stack without paid ad burn.</p>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+                                <Link
+                                    href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
+                                    style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
+                                        color: '#ffffff',
+                                        padding: '13px 26px',
+                                        borderRadius: '10px',
+                                        fontWeight: 800,
+                                        fontSize: '0.95rem',
+                                        textDecoration: 'none',
+                                        boxShadow: '0 6px 20px rgba(124, 58, 237, 0.4)',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                >
+                                    <span>Apply to LaunchXact Genesis Batch (Free Listing) →</span>
+                                </Link>
+
+                                <Link
+                                    href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
+                                    style={{
+                                        color: '#cbd5e1',
+                                        fontSize: '0.88rem',
+                                        textDecoration: 'underline',
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    Or apply with Fast-Track 48h Curation ($99) →
+                                </Link>
+                            </div>
                         </div>
                     </div>
 

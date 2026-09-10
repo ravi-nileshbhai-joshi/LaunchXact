@@ -2,10 +2,8 @@
 import styles from '@/app/startup-visibility-os/startup-visibility.module.css';
 
 export default function ProductHero({ product }) {
-    const handleCheckout = () => {
-        const checkoutUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL_STARTUP_VISIBILITY_OS
-            || `/startup-visibility-os/success?session_id=mock_session_12345`;
-        window.location.href = checkoutUrl;
+    const handleAction = () => {
+        window.location.href = '/#founder-form';
     };
 
     const scrollToInside = () => {
@@ -26,7 +24,7 @@ export default function ProductHero({ product }) {
                 <p className={styles.heroSubline}>{product.subheadline}</p>
 
                 <div className={styles.heroActions}>
-                    <button onClick={handleCheckout} className={styles.heroCta}>
+                    <button onClick={handleAction} className={styles.heroCta}>
                         {product.ctaText}
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

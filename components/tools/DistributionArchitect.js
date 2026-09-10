@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import ToolShareCard from './ToolShareCard';
+import ToolUrlAutoFill from './ToolUrlAutoFill';
 import styles from './DistributionArchitect.module.css';
 
 const CATEGORIES = [
@@ -873,6 +874,22 @@ export default function DistributionArchitect() {
             {/* =========================================================
                 LAYER 2 — THE INTERACTIVE TOOL
                ========================================================= */}
+            {/* Instant AI Auto-Fill */}
+            <ToolUrlAutoFill
+                toolType="distribution"
+                title="Instant Launch Roadmap from Website URL"
+                subtitle="Paste your SaaS link below. Our AI Agent analyzes your product category, launch stage, and target audience, catches your logo in Supabase, and configures your customized 30-day pre-launch timeline automatically."
+                buttonText="Analyze & Configure Roadmap ✨"
+                onSuccess={(extractedData) => {
+                    if (extractedData.category && CATEGORIES.some((c) => c.id === extractedData.category)) {
+                        setSelectedCategory(extractedData.category);
+                    }
+                    if (extractedData.stage && STAGES.some((s) => s.id === extractedData.stage)) {
+                        setSelectedStage(extractedData.stage);
+                    }
+                }}
+            />
+
             <div id="tool-stage" className={styles.selectorCard}>
                 <div className={styles.sectionTitle}>
                     <span>1. Select Your Product Category</span>

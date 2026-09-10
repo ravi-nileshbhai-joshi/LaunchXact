@@ -1,0 +1,37 @@
+<svg width="200" height="56" viewBox="0 0 200 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#090D16"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Card Background -->
+  <rect x="0.5" y="0.5" width="199" height="55" rx="10" fill="url(#bgGrad)"/>
+  <rect x="0.5" y="0.5" width="199" height="55" rx="10" stroke="url(#borderGrad)" stroke-width="1.2"/>
+
+  <!-- Logo Mark -->
+  <g transform="translate(14, 14)">
+    <rect width="28" height="28" rx="7" fill="#7C3AED" fill-opacity="0.18"/>
+    <rect x="0.5" y="0.5" width="27" height="27" rx="6.5" stroke="#7C3AED" stroke-opacity="0.4"/>
+    <path d="M7 8L14 15L21 8" stroke="#A78BFA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M14 15V21" stroke="#A78BFA" stroke-width="2.2" stroke-linecap="round"/>
+    <circle cx="14" cy="14" r="2.5" fill="#38BDF8"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="50" y="24" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="700" letter-spacing="0.08em">FEATURED ON</text>
+  <text x="50" y="40" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" letter-spacing="-0.02em">Launch<tspan fill="url(#textGrad)">Xact</tspan></text>
+  
+  <!-- Genesis Pill -->
+  <rect x="136" y="28" width="52" height="15" rx="7.5" fill="#7C3AED" fill-opacity="0.22"/>
+  <text x="162" y="39" fill="#C4B5FD" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">GENESIS</text>
+</svg>

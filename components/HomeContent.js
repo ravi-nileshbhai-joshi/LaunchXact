@@ -37,12 +37,12 @@ export default function HomeContent({ latestArticles }) {
                     </p>
 
                     <div className={styles.heroActions}>
-                        <Link href="/startup-visibility-os" className={styles.btnPrimary}>
-                            Get Startup Visibility OS — $49
+                        <Link href="/#founder-form" className={styles.btnPrimary}>
+                            Join LaunchXact Genesis Batch
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                         </Link>
-                        <Link href="/startup-visibility-os#whats-inside" className={styles.btnSecondary}>
-                            See What's Inside
+                        <Link href="/tools" className={styles.btnSecondary}>
+                            Explore Founder Tools
                         </Link>
                     </div>
 
@@ -218,11 +218,11 @@ export default function HomeContent({ latestArticles }) {
                         Get the Startup Visibility OS today and start building your discoverability system in the next 7 days.
                     </p>
                     <div className={styles.heroActions}>
-                        <Link href="/startup-visibility-os" className={styles.btnPrimary}>
-                            Get Startup Visibility OS — $49
+                        <Link href="/#founder-form" className={styles.btnPrimary}>
+                            Apply for Genesis Listing (0% Fees)
                         </Link>
-                        <Link href="/#founder-form" className={styles.btnSecondary}>
-                            Submit Your SaaS
+                        <Link href="/grade" className={styles.btnSecondary}>
+                            Grade Your SaaS Now
                         </Link>
                     </div>
                     <div className={styles.finalLinks}>

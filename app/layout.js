@@ -13,10 +13,10 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans',
 
 export const metadata = {
   title: {
-    default: 'LaunchXact - Startup Visibility OS & SaaS Discovery Platform',
+    default: 'LaunchXact - Premium Curated SaaS Marketplace & Founder Launchpad',
     template: '%s | LaunchXact',
   },
-  description: 'LaunchXact helps founders build discoverability, authority, and distribution systems using modern SEO, AI search optimization, Reddit, and founder-led content. Get the Startup Visibility OS for $49.',
+  description: 'LaunchXact is a curated multi-vendor SaaS marketplace and founder launchpad. Zero platform fees, AI-powered founder tools, guaranteed launch visibility, and direct founder distribution.',
   keywords: [
     'LaunchXact', 'SaaS', 'SaaS Marketplace', 'B2B Software', 'Startup', 'Software Discovery', 'Enterprise Tools', 'Tech Tools',
     'where to launch my SaaS', 'curated software directory', 'premium saas marketplace', 'buy saas products',
@@ -97,7 +97,7 @@ const entityGraph = {
       url: 'https://www.launchxact.com',
       name: 'LaunchXact',
       alternateName: ['Launch Xact', 'LaunchXact.com'],
-      description: 'Startup Visibility OS & SaaS Discovery Platform for indie founders.',
+      description: 'Curated SaaS Marketplace & Founder Launchpad for indie software companies.',
       publisher: {
         '@id': 'https://www.launchxact.com/#organization',
       },

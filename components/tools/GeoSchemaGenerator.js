@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import ToolShareCard from './ToolShareCard';
+import ToolUrlAutoFill from './ToolUrlAutoFill';
 import styles from './GeoSchemaGenerator.module.css';
 
 // Preset configurations for instant founder exploration
@@ -410,8 +411,36 @@ ${jsonString}
                 LAYER 2 — THE INTERACTIVE TOOL
                ========================================================= */}
             <div id="tool-stage">
+                {/* Instant AI URL Auto-Fill Box */}
+                <ToolUrlAutoFill
+                    toolType="geo-schema"
+                    title="Instant AI Auto-Fill from Website URL"
+                    subtitle="Drop your SaaS link below. Our AI Agent crawls your landing page, catches and caches your brand logo in Supabase, and generates your complete JSON-LD schema bundle in seconds."
+                    buttonText="Auto-Fill with AI ✨"
+                    onSuccess={(extractedData, logo) => {
+                        if (extractedData.name) setName(extractedData.name);
+                        if (extractedData.url) setUrl(extractedData.url);
+                        if (extractedData.description) setDescription(extractedData.description);
+                        if (extractedData.category) setCategory(extractedData.category);
+                        if (extractedData.operatingSystem) setOperatingSystem(extractedData.operatingSystem);
+                        if (extractedData.pricingModel) setPricingModel(extractedData.pricingModel);
+                        if (extractedData.price !== undefined && extractedData.price !== null) setPrice(String(extractedData.price));
+                        if (extractedData.currency) setCurrency(extractedData.currency);
+                        if (extractedData.orgName) setOrgName(extractedData.orgName);
+                        if (logo || extractedData.logoUrl) setLogoUrl(logo || extractedData.logoUrl);
+                        if (extractedData.features && Array.isArray(extractedData.features) && extractedData.features.length > 0) {
+                            setFeatures(extractedData.features);
+                        }
+                        if (extractedData.faqs && Array.isArray(extractedData.faqs) && extractedData.faqs.length > 0) {
+                            setFaqs(extractedData.faqs);
+                        }
+                        setActivePreset('');
+                        setSchemaTab('bundle');
+                    }}
+                />
+
                 {/* Quick-Load Presets Bar */}
-            <div className={styles.presetsBar}>
+                <div className={styles.presetsBar}>
                 <span className={styles.presetsLabel}>🚀 Quick-Load Demo Presets:</span>
                 {PRESETS.map((p) => (
                     <button
@@ -558,14 +587,28 @@ ${jsonString}
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Logo URL (Optional)</label>
-                            <input
-                                type="text"
-                                className={styles.input}
-                                value={logoUrl}
-                                onChange={(e) => setLogoUrl(e.target.value)}
-                                placeholder="https://yourdomain.com/logo.png"
-                            />
+                            <label className={styles.label}>
+                                Logo URL
+                                {logoUrl && (
+                                    <span style={{ marginLeft: '6px', fontSize: '0.72rem', color: '#16a34a', fontWeight: 700 }}>
+                                        ✓ Logo Cached
+                                    </span>
+                                )}
+                            </label>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                {logoUrl && (
+                                    <div style={{ width: '38px', height: '38px', borderRadius: '8px', border: '1px solid #cbd5e1', padding: '3px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                                        <img src={logoUrl} alt="Logo Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                                    </div>
+                                )}
+                                <input
+                                    type="text"
+                                    className={styles.input}
+                                    value={logoUrl}
+                                    onChange={(e) => setLogoUrl(e.target.value)}
+                                    placeholder="https://yourdomain.com/logo.png"
+                                />
+                            </div>
                         </div>
                     </div>
 

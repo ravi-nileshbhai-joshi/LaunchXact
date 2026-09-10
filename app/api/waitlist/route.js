@@ -14,6 +14,35 @@ const resend = process.env.RESEND_API_KEY
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'LaunchXact <hello@launchxact.com>';
 
+// Live Badge Validator: checks if website HTML contains LaunchXact backlink or badge asset
+async function verifyBadgeOnWebsite(websiteUrl) {
+    if (!websiteUrl) return false;
+    let url = websiteUrl.trim();
+    if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(url, {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; LaunchXact-Badge-Validator/1.0; +https://launchxact.com)',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            },
+            redirect: 'follow'
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) return false;
+        const html = await res.text();
+        const hasBacklink = /<a[^>]+href=["']https?:\/\/(?:www\.)?launchxact\.com[^\s"'>]*["'][^>]*>/i.test(html);
+        const hasBadgeImg = /src=["'][^"']*(?:launchxact-badge\.svg|selected-genesis\.svg|launchxact\.com\/badges)[^"']*["']/i.test(html);
+        const mentionsLaunchXact = /https?:\/\/(?:www\.)?launchxact\.com/i.test(html);
+        return hasBacklink || hasBadgeImg || mentionsLaunchXact;
+    } catch (e) {
+        console.warn(`[Waitlist Badge Check] Exception for ${url}:`, e.message);
+        return false;
+    }
+}
+
 // Helper to generate a clean URL-friendly slug
 function generateSlug(name) {
     if (!name) return `saas-${Math.random().toString(36).substring(2, 8)}`;
@@ -131,9 +160,41 @@ export async function POST(request) {
         const biggestProblem = data.biggestProblem?.trim() || 'Distribution';
         const category = data.category?.trim() || 'B2B SaaS';
         const social = data.social?.trim() || '';
+        const logoUrl = data.logoUrl?.trim() || data.logo?.trim() || '';
+        const reviewTier = data.reviewTier === 'fast_track' || data.fastTrack ? 'fast_track' : 'standard';
 
         if (!email) {
             return NextResponse.json({ error: 'Email is required.' }, { status: 400 });
+        }
+
+        // =========================================================================
+        // BADGE VERIFICATION CHECK FOR FREE TIER (STANDARD REVIEW)
+        // Free tier requires the LaunchXact Genesis badge in their website footer.
+        // Fast-Track tier ($99) bypasses the badge requirement completely.
+        // =========================================================================
+        let badgeVerified = false;
+        if (reviewTier === 'standard') {
+            if (!website) {
+                return NextResponse.json({
+                    error: 'website_required',
+                    message: 'Your website URL is required for standard free review so we can verify the LaunchXact badge in your footer.'
+                }, { status: 400 });
+            }
+
+            // Verify badge live on website
+            badgeVerified = await verifyBadgeOnWebsite(website);
+
+            if (!badgeVerified) {
+                console.log(`[Waitlist API] Rejected free submission for ${productName} (${website}) — badge not detected.`);
+                return NextResponse.json({
+                    error: 'badge_not_detected',
+                    message: `LaunchXact badge was not detected in the footer of ${website}. Standard free curation requires our embed badge. Please copy the embed code below, add it to your website, and click 'Verify Badge & Submit', or upgrade to ⚡ Fast-Track ($99) to launch without a badge.`
+                }, { status: 422 });
+            }
+
+            console.log(`[Waitlist API] ✅ Verified badge on ${website} for ${productName}!`);
+        } else {
+            console.log(`[Waitlist API] ⚡ Fast-Track tier selected for ${productName} — badge requirement bypassed.`);
         }
 
         const slug = generateSlug(productName);
@@ -149,6 +210,9 @@ export async function POST(request) {
             founder_name: founderName,
             social_profile: social,
             website_url: website,
+            logo_url: logoUrl,
+            review_tier: reviewTier,
+            badge_verified: badgeVerified,
             key_features: [
                 `Built for ${category} workflows`,
                 `Verified member of the LaunchXact Genesis Batch`,
@@ -169,11 +233,12 @@ export async function POST(request) {
         // 1. Insert into waitlist_founders
         let founderRowId = null;
 
-        // Try inserting with new intelligence columns
+        // Try inserting with new intelligence & monetization columns
         const fullFounderPayload = {
             founder_name: founderName,
             product_name: productName,
             website_url: website,
+            logo_url: logoUrl || null,
             description: description,
             category: category,
             email: email,
@@ -181,11 +246,16 @@ export async function POST(request) {
             stage: stage,
             monthly_revenue: monthlyRevenue,
             biggest_problem: biggestProblem,
+            review_tier: reviewTier,
+            badge_verified: badgeVerified,
             slug: slug,
             metadata: {
                 stage,
                 monthly_revenue: monthlyRevenue,
                 biggest_problem: biggestProblem,
+                logo_url: logoUrl,
+                review_tier: reviewTier,
+                badge_verified: badgeVerified,
                 aeo: aeoContent
             },
             utm_source: data.utmSource || null,
@@ -211,7 +281,7 @@ export async function POST(request) {
                 founder_name: founderName,
                 product_name: productName,
                 website_url: website,
-                description: `[Stage: ${stage} | MRR: ${monthlyRevenue} | Bottleneck: ${biggestProblem}] ${description}`,
+                description: `[Stage: ${stage} | MRR: ${monthlyRevenue} | Bottleneck: ${biggestProblem} | Tier: ${reviewTier} | Badge: ${badgeVerified}] ${description}`,
                 category: category,
                 email: email,
                 social_profile: social,
@@ -239,22 +309,56 @@ export async function POST(request) {
             founderRowId = insertedFounder?.id;
         }
 
+        // Also stage/update in products table so the founder is ready for marketplace launch
+        try {
+            await supabase.from('products').upsert([{
+                name: productName,
+                website_url: website,
+                logo_url: logoUrl || null,
+                description: description,
+                category: category,
+                slug: slug,
+                status: 'genesis_candidate',
+                review_tier: reviewTier,
+                badge_verified: badgeVerified,
+                aeo_content: aeoContent
+            }], { onConflict: 'slug', ignoreDuplicates: true });
+        } catch (prodErr) {
+            console.warn('Products upsert warning:', prodErr.message);
+        }
+
         // 2. Send Application Confirmation Email via Resend
         let emailSent = false;
         let emailMessageId = null;
 
         if (resend) {
             try {
+                const isFastTrack = reviewTier === 'fast_track';
                 const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just applied to the @LaunchXact Genesis Batch with ${productName}! Excited to launch in a curated SaaS marketplace. 🚀 https://launchxact.com`)}`;
-                const emailSubject = `🚀 Application Received: ${productName} — LaunchXact Genesis Batch`;
+                const emailSubject = isFastTrack
+                    ? `⚡ Fast-Track Priority Application: ${productName} — LaunchXact Genesis Batch (48h Review)`
+                    : `🚀 Application Received: ${productName} — LaunchXact Genesis Batch`;
                 const emailBody = `Hi ${founderName},
 
 Thanks for submitting ${productName} to the LaunchXact Genesis Batch!
 
-Your application has been logged into our founder review queue.
-
+${isFastTrack ? `⚡ TIER: FAST-TRACK 48-HOUR REVIEW PASS ($99)
+Your application is prioritized at the top of our queue with:
+- Guaranteed 48-hour review turnaround & 1-on-1 positioning teardown
+- Dedicated AEO, GEO & SEO-optimized product page (optimized for ChatGPT, Perplexity, Gemini & Google)
+- Lifetime visibility on the LaunchXact platform (never archived)
+- Featured placement in the homepage product showcase
+- Dedicated referral traffic directly to your website
+- Zero badge requirement
+` : `Your application has been logged into our standard founder review queue.
+- Review Queue: Standard Community Queue (14–21 business days)
+- LaunchXact Badge: Verified in your website footer ✅
+- 0% Platform Commission & $0 Listing Fee
+`}
 Application Summary:
 - Product: ${productName}
+- Review Tier: ${isFastTrack ? '⚡ Fast-Track Priority (48h SLA)' : 'Standard Community Queue (14–21 days)'}
+- Badge Status: ${badgeVerified ? '✅ Verified on Website Footer' : (isFastTrack ? '⚡ Bypassed (Fast-Track Tier)' : 'Pending')}
 - Stage: ${stage}
 - Monthly Revenue: ${monthlyRevenue}
 - Core Bottleneck: ${biggestProblem}
@@ -263,11 +367,12 @@ ${website ? `- Website: ${website}\n` : ''}
 How Our Curation Review Works:
 We are hand-curating an initial cohort of 40 breakout SaaS products for our official launch batch. To protect buyers and ensure high value, every submission is reviewed for technical stability, problem clarity, and founder authenticity.
 
-If selected for the Genesis cohort, your product will receive:
+Selected Genesis builders receive:
 1. Priority Placement: Featured spot on launch day with permanent high-authority DoFollow backlink.
-2. 0% Platform Fees: 90 days of zero commission on all marketplace transactions.
-3. Direct Distribution: Push to our 350k+ founder network across LinkedIn, X, and Reddit.
-4. Early Adopter Feedback: Direct visibility and user testing from active tech buyers.
+2. 0% Platform Fees: Keep 100% of your customer revenue forever.
+3. Dedicated AEO/GEO Visibility: Citable schema that puts your tool into AI search answers.
+4. Direct Distribution: Push to our 350k+ founder network across LinkedIn, 𝕏, and Reddit.
+5. Early Adopter Influx: Direct visibility and user testing from active tech buyers.
 
 Want to boost your review ranking?
 Founders who share their Genesis application move to the top of our review queue:
