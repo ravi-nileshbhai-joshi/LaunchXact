@@ -38,6 +38,21 @@ export default function Footer() {
                             className={styles.badgeImg}
                         />
                     </a>
+                    <a
+                        href="https://launchxact.com"
+                        target="_blank"
+                        rel="noopener"
+                        className={styles.badgeLink}
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="https://launchxact.com/badges/launchxact-badge.svg"
+                            alt="Featured on LaunchXact | Genesis Batch"
+                            width="200"
+                            height="56"
+                            className={styles.badgeImg}
+                        />
+                    </a>
                 </div>
                 <p>&copy; {new Date().getFullYear()} LaunchXact — A Context Forge Labs product</p>
             </div>
