@@ -130,6 +130,105 @@ export default function MarketplaceHome({ latestArticles }) {
         }
     };
 
+    // Auto-fill Data Normalization & Form Hydration
+    const [inlineAutofillLoading, setInlineAutofillLoading] = useState(false);
+
+    const applyAutoFillData = (extractedData, logoUrl) => {
+        if (!extractedData) return;
+
+        // 1. Stage normalization
+        let normStage = 'Live';
+        const rawStage = (extractedData.stage || '').toLowerCase();
+        if (rawStage.includes('revenue') || rawStage.includes('paying') || rawStage.includes('generating')) {
+            normStage = 'Already generating revenue';
+        } else if (rawStage.includes('mvp') || rawStage.includes('build')) {
+            normStage = 'MVP';
+        } else if (rawStage.includes('idea') || rawStage.includes('concept')) {
+            normStage = 'Idea';
+        } else {
+            normStage = 'Live';
+        }
+
+        // 2. Revenue normalization
+        let normRevenue = 'Pre-revenue ($0)';
+        const rawRev = (extractedData.monthlyRevenue || '').toLowerCase();
+        if (rawRev.includes('20,000') || rawRev.includes('20k') || rawRev.includes('100k') || rawRev.includes('50k')) {
+            normRevenue = '$20,000+ / mo';
+        } else if (rawRev.includes('5,000') || rawRev.includes('10,000') || rawRev.includes('10k') || rawRev.includes('5k')) {
+            normRevenue = '$5,000 – $20,000 / mo';
+        } else if (rawRev.includes('1,000') || rawRev.includes('1k') || rawRev.includes('2k') || rawRev.includes('3k') || rawRev.includes('4k')) {
+            normRevenue = '$1,000 – $5,000 / mo';
+        } else if (rawRev.includes('<') || rawRev.includes('500') || rawRev.includes('hundred')) {
+            normRevenue = '< $1,000 / mo';
+        } else {
+            normRevenue = 'Pre-revenue ($0)';
+        }
+
+        // 3. Problem normalization
+        let normProb = 'Distribution';
+        const rawProb = (extractedData.biggestProblem || '').toLowerCase();
+        if (rawProb.includes('infra')) normProb = 'Infrastructure';
+        else if (rawProb.includes('pay') || rawProb.includes('tax') || rawProb.includes('monet')) normProb = 'Payments';
+        else if (rawProb.includes('disc') || rawProb.includes('seo') || rawProb.includes('ai')) normProb = 'Discovery';
+        else if (rawProb.includes('build') || rawProb.includes('dev') || rawProb.includes('tech')) normProb = 'Building';
+        else if (rawProb.includes('other')) normProb = 'Other';
+        else normProb = 'Distribution';
+
+        // 4. Category normalization
+        const validCats = [
+            'AI & DevTools',
+            'B2B SaaS',
+            'Marketing & Sales',
+            'Fintech & Payments',
+            'Productivity & Ops',
+            'Creator Economy',
+            'Other'
+        ];
+        let normCat = 'AI & DevTools';
+        const rawCat = (extractedData.category || '').toLowerCase();
+        if (rawCat.includes('b2b')) normCat = 'B2B SaaS';
+        else if (rawCat.includes('market') || rawCat.includes('sales')) normCat = 'Marketing & Sales';
+        else if (rawCat.includes('fin') || rawCat.includes('pay') || rawCat.includes('commerce')) normCat = 'Fintech & Payments';
+        else if (rawCat.includes('prod') || rawCat.includes('ops') || rawCat.includes('util')) normCat = 'Productivity & Ops';
+        else if (rawCat.includes('creat')) normCat = 'Creator Economy';
+        else if (rawCat.includes('ai') || rawCat.includes('dev') || rawCat.includes('tool')) normCat = 'AI & DevTools';
+        else if (validCats.includes(extractedData.category)) normCat = extractedData.category;
+        else normCat = 'Other';
+
+        setFounderForm(prev => ({
+            ...prev,
+            productName: extractedData.productName || extractedData.name || prev.productName,
+            website: extractedData.website || extractedData.url || prev.website,
+            description: extractedData.description || prev.description,
+            category: normCat,
+            stage: normStage,
+            monthlyRevenue: normRevenue,
+            biggestProblem: normProb,
+            logoUrl: logoUrl || extractedData.logoUrl || prev.logoUrl
+        }));
+    };
+
+    const handleInlineUrlAutoFill = async () => {
+        const rawUrl = founderForm.website.trim();
+        if (!rawUrl) return;
+        setInlineAutofillLoading(true);
+        try {
+            const res = await fetch('/api/tools/autofill', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: rawUrl, toolType: 'onboarding' })
+            });
+            const data = await res.json();
+            if (res.ok && data.data) {
+                applyAutoFillData(data.data, data.logoUrl);
+            }
+        } catch (err) {
+            console.error('Inline autofill error:', err);
+        } finally {
+            setInlineAutofillLoading(false);
+        }
+    };
+
     // 𝕏 Tweet Verification States
     const [tweetUrlInput, setTweetUrlInput] = useState('');
     const [tweetStatus, setTweetStatus] = useState('idle'); // 'idle' | 'verifying' | 'verified' | 'failed'
@@ -624,17 +723,8 @@ export default function MarketplaceHome({ latestArticles }) {
                                 title="Auto-Fill Genesis Application from Website"
                                 subtitle="Drop your product link below. Our AI Agent crawls your site, catches your brand logo in Supabase, and fills in your product name, category, and pitch automatically."
                                 buttonText="Auto-Fill Application ✨"
-                                onSuccess={(extractedData) => {
-                                    setFounderForm(prev => ({
-                                        ...prev,
-                                        productName: extractedData.productName || extractedData.name || prev.productName,
-                                        website: extractedData.website || extractedData.url || prev.website,
-                                        description: extractedData.description || prev.description,
-                                        category: extractedData.category || prev.category,
-                                        stage: extractedData.stage || prev.stage,
-                                        monthlyRevenue: extractedData.monthlyRevenue || prev.monthlyRevenue,
-                                        biggestProblem: extractedData.biggestProblem || prev.biggestProblem
-                                    }));
+                                onSuccess={(extractedData, logoUrl) => {
+                                    applyAutoFillData(extractedData, logoUrl);
                                 }}
                             />
 
@@ -675,12 +765,38 @@ export default function MarketplaceHome({ latestArticles }) {
                                         Website / Prototype URL
                                         <span className={styles.fieldLabelHint}>Optional</span>
                                     </label>
-                                    <input 
-                                        className={styles.input} 
-                                        placeholder="https://yoursaas.com or pre-launch" 
-                                        value={founderForm.website} 
-                                        onChange={e => setFounderForm({ ...founderForm, website: e.target.value })} 
-                                    />
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <input 
+                                            className={styles.input} 
+                                            placeholder="https://yoursaas.com or pre-launch" 
+                                            value={founderForm.website} 
+                                            onChange={e => setFounderForm({ ...founderForm, website: e.target.value })} 
+                                            style={{ flex: 1 }}
+                                        />
+                                        {founderForm.website && (
+                                            <button
+                                                type="button"
+                                                onClick={handleInlineUrlAutoFill}
+                                                disabled={inlineAutofillLoading}
+                                                style={{
+                                                    background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
+                                                    color: '#fff',
+                                                    border: 'none',
+                                                    borderRadius: '8px',
+                                                    padding: '0 14px',
+                                                    fontWeight: 700,
+                                                    fontSize: '0.82rem',
+                                                    cursor: inlineAutofillLoading ? 'wait' : 'pointer',
+                                                    whiteSpace: 'nowrap',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '4px'
+                                                }}
+                                            >
+                                                {inlineAutofillLoading ? '⏳ Reading...' : 'Auto-Fill ✨'}
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className={styles.fieldGroup}>
                                     <label className={styles.fieldLabel}>Category / Vertical *</label>

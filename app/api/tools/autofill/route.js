@@ -109,15 +109,15 @@ async function catchAndStoreLogo(logoCandidates, productName, domainSlug) {
     let finalLogoUrl = null;
     let storedInSupabase = false;
 
-    // Iterate through candidates until one successfully loads
-    for (const candidate of logoCandidates) {
+    // Iterate through top 3 candidates until one successfully loads
+    for (const candidate of logoCandidates.slice(0, 3)) {
         try {
             const imgRes = await fetch(candidate.fullUrl, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 LaunchXactLogoBot/1.0',
                     'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
                 },
-                signal: AbortSignal.timeout(4500)
+                signal: AbortSignal.timeout(2500)
             });
 
             if (!imgRes.ok) continue;
@@ -204,6 +204,18 @@ function generateDeterministicFallback(rawScraped, toolType) {
             category: 'b2b_saas',
             stage: 'beta',
             audience: 'Modern technical operators and B2B workflow teams'
+        };
+    }
+
+    if (toolType === 'onboarding') {
+        return {
+            productName: inferredName,
+            website: `https://${hostname}`,
+            description: cleanDesc,
+            category: 'AI & DevTools',
+            stage: 'Live',
+            monthlyRevenue: 'Pre-revenue ($0)',
+            biggestProblem: 'Distribution'
         };
     }
 
@@ -424,24 +436,25 @@ CONTENT: ${textSample}
 
 Return valid JSON with this exact schema:
 {
-  "productName": "<Product Name>",
+  "productName": "<Clean Product Name>",
   "website": "${normalizedUrl}",
   "description": "<Compelling 1-2 sentence pitch>",
-  "category": "<One of: AI & DevTools, B2B SaaS, Creator Tools, Fintech & Commerce, Utilities>",
-  "stage": "<One of: MVP, Beta, Live with Traction>",
-  "monthlyRevenue": "<Estimated MRR tier, e.g. Pre-revenue ($0) or $1k - $5k MRR>",
-  "biggestProblem": "<One of: Distribution, Infrastructure, Moat, Monetization>"
+  "category": "<Exact one of: AI & DevTools, B2B SaaS, Marketing & Sales, Fintech & Payments, Productivity & Ops, Creator Economy, Other>",
+  "stage": "<Exact one of: Idea, MVP, Live, Already generating revenue>",
+  "monthlyRevenue": "<Exact one of: Pre-revenue ($0), < $1,000 / mo, $1,000 – $5,000 / mo, $5,000 – $20,000 / mo, $20,000+ / mo>",
+  "biggestProblem": "<Exact one of: Building, Infrastructure, Payments, Distribution, Discovery, Other>"
 }`;
             }
 
             try {
                 const completion = await groq.chat.completions.create({
                     messages: [
-                        { role: 'system', content: 'You are a precise JSON data extraction agent for SaaS software.' },
+                        { role: 'system', content: 'You are a precise JSON data extraction agent for SaaS software. Always output valid JSON.' },
                         { role: 'user', content: prompt }
                     ],
-                    model: 'openai/gpt-oss-120b',
+                    model: 'qwen/qwen3.8-27b',
                     response_format: { type: 'json_object' },
+                    max_tokens: 600,
                     temperature: 0.2,
                 });
 
@@ -450,15 +463,16 @@ Return valid JSON with this exact schema:
                     extractedData = JSON.parse(rawContent);
                 }
             } catch (errGroqPrimary) {
-                console.warn('Primary Groq 120b model failed, attempting 20b fallback:', errGroqPrimary.message);
+                console.warn('Primary Groq qwen3.8-27b failed, attempting gpt-oss-120b fallback:', errGroqPrimary.message);
                 try {
                     const fallbackCompletion = await groq.chat.completions.create({
                         messages: [
-                            { role: 'system', content: 'You are a precise JSON data extraction agent for SaaS software.' },
+                            { role: 'system', content: 'You are a precise JSON data extraction agent for SaaS software. Always output valid JSON.' },
                             { role: 'user', content: prompt }
                         ],
-                        model: 'openai/gpt-oss-20b',
+                        model: 'openai/gpt-oss-120b',
                         response_format: { type: 'json_object' },
+                        max_tokens: 600,
                         temperature: 0.2,
                     });
                     const rawFb = fallbackCompletion.choices[0]?.message?.content;
