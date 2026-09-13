@@ -16,7 +16,19 @@ export default function Navbar() {
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
-        return () => { document.body.style.overflow = ''; };
+        if (typeof window !== 'undefined' && window.__lenis) {
+            if (isOpen) {
+                window.__lenis.stop();
+            } else {
+                window.__lenis.start();
+            }
+        }
+        return () => { 
+            document.body.style.overflow = ''; 
+            if (typeof window !== 'undefined' && window.__lenis) {
+                window.__lenis.start();
+            }
+        };
     }, [isOpen]);
 
     return (

@@ -64,6 +64,19 @@ if (fs.existsSync(articlesDir)) {
     }
 }
 
+// Add Programmatic Search Ecosystem Spoke Pages (High Intent Tool Spoke Clusters)
+const ecosystemPath = path.join(process.cwd(), 'data', 'search-ecosystem.js');
+if (fs.existsSync(ecosystemPath)) {
+    const ecosystemContent = fs.readFileSync(ecosystemPath, 'utf8');
+    const slugMatches = [...ecosystemContent.matchAll(/slug:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
+    const uniqueSlugs = Array.from(new Set(slugMatches));
+    
+    for (const slug of uniqueSlugs) {
+        sitemapXml += `  <url>\n    <loc>https://www.launchxact.com/${slug}</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>\n`;
+    }
+    console.log(`📡 Injected ${uniqueSlugs.length} high-intent search ecosystem spoke URLs into sitemap.`);
+}
+
 sitemapXml += `</urlset>`;
 
 fs.writeFileSync(sitemapPath, sitemapXml, 'utf8');

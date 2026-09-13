@@ -1,0 +1,666 @@
+.page {
+    min-height: 90vh;
+    padding-top: 7rem;
+    padding-bottom: 6rem;
+    background: #080c14;
+    color: #f1f5f9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Header */
+.header {
+    margin-bottom: 3rem;
+}
+
+.headerTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 14px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #a78bfa;
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.35);
+    border-radius: 9999px;
+}
+
+.liveIndicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: #4ade80;
+    font-weight: 700;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    padding: 4px 12px;
+    border-radius: 9999px;
+}
+
+.livePulse {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #22c55e;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0 0 1rem;
+    letter-spacing: -0.02em;
+}
+
+.gradientAccent {
+    background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 1.05rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    max-width: 820px;
+    margin: 0 0 2rem;
+}
+
+/* Filters Bar */
+.filtersBar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 220px;
+}
+
+.filterLabel {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.select {
+    padding: 0.65rem 1rem;
+    background: #090d16;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+.select:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+.refreshToggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.btnRefresh {
+    padding: 0.65rem 1rem;
+    background: rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    border-radius: 8px;
+    color: #c4b5fd;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btnRefresh:hover {
+    background: rgba(124, 58, 237, 0.35);
+    color: #ffffff;
+}
+
+.autoRefreshLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: #64748b;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* KPI Cards */
+.kpiGrid {
+    display: grid;
+    grid-templateColumns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.kpiCard {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.kpiLabel {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.kpiValue {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.kpiSub {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Bottleneck Radar */
+.bottleneckRadar {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 2px solid rgba(239, 68, 68, 0.4);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 15px 35px -10px rgba(239, 68, 68, 0.2);
+}
+
+.radarHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radarIcon {
+    font-size: 2.2rem;
+}
+
+.radarBadge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    padding: 3px 10px;
+    border-radius: 9999px;
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.radarTitle {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+}
+
+.radarVerdict {
+    font-size: 0.98rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+}
+
+.fixRecommendation {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+}
+
+.fixLabel {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #facc15;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.fixText {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+/* 8-Stage Waterfall */
+.waterfallSection {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.sectionHeader {
+    margin-bottom: 1.75rem;
+}
+
+.sectionTitle {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.35rem;
+}
+
+.sectionSub {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.waterfallList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.waterfallRow {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.waterfallRow:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .waterfallRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
+
+.stepMeta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.stepNumberBadge {
+    width: 28px;
+    height: 28px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: #a78bfa;
+    flex-shrink: 0;
+}
+
+.stepName {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.stepDesc {
+    font-size: 0.76rem;
+    color: #64748b;
+}
+
+.barArea {
+    flex: 1;
+    width: 100%;
+}
+
+.barTrack {
+    height: 32px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1 0%, #7c3aed 100%);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.barCountLabel {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.conversionPctCol {
+    width: 80px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.conversionBigVal {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #a78bfa;
+}
+
+.conversionSub {
+    font-size: 0.72rem;
+    color: #64748b;
+}
+
+/* Transitions Grid */
+.transitionsSection {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.transitionsGrid {
+    display: grid;
+    grid-templateColumns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.transitionCard {
+    background: #090d16;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 1.25rem;
+    position: relative;
+}
+
+.transitionCardWorst {
+    border-color: rgba(239, 68, 68, 0.5);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.06) 0%, #090d16 100%);
+}
+
+.worstPill {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    padding: 2px 8px;
+    border-radius: 9999px;
+}
+
+.transitionLabel {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem;
+    padding-right: 2rem;
+}
+
+.transitionMetricsRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.transitionValLabel {
+    font-size: 0.72rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.conversionRateVal {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #4ade80;
+}
+
+.dropOffRateVal {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #cbd5e1;
+}
+
+.dropWorstText {
+    color: #f87171;
+}
+
+.volumeRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: #64748b;
+    border-top: 1px solid #1e293b;
+    padding-top: 8px;
+}
+
+/* Attribution & Feed */
+.attributionGrid {
+    display: grid;
+    grid-templateColumns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.channelsCard, .feedCard {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 1.75rem;
+}
+
+.cardHeading {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.25rem;
+}
+
+.cardSub {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0 0 1.25rem;
+}
+
+.channelsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.channelRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #090d16;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+}
+
+.channelName {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+
+.channelStats {
+    display: flex;
+    gap: 12px;
+}
+
+.channelShare {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.channelConversion {
+    font-size: 0.8rem;
+    color: #a78bfa;
+    font-weight: 700;
+}
+
+.feedList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.feedItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.6rem 0.8rem;
+    background: #090d16;
+    border-radius: 8px;
+    border: 1px solid #1e293b;
+    font-size: 0.82rem;
+}
+
+.feedEventDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6366f1;
+    flex-shrink: 0;
+}
+
+.feedDetails {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.feedEventName {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.feedTool {
+    color: #a78bfa;
+    font-size: 0.75rem;
+}
+
+.feedUtm {
+    color: #64748b;
+    font-size: 0.72rem;
+}
+
+.feedTime {
+    font-size: 0.72rem;
+    color: #64748b;
+}
+
+.feedEmpty {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* Bottom Nav */
+.bottomNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #1e293b;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.backBtn {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.backBtn:hover {
+    color: #ffffff;
+}
+
+.genesisLink {
+    color: #a78bfa;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.genesisLink:hover {
+    color: #c4b5fd;
+    text-decoration: underline;
+}

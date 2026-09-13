@@ -3,12 +3,21 @@ import styles from './Breadcrumb.module.css';
 
 /**
  * Reusable visual & semantic Breadcrumb navigation
+ * Prevents duplicate 'Home' elements if passed by the caller
  * @param {Array} items - Array of { label: string, href?: string }
  */
 export default function Breadcrumb({ items = [] }) {
+    // If the caller already provided 'Home' as the first item, don't duplicate it
+    const cleanItems = items.filter((item, idx) => {
+        if (idx === 0 && (item.label?.toLowerCase() === 'home' || item.href === '/')) {
+            return false;
+        }
+        return true;
+    });
+
     const allItems = [
         { label: 'Home', href: '/' },
-        ...items
+        ...cleanItems
     ];
 
     return (

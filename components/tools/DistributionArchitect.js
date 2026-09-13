@@ -1,8 +1,10 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ToolShareCard from './ToolShareCard';
 import ToolUrlAutoFill from './ToolUrlAutoFill';
+import ToolEmailCapture from './ToolEmailCapture';
+import { trackAcquisitionEvent, ACQUISITION_EVENTS } from '@/lib/acquisition';
 import styles from './DistributionArchitect.module.css';
 
 const CATEGORIES = [
@@ -737,6 +739,27 @@ export default function DistributionArchitect() {
     const [completedTasks, setCompletedTasks] = useState({});
     const [copiedHook, setCopiedHook] = useState(false);
     const [copiedRoadmap, setCopiedRoadmap] = useState(false);
+    const hasStartedRef = useRef(false);
+    const resultsViewedRef = useRef(false);
+
+    // Track 1. landing_page_view on mount
+    useEffect(() => {
+        trackAcquisitionEvent(ACQUISITION_EVENTS.LANDING_PAGE_VIEW, {
+            toolId: 'pre-launch-distribution-architect',
+            once: true
+        });
+    }, []);
+
+    const notifyToolStarted = () => {
+        if (!hasStartedRef.current) {
+            hasStartedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_STARTED, {
+                toolId: 'pre-launch-distribution-architect',
+                metadata: { selectedCategory, selectedStage },
+                once: true
+            });
+        }
+    };
 
     const activeTimeline = useMemo(() => {
         return TIMELINE_DATA[selectedCategory] || TIMELINE_DATA.devtool;
@@ -764,7 +787,31 @@ export default function DistributionArchitect() {
         return Math.round((completedCount / totalTaskCount) * 100);
     }, [completedCount, totalTaskCount]);
 
+    // Track 3. tool_completed & 4. result_viewed
+    useEffect(() => {
+        if (!hasStartedRef.current) return;
+        trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
+            toolId: 'pre-launch-distribution-architect',
+            metadata: {
+                category: selectedCategory,
+                stage: selectedStage,
+                momentumScore,
+                completedTasksCount: completedCount
+            }
+        });
+
+        if (!resultsViewedRef.current) {
+            resultsViewedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_VIEWED, {
+                toolId: 'pre-launch-distribution-architect',
+                metadata: { category: selectedCategory },
+                once: true
+            });
+        }
+    }, [selectedCategory, selectedStage, momentumScore, completedCount]);
+
     const toggleTask = (taskId) => {
+        notifyToolStarted();
         setCompletedTasks((prev) => ({
             ...prev,
             [taskId]: !prev[taskId],
@@ -838,6 +885,12 @@ export default function DistributionArchitect() {
 
     const activeCatObj = CATEGORIES.find((c) => c.id === selectedCategory) || CATEGORIES[0];
     const activeStageObj = STAGES.find((s) => s.id === selectedStage) || STAGES[0];
+
+    const copySummaryText = `🚀 LaunchXact Pre-Launch Distribution Roadmap:
+• Category: ${activeCatObj.name} | Stage: ${activeStageObj.name}
+• Launch Momentum Score: ${momentumScore}%
+• Target Founder Effort: ~8-12 hrs/week across 8+ channels
+Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-architect`;
 
     return (
         <div className={styles.container}>
@@ -1107,7 +1160,11 @@ export default function DistributionArchitect() {
                 </p>
 
                 <div className={styles.ahaActionRow}>
-                    <Link href="/#founder-form" className={styles.btnAhaGenesis}>
+                    <Link
+                        href="/#founder-form"
+                        onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'pre-launch-distribution-architect' })}
+                        className={styles.btnAhaGenesis}
+                    >
                         Join the Genesis Batch →
                     </Link>
                     <span className={styles.genesisGuarantees}>
@@ -1115,6 +1172,20 @@ export default function DistributionArchitect() {
                     </span>
                 </div>
             </section>
+
+            {/* EMAIL CAPTURE AFTER VALUE */}
+            <ToolEmailCapture
+                toolId="pre-launch-distribution-architect"
+                resultSummary={{
+                    category: activeCatObj.name,
+                    stage: activeStageObj.name,
+                    momentumScore: `${momentumScore}%`,
+                    completedTasks: `${completedCount} of ${totalTaskCount}`,
+                    timeCommitment: '~8-12 founder-hours/week',
+                    targetChannels: 'Reddit, X, IndieHackers, Dev Discords, Tech Newsletters'
+                }}
+                exportContent={copySummaryText}
+            />
 
             {/* =========================================================
                 LAYER 4 — THE "SHARE MY RESULT" VIRAL LOOP
@@ -1131,15 +1202,12 @@ export default function DistributionArchitect() {
                 ]}
                 quote={`I just mapped my 30-day pre-launch distribution roadmap across 8 tactical channels for my SaaS (${activeCatObj.name}). No paid ads.`}
                 toolName="Distribution Architect"
+                toolId="pre-launch-distribution-architect"
                 toolUrl="https://www.launchxact.com/tools/pre-launch-distribution-architect"
                 shareTextX={`I just mapped my 30-day pre-launch distribution roadmap across 8 tactical channels for my SaaS (${activeCatObj.name}). No paid ads.\n\nPlan yours → https://www.launchxact.com/tools/pre-launch-distribution-architect`}
                 shareTitleReddit={`Reverse-engineered my 30-day SaaS distribution plan (${activeCatObj.name})`}
                 shareTextReddit={`I mapped out my organic launch distribution strategy across Reddit, X, and Dev Discords:\n\n• Category: ${activeCatObj.name}\n• Target Stage: ${activeStageObj.name}\n• Traction Score: ${momentumScore}%\n• Target Founder Effort: ~8-12 hrs/week\n\nGenerate your 30-day launch roadmap here: https://www.launchxact.com/tools/pre-launch-distribution-architect`}
-                copySummaryText={`🚀 LaunchXact Pre-Launch Distribution Roadmap:
-• Category: ${activeCatObj.name} | Stage: ${activeStageObj.name}
-• Launch Momentum Score: ${momentumScore}%
-• Target Founder Effort: ~8-12 hrs/week across 8+ channels
-Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-architect`}
+                copySummaryText={copySummaryText}
             />
 
             {/* =========================================================
@@ -1154,7 +1222,11 @@ Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-archi
                     Want guaranteed day-one distribution to 350,000+ targeted software adopters instead of sending 200 cold DMs across Reddit and Twitter? Apply for the curated LaunchXact Genesis Batch.
                 </p>
                 <div className={styles.handoffActions}>
-                    <Link href="/#founder-form" className={styles.btnPrimary}>
+                    <Link
+                        href="/#founder-form"
+                        onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'pre-launch-distribution-architect' })}
+                        className={styles.btnPrimary}
+                    >
                         Apply to Genesis Batch for Instant Traction &rarr;
                     </Link>
                     <button onClick={handleCopyRoadmap} className={styles.btnSecondary}>

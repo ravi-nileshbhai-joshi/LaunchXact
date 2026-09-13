@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
 import ToolShareCard from '@/components/tools/ToolShareCard';
 import ToolUrlAutoFill from '@/components/tools/ToolUrlAutoFill';
+import { trackAcquisitionEvent, ACQUISITION_EVENTS } from '@/lib/acquisition';
 import styles from './page.module.css';
 
 const LOADING_QUIPS = [
@@ -59,7 +60,7 @@ const PRESETS = [
     }
 ];
 
-export default function GradePage() {
+export default function GradePage({ initialPreset = null, hideBreadcrumb = false, isEmbeddedSpoke = false } = {}) {
     // Form fields
     const [ideaName, setIdeaName] = useState('');
     const [targetCustomer, setTargetCustomer] = useState('');
@@ -87,6 +88,27 @@ export default function GradePage() {
     const [auditError, setAuditError] = useState('');
 
     const resultsRef = useRef(null);
+    const hasStartedRef = useRef(false);
+    const resultsViewedRef = useRef(false);
+
+    // Track 1. landing_page_view on mount
+    useEffect(() => {
+        trackAcquisitionEvent(ACQUISITION_EVENTS.LANDING_PAGE_VIEW, {
+            toolId: 'ai-saas-grader',
+            once: true
+        });
+    }, []);
+
+    const notifyToolStarted = () => {
+        if (!hasStartedRef.current) {
+            hasStartedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_STARTED, {
+                toolId: 'ai-saas-grader',
+                metadata: { ideaName },
+                once: true
+            });
+        }
+    };
 
     // Fetch real live founder count from Supabase on mount
     useEffect(() => {
@@ -138,6 +160,7 @@ export default function GradePage() {
 
     // Handle Preset selection
     const applyPreset = (preset) => {
+        notifyToolStarted();
         setIdeaName(preset.data.ideaName);
         setTargetCustomer(preset.data.targetCustomer);
         setPricing(preset.data.pricing);
@@ -151,6 +174,7 @@ export default function GradePage() {
     // Submit for brutal grading
     const handleGrade = async (e, customPayload = null) => {
         if (e && e.preventDefault) e.preventDefault();
+        notifyToolStarted();
 
         const payload = customPayload || {
             ideaName: ideaName.trim(),
@@ -194,6 +218,25 @@ export default function GradePage() {
 
             setResult(data);
             setStatus('done');
+
+            // Track 3. tool_completed and 4. result_viewed
+            trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
+                toolId: 'ai-saas-grader',
+                metadata: {
+                    overall_score: data.overall_score,
+                    weakest_pillar: data.weakest_pillar,
+                    idea_name: data.idea_name || ideaName
+                }
+            });
+
+            if (!resultsViewedRef.current) {
+                resultsViewedRef.current = true;
+                trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_VIEWED, {
+                    toolId: 'ai-saas-grader',
+                    metadata: { overall_score: data.overall_score },
+                    once: true
+                });
+            }
 
             // Animated score counter
             const target = data.overall_score || 0;
@@ -242,6 +285,16 @@ export default function GradePage() {
 
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to send blueprint');
+
+            // Track 6. email_submitted and 7. waitlist_joined
+            trackAcquisitionEvent(ACQUISITION_EVENTS.EMAIL_SUBMITTED, {
+                toolId: 'ai-saas-grader',
+                metadata: { email_domain: auditEmail.split('@')[1] }
+            });
+            trackAcquisitionEvent(ACQUISITION_EVENTS.WAITLIST_JOINED, {
+                toolId: 'ai-saas-grader',
+                metadata: { source: 'ai_grader_blueprint' }
+            });
 
             setEmailSent(true);
         } catch (err) {
@@ -313,36 +366,52 @@ export default function GradePage() {
 
     return (
         <div className={styles.page}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
-                <Breadcrumb items={[
-                    { label: 'Founder Tools', href: '/tools' },
-                    { label: 'AI SaaS Viability Grader' }
-                ]} />
-            </div>
-
-            {/* LAYER 1: THE BRUTAL ACQUISITION HOOK */}
-            <section className={styles.hero}>
-                <div className={styles.badgeRow}>
-                    <span className={styles.topBadge}>
-                        🔥 60-SECOND BRUTAL AUDIT · TOP OF FUNNEL
-                    </span>
+            {!hideBreadcrumb && !isEmbeddedSpoke && (
+                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <Breadcrumb items={[
+                        { label: 'Founder Tools', href: '/tools' },
+                        { label: 'AI SaaS Viability Grader' }
+                    ]} />
                 </div>
-                <h1 className={styles.heroTitle}>
-                    Will Your AI SaaS Idea<br />Actually Work?
-                </h1>
-                <p className={styles.heroSub}>
-                    Get brutally graded before you burn 6 months and $20,000 building something nobody wants.
-                    Scored on <strong>Market Potential, Problem Severity, Defensibility, Distribution, Monetization, and Moat</strong>.
-                </p>
+            )}
 
-                {/* Real-time Founder Proof Banner */}
-                <div className={styles.socialProofBar}>
-                    <span className={styles.proofDot} />
-                    <span className={styles.proofText}>
-                        <strong>{founderCount} founders</strong> have already joined the Genesis Batch. Real-time founder intelligence · 0% generic fluff.
+            {!isEmbeddedSpoke ? (
+                /* LAYER 1: THE BRUTAL ACQUISITION HOOK */
+                <section className={styles.hero}>
+                    <div className={styles.badgeRow}>
+                        <span className={styles.topBadge}>
+                            🔥 60-SECOND BRUTAL AUDIT · TOP OF FUNNEL
+                        </span>
+                    </div>
+                    <h1 className={styles.heroTitle}>
+                        Will Your AI SaaS Idea<br />Actually Work?
+                    </h1>
+                    <p className={styles.heroSub}>
+                        Get brutally graded before you burn 6 months and $20,000 building something nobody wants.
+                        Scored on <strong>Market Potential, Problem Severity, Defensibility, Distribution, Monetization, and Moat</strong>.
+                    </p>
+
+                    {/* Real-time Founder Proof Banner */}
+                    <div className={styles.socialProofBar}>
+                        <span className={styles.proofDot} />
+                        <span className={styles.proofText}>
+                            <strong>{founderCount} founders</strong> have already joined the Genesis Batch. Real-time founder intelligence · 0% generic fluff.
+                        </span>
+                    </div>
+                </section>
+            ) : (
+                <div style={{ textAlign: 'center', padding: '1rem 1.5rem 2.5rem', maxWidth: '820px', margin: '0 auto' }}>
+                    <span className={styles.topBadge} style={{ marginBottom: '0.75rem', display: 'inline-flex' }}>
+                        ⚡ Live Diagnostic Tool
                     </span>
+                    <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.25rem)', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', margin: '0.5rem 0' }}>
+                        Test Your SaaS Viability in Real Time
+                    </h2>
+                    <p style={{ color: '#64748b', fontSize: '1.05rem', lineHeight: 1.6, margin: '0 auto' }}>
+                        Run your concept through our 6-pillar algorithm below to detect fatal moat flaws, token margin leaks, and customer acquisition risks before building.
+                    </p>
                 </div>
-            </section>
+            )}
 
             {/* LAYER 2: THE INTERACTIVE PROFILE INPUT */}
             <section className={styles.formContainer}>
@@ -760,6 +829,7 @@ export default function GradePage() {
 
                             <Link
                                 href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
+                                onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'ai-saas-grader' })}
                                 className={styles.genesisApplyBtn}
                             >
                                 Apply for Genesis Batch →
@@ -831,6 +901,7 @@ export default function GradePage() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
                                 <Link
                                     href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
+                                    onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'ai-saas-grader' })}
                                     style={{
                                         display: 'inline-flex',
                                         alignItems: 'center',
@@ -851,6 +922,7 @@ export default function GradePage() {
 
                                 <Link
                                     href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
+                                    onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'ai-saas-grader' })}
                                     style={{
                                         color: '#cbd5e1',
                                         fontSize: '0.88rem',
@@ -877,6 +949,7 @@ export default function GradePage() {
                             ]}
                             quote={result.verdict_headline}
                             toolName="AI SaaS Viability Grader"
+                            toolId="ai-saas-grader"
                             toolUrl="https://www.launchxact.com/grade"
                             shareTextX={`Just put my SaaS idea "${result.idea_name || 'project'}" through the @LaunchXact Brutal AI Grader.\n\nViability: ${result.overall_score}/100 ${getScoreEmoji(result.overall_score)}\nArchetype: "${result.founder_archetype}"\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\n\nGrade your AI SaaS in 60s:`}
                             shareTitleReddit={`My AI SaaS idea just got a ${result.overall_score}/100 brutal viability score 💀`}

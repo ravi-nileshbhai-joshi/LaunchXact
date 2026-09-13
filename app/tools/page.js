@@ -69,6 +69,26 @@ export default function ToolsHubPage() {
             href: '/tools/geo-schema-snippet-generator',
             actionText: 'Generate Schema Markup →',
         },
+        {
+            id: 'distribution-agent',
+            title: 'Autonomous AI Distribution Agent',
+            description: 'Automated multi-channel growth engine. Generates non-repetitive, problem-to-solution posts across X, LinkedIn, and Indie Hackers with embedded telemetry.',
+            icon: '📡',
+            status: 'New Engine',
+            isLive: true,
+            href: '/tools/distribution-agent',
+            actionText: 'Launch Distribution Agent →',
+        },
+        {
+            id: 'auto-blog-generator',
+            title: 'Autonomous Auto Blog & SEO Traffic Engine',
+            description: 'Crawl your SaaS website, generate deeply researched human-voice SEO/GEO articles that rank on Google and AI search engines, and publish to your CMS in 1 click.',
+            icon: '✍️',
+            status: '$79/mo · 2 Mo Free w/ Fast-Track',
+            isLive: true,
+            href: '/tools/auto-blog-generator',
+            actionText: 'Open Blog Generator →',
+        },
     ];
 
     const jsonLd = {
@@ -126,7 +146,28 @@ export default function ToolsHubPage() {
                 <div className={styles.container}>
                     <Breadcrumb items={[{ label: 'Founder Tools' }]} />
                     <header className={styles.header}>
-                        <span className={styles.badge}>✦ High Traffic Tools Suite</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                            <span className={styles.badge}>✦ High Traffic Tools Suite</span>
+                            <Link
+                                href="/tools/analytics"
+                                style={{
+                                    fontSize: '0.78rem',
+                                    fontWeight: 700,
+                                    color: '#818cf8',
+                                    textDecoration: 'none',
+                                    background: 'rgba(99, 102, 241, 0.12)',
+                                    border: '1px solid rgba(99, 102, 241, 0.3)',
+                                    padding: '4px 12px',
+                                    borderRadius: '9999px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                }}
+                            >
+                                <span style={{ width: '6px', height: '6px', background: '#22c55e', borderRadius: '50%', boxShadow: '0 0 6px #22c55e' }} />
+                                Live Funnel Telemetry &amp; Breakdown →
+                            </Link>
+                        </div>
                         <h1 className={styles.title}>
                             Engineering-Led Growth Tools for <span style={{ color: '#7c3aed' }}>SaaS Founders</span>
                         </h1>

@@ -1,8 +1,10 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ToolShareCard from './ToolShareCard';
 import ToolSocialProof from './ToolSocialProof';
+import ToolEmailCapture from './ToolEmailCapture';
+import { trackAcquisitionEvent, ACQUISITION_EVENTS } from '@/lib/acquisition';
 import styles from './FrankenStackForecaster.module.css';
 
 // Catalog of stack components
@@ -147,13 +149,40 @@ const PRESETS = [
     },
 ];
 
-export default function FrankenStackForecaster() {
-    const [selectedIds, setSelectedIds] = useState(['vercel', 'supabase', 'clerk', 'resend', 'posthog', 'sentry']);
-    const [mau, setMau] = useState(25000);
+export default function FrankenStackForecaster({
+    initialMau = 25000,
+    initialSelectedIds = null,
+    isEmbeddedSpoke = false
+} = {}) {
+    const defaultIds = ['vercel', 'supabase', 'clerk', 'resend', 'posthog', 'sentry'];
+    const [selectedIds, setSelectedIds] = useState(initialSelectedIds || defaultIds);
+    const [mau, setMau] = useState(initialMau);
+    const hasStartedRef = useRef(false);
+    const resultsViewedRef = useRef(false);
+
+    // Track 1. landing_page_view on mount
+    useEffect(() => {
+        trackAcquisitionEvent(ACQUISITION_EVENTS.LANDING_PAGE_VIEW, {
+            toolId: 'franken-stack-cost-forecaster',
+            once: true
+        });
+    }, []);
+
+    const notifyToolStarted = () => {
+        if (!hasStartedRef.current) {
+            hasStartedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_STARTED, {
+                toolId: 'franken-stack-cost-forecaster',
+                metadata: { mau, selectedServicesCount: selectedIds.length },
+                once: true
+            });
+        }
+    };
 
     const mauPresets = [2500, 5000, 10000, 25000, 50000];
 
     const toggleService = (id) => {
+        notifyToolStarted();
         if (selectedIds.includes(id)) {
             if (selectedIds.length > 1) {
                 setSelectedIds(selectedIds.filter((item) => item !== id));
@@ -164,6 +193,7 @@ export default function FrankenStackForecaster() {
     };
 
     const applyPreset = (preset) => {
+        notifyToolStarted();
         setSelectedIds(preset.selected);
     };
 
@@ -195,6 +225,29 @@ export default function FrankenStackForecaster() {
             inflectionPt,
         };
     }, [selectedIds, mau]);
+
+    // Track 3. tool_completed and 4. result_viewed
+    useEffect(() => {
+        if (!hasStartedRef.current) return;
+        trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
+            toolId: 'franken-stack-cost-forecaster',
+            metadata: {
+                currentBill: calculations.currentBill,
+                annualBill: calculations.annualBill,
+                mau,
+                servicesCount: selectedIds.length
+            }
+        });
+
+        if (!resultsViewedRef.current) {
+            resultsViewedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_VIEWED, {
+                toolId: 'franken-stack-cost-forecaster',
+                metadata: { currentBill: calculations.currentBill },
+                once: true
+            });
+        }
+    }, [calculations, mau, selectedIds]);
 
     // Group services by category
     const categories = useMemo(() => {
@@ -574,7 +627,11 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
 
                     <div className={styles.solutionActionArea}>
                         <div className={styles.solutionButtons}>
-                            <Link href="/#founder-form" className={styles.solutionPrimaryBtn}>
+                            <Link
+                                href="/#founder-form"
+                                onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'franken-stack-cost-forecaster' })}
+                                className={styles.solutionPrimaryBtn}
+                            >
                                 <span>🚀 Apply to Genesis Batch with This Stack →</span>
                             </Link>
                             <Link href="/grade" className={styles.solutionSecondaryBtn}>
@@ -592,6 +649,20 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
                 </div>
             </section>
 
+            {/* EMAIL CAPTURE AFTER VALUE */}
+            <ToolEmailCapture
+                toolId="franken-stack-cost-forecaster"
+                resultSummary={{
+                    scaleHorizon: `${mau.toLocaleString()} MAU`,
+                    servicesCount: selectedIds.length,
+                    currentMonthlyBill: `$${calculations.currentBill.toLocaleString()}/mo`,
+                    annualCloudCost: `$${calculations.annualBill.toLocaleString()}/yr`,
+                    adminDevOpsHours: `~${calculations.adminHours} hrs/mo`,
+                    inflectionThreshold: `Over $150/mo at ${calculations.inflectionPt.mau.toLocaleString()} MAU`
+                }}
+                exportContent={copyText}
+            />
+
             {/* =========================================================
                 LAYER 4 — THE "SHARE MY RESULT" VIRAL LOOP
                ========================================================= */}
@@ -607,6 +678,7 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
                 ]}
                 quote={quoteText}
                 toolName="Franken-Stack Forecaster"
+                toolId="franken-stack-cost-forecaster"
                 toolUrl="https://www.launchxact.com/tools/franken-stack-cost-forecaster"
                 shareTextX={shareX}
                 shareTitleReddit={redditTitle}
@@ -660,7 +732,11 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
 
                     {/* Designed CTA Buttons */}
                     <div className={styles.handoffActionCluster}>
-                        <Link href="/#founder-form" className={styles.handoffPrimaryBtn}>
+                        <Link
+                            href="/#founder-form"
+                            onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'franken-stack-cost-forecaster' })}
+                            className={styles.handoffPrimaryBtn}
+                        >
                             <span>🚀 Apply for Genesis Batch Selection →</span>
                         </Link>
                         <Link href="/grade" className={styles.handoffSecondaryBtn}>

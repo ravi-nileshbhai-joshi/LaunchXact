@@ -1,8 +1,10 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ToolShareCard from './ToolShareCard';
 import ToolUrlAutoFill from './ToolUrlAutoFill';
+import ToolEmailCapture from './ToolEmailCapture';
+import { trackAcquisitionEvent, ACQUISITION_EVENTS } from '@/lib/acquisition';
 import styles from './GeoSchemaGenerator.module.css';
 
 // Preset configurations for instant founder exploration
@@ -106,6 +108,27 @@ const PRESETS = [
 export default function GeoSchemaGenerator() {
     // Active preset
     const [activePreset, setActivePreset] = useState('ai-agent');
+    const hasStartedRef = useRef(false);
+    const resultsViewedRef = useRef(false);
+
+    // Track 1. landing_page_view on mount
+    useEffect(() => {
+        trackAcquisitionEvent(ACQUISITION_EVENTS.LANDING_PAGE_VIEW, {
+            toolId: 'geo-schema-snippet-generator',
+            once: true
+        });
+    }, []);
+
+    const notifyToolStarted = () => {
+        if (!hasStartedRef.current) {
+            hasStartedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_STARTED, {
+                toolId: 'geo-schema-snippet-generator',
+                metadata: { preset: activePreset, name },
+                once: true
+            });
+        }
+    };
 
     // Form inputs state
     const [name, setName] = useState(PRESETS[0].name);
@@ -133,6 +156,7 @@ export default function GeoSchemaGenerator() {
 
     // Apply preset
     const handleSelectPreset = (presetId) => {
+        notifyToolStarted();
         const p = PRESETS.find((item) => item.id === presetId);
         if (!p) return;
         setActivePreset(presetId);
@@ -183,109 +207,107 @@ export default function GeoSchemaGenerator() {
     };
 
     // Build Schema Objects
-    const schemaObjects = useMemo(() => {
-        const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
-        const cleanPrice = pricingModel === 'Free' ? '0' : price || '0';
+    const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
+    const cleanPrice = pricingModel === 'Free' ? '0' : price || '0';
 
-        // 1. SoftwareApplication Schema
-        const softwareApplicationSchema = {
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            name: name || 'Your Product Name',
-            url: formattedUrl,
-            description: description || 'Software application value proposition.',
-            applicationCategory: category,
-            operatingSystem: operatingSystem,
-            offers: {
-                '@type': 'Offer',
-                price: cleanPrice,
-                priceCurrency: currency,
-                priceValidUntil: '2027-12-31',
-                availability: 'https://schema.org/InStock',
-                category: pricingModel
-            },
-            featureList: features.length > 0 ? features : undefined,
-            publisher: orgName ? {
-                '@type': 'Organization',
-                name: orgName,
-                url: formattedUrl
-            } : undefined
-        };
-
-        // 2. FAQPage Schema
-        const faqPageSchema = {
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: faqs.map((faq) => ({
-                '@type': 'Question',
-                name: faq.q,
-                acceptedAnswer: {
-                    '@type': 'Answer',
-                    text: faq.a
-                }
-            }))
-        };
-
-        // 3. Organization Schema
-        const organizationSchema = {
-            '@context': 'https://schema.org',
+    // 1. SoftwareApplication Schema
+    const softwareApplicationSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: name || 'Your Product Name',
+        url: formattedUrl,
+        description: description || 'Software application value proposition.',
+        applicationCategory: category,
+        operatingSystem: operatingSystem,
+        offers: {
+            '@type': 'Offer',
+            price: cleanPrice,
+            priceCurrency: currency,
+            priceValidUntil: '2027-12-31',
+            availability: 'https://schema.org/InStock',
+            category: pricingModel
+        },
+        featureList: features.length > 0 ? features : undefined,
+        publisher: orgName ? {
             '@type': 'Organization',
-            name: orgName || name,
-            url: formattedUrl,
-            logo: logoUrl || undefined,
-            description: description || undefined
-        };
+            name: orgName,
+            url: formattedUrl
+        } : undefined
+    };
 
-        // 4. BreadcrumbList Schema
-        const breadcrumbSchema = {
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-                {
-                    '@type': 'ListItem',
-                    position: 1,
-                    name: 'Home',
-                    item: formattedUrl
-                },
-                {
-                    '@type': 'ListItem',
-                    position: 2,
-                    name: name,
-                    item: formattedUrl
-                }
-            ]
-        };
+    // 2. FAQPage Schema
+    const faqPageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.q,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.a
+            }
+        }))
+    };
 
-        // 5. All-in-One GEO Bundle (@graph)
-        const allInOneBundle = {
-            '@context': 'https://schema.org',
-            '@graph': [
-                {
-                    ...softwareApplicationSchema,
-                    '@context': undefined
-                },
-                {
-                    ...organizationSchema,
-                    '@context': undefined
-                },
-                faqs.length > 0 ? {
-                    ...faqPageSchema,
-                    '@context': undefined
-                } : null,
-                {
-                    ...breadcrumbSchema,
-                    '@context': undefined
-                }
-            ].filter(Boolean)
-        };
+    // 3. Organization Schema
+    const organizationSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: orgName || name,
+        url: formattedUrl,
+        logo: logoUrl || undefined,
+        description: description || undefined
+    };
 
-        return {
-            bundle: allInOneBundle,
-            software: softwareApplicationSchema,
-            faq: faqPageSchema,
-            org: organizationSchema
-        };
-    }, [name, url, description, category, operatingSystem, pricingModel, price, currency, orgName, logoUrl, features, faqs]);
+    // 4. BreadcrumbList Schema
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: formattedUrl
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: name,
+                item: formattedUrl
+            }
+        ]
+    };
+
+    // 5. All-in-One GEO Bundle (@graph)
+    const allInOneBundle = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                ...softwareApplicationSchema,
+                '@context': undefined
+            },
+            {
+                ...organizationSchema,
+                '@context': undefined
+            },
+            faqs.length > 0 ? {
+                ...faqPageSchema,
+                '@context': undefined
+            } : null,
+            {
+                ...breadcrumbSchema,
+                '@context': undefined
+            }
+        ].filter(Boolean)
+    };
+
+    const schemaObjects = {
+        bundle: allInOneBundle,
+        software: softwareApplicationSchema,
+        faq: faqPageSchema,
+        org: organizationSchema
+    };
 
     // Active schema payload based on tab
     const currentSchemaObj = schemaObjects[schemaTab] || schemaObjects.bundle;
@@ -343,30 +365,58 @@ ${jsonString}
     };
 
     // Linter / Validation checks
-    const validationStatus = useMemo(() => {
-        const checks = [
-            { id: 'name', label: 'Product / Brand Name', valid: Boolean(name && name.trim().length > 1) },
-            { id: 'url', label: 'Canonical Domain URL', valid: Boolean(url && url.includes('.')) },
-            { id: 'desc', label: 'Value Proposition (>25 chars)', valid: Boolean(description && description.length >= 25) },
-            { id: 'features', label: 'At least 3 Features in List', valid: features.length >= 3 },
-            { id: 'pricing', label: 'Pricing & Currency Defined', valid: pricingModel === 'Free' || Boolean(price && currency) },
-            { id: 'faqs', label: 'Valid FAQ Question/Answers', valid: faqs.length > 0 && faqs.every(f => f.q && f.a) }
-        ];
+    const checks = [
+        { id: 'name', label: 'Product / Brand Name', valid: Boolean(name && name.trim().length > 1) },
+        { id: 'url', label: 'Canonical Domain URL', valid: Boolean(url && url.includes('.')) },
+        { id: 'desc', label: 'Value Proposition (>25 chars)', valid: Boolean(description && description.length >= 25) },
+        { id: 'features', label: 'At least 3 Features in List', valid: features.length >= 3 },
+        { id: 'pricing', label: 'Pricing & Currency Defined', valid: pricingModel === 'Free' || Boolean(price && currency) },
+        { id: 'faqs', label: 'Valid FAQ Question/Answers', valid: faqs.length > 0 && faqs.every(f => f.q && f.a) }
+    ];
 
-        const passedCount = checks.filter(c => c.valid).length;
-        const isValid = passedCount === checks.length;
-        const charCount = JSON.stringify(currentSchemaObj).length;
-        const estimatedTokens = Math.round(charCount / 4);
+    const passedCount = checks.filter(c => c.valid).length;
+    const isValid = passedCount === checks.length;
+    const charCount = JSON.stringify(currentSchemaObj).length;
+    const estimatedTokens = Math.round(charCount / 4);
 
-        return {
-            checks,
-            isValid,
-            passedCount,
-            totalCount: checks.length,
-            charCount,
-            estimatedTokens
-        };
-    }, [name, url, description, features, pricingModel, price, currency, faqs, currentSchemaObj]);
+    const validationStatus = {
+        checks,
+        isValid,
+        passedCount,
+        totalCount: checks.length,
+        charCount,
+        estimatedTokens
+    };
+
+    const copySummaryText = `🤖 LaunchXact Geo Schema & AI Entity Audit:
+• Product: ${name || 'SaaS Product'} (${url || 'https://yourdomain.com'})
+• Validation Health: ${validationStatus.passedCount}/${validationStatus.totalCount} Recommended fields valid
+• Character Size: ${validationStatus.charCount} chars (~${validationStatus.estimatedTokens} tokens)
+Generate your schema: https://www.launchxact.com/tools/geo-schema-snippet-generator`;
+
+    // Track 3. tool_completed & 4. result_viewed
+    useEffect(() => {
+        if (!hasStartedRef.current) return;
+        trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
+            toolId: 'geo-schema-snippet-generator',
+            metadata: {
+                name,
+                category,
+                passedCount: validationStatus.passedCount,
+                totalCount: validationStatus.totalCount,
+                estimatedTokens: validationStatus.estimatedTokens
+            }
+        });
+
+        if (!resultsViewedRef.current) {
+            resultsViewedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_VIEWED, {
+                toolId: 'geo-schema-snippet-generator',
+                metadata: { passedCount: validationStatus.passedCount },
+                once: true
+            });
+        }
+    }, [validationStatus, name, category]);
 
     const scrollToTool = () => {
         const el = document.getElementById('tool-stage');
@@ -376,7 +426,11 @@ ${jsonString}
     };
 
     return (
-        <div className={styles.container}>
+        <div
+            className={styles.container}
+            onChangeCapture={notifyToolStarted}
+            onInputCapture={notifyToolStarted}
+        >
             {/* =========================================================
                 LAYER 1 — BIG PAINFUL PROBLEM
                ========================================================= */}
@@ -853,7 +907,11 @@ ${jsonString}
                 </p>
 
                 <div className={styles.ahaActionRow}>
-                    <Link href="/#founder-form" className={styles.btnAhaGenesis}>
+                    <Link
+                        href="/#founder-form"
+                        onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'geo-schema-snippet-generator' })}
+                        className={styles.btnAhaGenesis}
+                    >
                         Join the Genesis Batch →
                     </Link>
                     <span className={styles.genesisGuarantees}>
@@ -861,6 +919,21 @@ ${jsonString}
                     </span>
                 </div>
             </section>
+
+            {/* EMAIL CAPTURE AFTER VALUE */}
+            <ToolEmailCapture
+                toolId="geo-schema-snippet-generator"
+                resultSummary={{
+                    productName: name || 'SaaS Product',
+                    url: url || 'https://yourdomain.com',
+                    category,
+                    pricingModel,
+                    validationHealth: `${validationStatus.passedCount} of ${validationStatus.totalCount} Recommended fields valid`,
+                    estimatedTokens: `~${validationStatus.estimatedTokens} tokens`,
+                    aiSearchReadiness: validationStatus.isValid ? '100% Validated for LLM Search' : 'Partial Markup'
+                }}
+                exportContent={copySummaryText}
+            />
 
             {/* =========================================================
                 LAYER 4 — THE "SHARE MY RESULT" VIRAL LOOP
@@ -877,15 +950,12 @@ ${jsonString}
                 ]}
                 quote={`Just generated a validated AI-indexing Schema & Knowledge Graph for ${name || 'my SaaS'}. 0% hallucination risk on Perplexity, SearchGPT, and Gemini!`}
                 toolName="Geo Schema Generator"
+                toolId="geo-schema-snippet-generator"
                 toolUrl="https://www.launchxact.com/tools/geo-schema-snippet-generator"
                 shareTextX={`Just generated a validated AI-indexing Schema & Knowledge Graph for ${name || 'my SaaS'}. 0% hallucination risk on Perplexity, SearchGPT, and Gemini!\n\nGenerate yours → https://www.launchxact.com/tools/geo-schema-snippet-generator`}
                 shareTitleReddit={`Generated validated JSON-LD schema for ${name || 'my SaaS'} (AI Search Optimization)`}
                 shareTextReddit={`Generated structured JSON-LD entity markup for AI engines (Perplexity, SearchGPT, Gemini):\n\n• Product: ${name || 'SaaS Product'}\n• Schema Types: SoftwareApplication + FAQPage + Organization\n• Validation Status: ${validationStatus.passedCount}/${validationStatus.totalCount} Recommended fields\n\nGenerate your free AEO schema: https://www.launchxact.com/tools/geo-schema-snippet-generator`}
-                copySummaryText={`🤖 LaunchXact Geo Schema & AI Entity Audit:
-• Product: ${name || 'SaaS Product'} (${url || 'https://yourdomain.com'})
-• Validation Health: ${validationStatus.passedCount}/${validationStatus.totalCount} Recommended fields valid
-• Character Size: ${validationStatus.charCount} chars (~${validationStatus.estimatedTokens} tokens)
-Generate your schema: https://www.launchxact.com/tools/geo-schema-snippet-generator`}
+                copySummaryText={copySummaryText}
             />
 
             {/* Educational Explainer Grid */}
@@ -932,7 +1002,11 @@ Generate your schema: https://www.launchxact.com/tools/geo-schema-snippet-genera
                     Skip waiting months for organic search crawlers. High-value software products accepted into the LaunchXact Genesis Batch get indexed directly into The Tornado semantic engine and showcased to over 350,000 targeted enterprise buyers and tech adopters.
                 </p>
                 <div className={styles.handoffActions}>
-                    <Link href="/#founder-form" className={styles.btnPrimary}>
+                    <Link
+                        href="/#founder-form"
+                        onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'geo-schema-snippet-generator' })}
+                        className={styles.btnPrimary}
+                    >
                         Submit to LaunchXact for Semantic Indexing →
                     </Link>
                     <button

@@ -1,0 +1,88 @@
+name: Autonomous AI Social Distribution Agent
+
+on:
+  schedule:
+    # Runs twice daily: 09:30 UTC and 15:30 UTC (Prime founder engagement hours)
+    - cron: '30 9,15 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Execute in Dry-Run Mode (Preview only, no live publishing)'
+        required: true
+        type: boolean
+        default: false
+      platform:
+        description: 'Target platform to distribute to'
+        required: true
+        type: choice
+        options:
+          - all
+          - x
+          - linkedin
+          - indiehackers
+        default: all
+      mode:
+        description: 'X (Twitter) publishing mode'
+        required: true
+        type: choice
+        options:
+          - single
+          - thread
+        default: single
+
+jobs:
+  distribute:
+    name: Run AI Distribution Agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Execute Social Distribution Agent
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          IH_SESSION_COOKIE: ${{ secrets.IH_SESSION_COOKIE }}
+          IH_WEBHOOK_URL: ${{ secrets.IH_WEBHOOK_URL }}
+        run: |
+          FLAGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            FLAGS="$FLAGS --dry-run"
+          fi
+          if [ -n "${{ inputs.platform }}" ]; then
+            FLAGS="$FLAGS --platform=${{ inputs.platform }}"
+          fi
+          if [ -n "${{ inputs.mode }}" ]; then
+            FLAGS="$FLAGS --mode=${{ inputs.mode }}"
+          fi
+          echo "Running: node scripts/agent/runner.js $FLAGS"
+          node scripts/agent/runner.js $FLAGS
+
+      - name: Upload Run Previews & Articles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: distribution-artifacts-${{ github.run_id }}
+          path: |
+            data/agent/previews/
+            data/agent/articles/
+          retention-days: 7

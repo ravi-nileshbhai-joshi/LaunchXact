@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "agent:post": "node --env-file=.env.local scripts/agent/runner.js",
+    "agent:dry-run": "node --env-file=.env.local scripts/agent/runner.js --dry-run",
+    "agent:x": "node --env-file=.env.local scripts/agent/runner.js --platform=x",
+    "agent:linkedin": "node --env-file=.env.local scripts/agent/runner.js --platform=linkedin",
+    "agent:ih": "node --env-file=.env.local scripts/agent/runner.js --platform=indiehackers"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

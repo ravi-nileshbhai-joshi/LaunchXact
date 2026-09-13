@@ -1,11 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { logToolTelemetry } from '@/lib/telemetry';
+import { trackAcquisitionEvent, ACQUISITION_EVENTS, buildReferralUrl } from '@/lib/acquisition';
 import styles from './ToolShareCard.module.css';
 
 /**
  * ToolShareCard
  * Reusable Layer 4 "Share My Result" viral growth loop component.
+ * Features automated referral link generation and full-funnel telemetry attribution.
  */
 export default function ToolShareCard({
     badge = 'Tool Result',
@@ -14,6 +16,7 @@ export default function ToolShareCard({
     subMetrics = [],
     quote = '',
     toolName = 'LaunchXact Tool',
+    toolId = '',
     toolUrl = 'https://www.launchxact.com/tools',
     shareTextX = '',
     shareTitleReddit = '',
@@ -22,14 +25,43 @@ export default function ToolShareCard({
 }) {
     const [copied, setCopied] = useState(false);
 
+    // Derived tool identifier
+    const effectiveToolId = toolId || toolUrl.split('/tools/')[1]?.split('?')[0] || 'launchxact-tool';
+
+    // Dynamic viral URLs carrying visitor referral codes & UTM tags
+    const referralUrlX = useMemo(() => buildReferralUrl(toolUrl, 'x_twitter'), [toolUrl]);
+    const referralUrlReddit = useMemo(() => buildReferralUrl(toolUrl, 'reddit'), [toolUrl]);
+    const referralUrlLinkedIn = useMemo(() => buildReferralUrl(toolUrl, 'linkedin'), [toolUrl]);
+    const referralUrlCopy = useMemo(() => buildReferralUrl(toolUrl, 'direct_copy'), [toolUrl]);
+
+    // Format share copies with referral links
+    const textX = shareTextX 
+        ? shareTextX.replace(toolUrl, referralUrlX) 
+        : `${quote}\n\nCalculate yours → ${referralUrlX}`;
+
+    const textReddit = shareTextReddit 
+        ? shareTextReddit.replace(toolUrl, referralUrlReddit) 
+        : `${quote}\n\nCalculate yours at: ${referralUrlReddit}`;
+
+    const textToCopy = copySummaryText 
+        ? copySummaryText.replace(toolUrl, referralUrlCopy) 
+        : `${quote}\n\nCalculate yours here: ${referralUrlCopy}`;
+
     // Intent URLs
-    const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTextX || `${quote}\n\nCalculate yours → ${toolUrl}`)}`;
-    const redditIntent = `https://www.reddit.com/submit?title=${encodeURIComponent(shareTitleReddit || `${toolName} Audit Result`)}&text=${encodeURIComponent(shareTextReddit || `${quote}\n\nCalculate yours at: ${toolUrl}`)}`;
-    const linkedInIntent = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(toolUrl)}`;
+    const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(textX)}`;
+    const redditIntent = `https://www.reddit.com/submit?title=${encodeURIComponent(shareTitleReddit || `${toolName} Audit Result`)}&text=${encodeURIComponent(textReddit)}`;
+    const linkedInIntent = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralUrlLinkedIn)}`;
 
     const handleCopy = () => {
-        logToolTelemetry({ toolId: toolName, action: 'copy_summary' });
-        const textToCopy = copySummaryText || `${quote}\n\nCalculate yours here: ${toolUrl}`;
+        // Backwards compatibility telemetry
+        logToolTelemetry({ toolId: effectiveToolId, action: 'copy_summary' });
+
+        // Acquisition Funnel Event
+        trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_SHARED, {
+            toolId: effectiveToolId,
+            metadata: { platform: 'clipboard_copy', referralUrl: referralUrlCopy }
+        });
+
         navigator.clipboard?.writeText(textToCopy).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2500);
@@ -37,7 +69,14 @@ export default function ToolShareCard({
     };
 
     const handleShareClick = (platform) => {
-        logToolTelemetry({ toolId: toolName, action: `share_${platform}` });
+        // Backwards compatibility telemetry
+        logToolTelemetry({ toolId: effectiveToolId, action: `share_${platform}` });
+
+        // Acquisition Funnel Event
+        trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_SHARED, {
+            toolId: effectiveToolId,
+            metadata: { platform }
+        });
     };
 
     return (

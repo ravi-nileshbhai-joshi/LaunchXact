@@ -111,6 +111,13 @@ function FastTrackContent() {
                         <div className={styles.deliverables}>
                             <h3 className={styles.deliverablesTitle}>What is included in your Fast-Track Pass:</h3>
                             <ul className={styles.perksList}>
+                                <li style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '0.75rem', padding: '1rem' }}>
+                                    <FontAwesomeIcon icon={faBolt} className={styles.perkIcon} style={{ color: '#10b981' }} />
+                                    <div>
+                                        <strong style={{ color: '#34d399' }}>🎁 BONUS: 2 Months Free Access to Auto Blog Generator ($158 Value)</strong>
+                                        <p>Crawl your SaaS website, generate deeply researched human-voice SEO/GEO blogs that rank on Google & Perplexity, and publish to your CMS in 1 click.</p>
+                                    </div>
+                                </li>
                                 <li>
                                     <FontAwesomeIcon icon={faGlobe} className={styles.perkIcon} />
                                     <div>

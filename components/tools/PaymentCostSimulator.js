@@ -1,16 +1,46 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ToolShareCard from './ToolShareCard';
+import ToolEmailCapture from './ToolEmailCapture';
+import { trackAcquisitionEvent, ACQUISITION_EVENTS } from '@/lib/acquisition';
 import styles from './PaymentCostSimulator.module.css';
 
-export default function PaymentCostSimulator() {
-    // Inputs (Defaults match the exact prompt spec)
-    const [revenue, setRevenue] = useState(10000);
-    const [intPct, setIntPct] = useState(45);
-    const [avgTx, setAvgTx] = useState(79);
-    const [countries, setCountries] = useState(8);
+export default function PaymentCostSimulator({
+    initialRevenue = 10000,
+    initialIntPct = 45,
+    initialAvgTx = 79,
+    initialCountries = 8,
+    isEmbeddedSpoke = false
+} = {}) {
+    // Inputs (Defaults match the exact prompt spec or passed props)
+    const [revenue, setRevenue] = useState(initialRevenue);
+    const [intPct, setIntPct] = useState(initialIntPct);
+    const [avgTx, setAvgTx] = useState(initialAvgTx);
+    const [countries, setCountries] = useState(initialCountries);
     const [showBreakdown, setShowBreakdown] = useState(false);
+    const hasStartedRef = useRef(false);
+    const resultsViewedRef = useRef(false);
+
+    // Track 1. landing_page_view on mount
+    useEffect(() => {
+        trackAcquisitionEvent(ACQUISITION_EVENTS.LANDING_PAGE_VIEW, {
+            toolId: 'true-cost-of-payments',
+            once: true
+        });
+    }, []);
+
+    // Helper to track 2. tool_started on first user interaction
+    const notifyToolStarted = () => {
+        if (!hasStartedRef.current) {
+            hasStartedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_STARTED, {
+                toolId: 'true-cost-of-payments',
+                metadata: { revenue, intPct, countries },
+                once: true
+            });
+        }
+    };
 
     // Presets
     const revenuePresets = [2500, 5000, 10000, 25000, 50000];
@@ -66,6 +96,28 @@ export default function PaymentCostSimulator() {
             txCount
         };
     }, [revenue, intPct, avgTx, countries]);
+
+    // Track 3. tool_completed and 4. result_viewed once results are ready
+    useEffect(() => {
+        if (!hasStartedRef.current) return;
+        trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
+            toolId: 'true-cost-of-payments',
+            metadata: {
+                annualLeakage: metrics.annualLeakage,
+                monthlySavings: metrics.monthlySavings,
+                revenue
+            }
+        });
+
+        if (!resultsViewedRef.current) {
+            resultsViewedRef.current = true;
+            trackAcquisitionEvent(ACQUISITION_EVENTS.RESULT_VIEWED, {
+                toolId: 'true-cost-of-payments',
+                metadata: { annualLeakage: metrics.annualLeakage },
+                once: true
+            });
+        }
+    }, [metrics, revenue]);
 
     // Bar chart scale calculation
     const maxBarValue = Math.max(metrics.totalHiddenCost, metrics.launchXactCost, 1);
@@ -145,7 +197,11 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
                ========================================================= */}
             <div id="tool-stage" className={styles.simulatorGrid}>
                 {/* Controls Card */}
-                <div className={styles.controlsCard}>
+                <div
+                    className={styles.controlsCard}
+                    onChangeCapture={notifyToolStarted}
+                    onInputCapture={notifyToolStarted}
+                >
                     <div className={styles.cardHeader}>
                         <h2 className={styles.cardTitle}>Your SaaS Parameters</h2>
                         <p className={styles.cardDesc}>Enter your real metrics for an instant financial & labor audit.</p>
@@ -498,7 +554,11 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
                 </p>
 
                 <div className={styles.ahaActionRow}>
-                    <Link href="/#founder-form" className={styles.btnAhaGenesis}>
+                    <Link
+                        href="/#founder-form"
+                        onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'true-cost-of-payments' })}
+                        className={styles.btnAhaGenesis}
+                    >
                         Join the Genesis Batch →
                     </Link>
                     <span className={styles.genesisGuarantees}>
@@ -506,6 +566,21 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
                     </span>
                 </div>
             </section>
+
+            {/* EMAIL CAPTURE AFTER VALUE */}
+            <ToolEmailCapture
+                toolId="true-cost-of-payments"
+                resultSummary={{
+                    revenue: `$${revenue.toLocaleString()}/mo`,
+                    countriesSoldTo: countries,
+                    annualLeakage: `$${metrics.annualLeakage.toLocaleString()}/yr`,
+                    totalMonthlyHiddenCost: `$${metrics.totalHiddenCost.toLocaleString()}/mo`,
+                    founderHoursWasted: `${metrics.founderHours} hrs/mo`,
+                    launchXactFlatCost: `$${metrics.launchXactCost.toLocaleString()}/mo`,
+                    netAnnualSavings: `$${metrics.annualSavings.toLocaleString()}/yr`
+                }}
+                exportContent={copyText}
+            />
 
             {/* =========================================================
                 LAYER 4 — THE "SHARE MY RESULT" VIRAL LOOP
@@ -522,6 +597,7 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
                 ]}
                 quote={quoteText}
                 toolName="True Cost of Payments"
+                toolId="true-cost-of-payments"
                 toolUrl="https://www.launchxact.com/tools/true-cost-of-payments"
                 shareTextX={shareX}
                 shareTitleReddit={redditTitle}
@@ -541,7 +617,11 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
                     Stop managing separate subscriptions for Stripe, TaxJar, invoicing software, and foreign exchange brokers. LaunchXact acts as your legal Merchant of Record, instantly handling worldwide sales tax, EU VAT OSS, and chargeback protection.
                 </p>
                 <div className={styles.handoffActions}>
-                    <Link href="/#founder-form" className={styles.btnPrimary}>
+                    <Link
+                        href="/#founder-form"
+                        onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'true-cost-of-payments' })}
+                        className={styles.btnPrimary}
+                    >
                         Apply to Genesis Batch with Native MoR →
                     </Link>
                 </div>
