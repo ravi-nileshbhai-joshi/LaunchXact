@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 import { supabase } from '@/lib/supabase';
+import { enrollInLifecycle } from '@/lib/email-lifecycle';
 
 const SYSTEM_PROMPT = `You are the "LaunchXact AI SaaS Viability Auditor." You are a ruthless, battle-tested SaaS founder, angel investor, and product engineer.
 You have reviewed thousands of B2B and AI SaaS startups. You do not offer fluffy polite encouragement. You offer senior-partner, code-review level honesty.
@@ -217,6 +218,7 @@ export async function POST(request) {
             competitors = '',
             distribution = '',
             url = '',
+            email = '',
         } = body;
 
         // Rate limiting
@@ -352,7 +354,8 @@ Deliver your brutal, quantitative 6-pillar viability audit in valid JSON format.
                 weakest_pillar: resultData.weakest_pillar || null,
                 verdict_headline: resultData.verdict_headline || null,
                 brutal_critique: resultData.brutal_critique || null,
-                action_items: resultData.action_items || []
+                action_items: resultData.action_items || [],
+                founder_email: email ? email.trim().toLowerCase() : null
             };
 
             const { error: insertAuditErr } = await supabase
@@ -364,6 +367,21 @@ Deliver your brutal, quantitative 6-pillar viability audit in valid JSON format.
                 console.warn('saas_idea_audits table insert skipped (schema pending):', insertAuditErr.message);
             } else {
                 console.log('✅ Saved audit to saas_idea_audits table for:', auditPayload.idea_name);
+            }
+
+            // Automatically enroll free tool user into the 5-Email Qualification Lifecycle Funnel!
+            if (email && email.includes('@')) {
+                try {
+                    await enrollInLifecycle({
+                        email: email.trim().toLowerCase(),
+                        ideaName: resultData.idea_name || ideaName || 'Your AI SaaS',
+                        auditResult: resultData,
+                        toolId: 'ai-saas-grader'
+                    });
+                    console.log(`✅ Automatically enrolled free tool user ${email} into 5-email qualification lifecycle!`);
+                } catch (lifeErr) {
+                    console.warn('[Grader Lifecycle Enrollment Note]:', lifeErr.message);
+                }
             }
         } catch (dbErr) {
             console.warn('saas_idea_audits insertion caught error:', dbErr.message);

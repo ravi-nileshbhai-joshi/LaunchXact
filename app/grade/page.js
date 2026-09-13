@@ -69,6 +69,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
     const [competitors, setCompetitors] = useState('');
     const [distribution, setDistribution] = useState('');
     const [url, setUrl] = useState('');
+    const [founderEmail, setFounderEmail] = useState('');
     const [capturedLogo, setCapturedLogo] = useState('');
 
     // Dynamic founder count from Supabase
@@ -184,10 +185,16 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
             competitors: competitors.trim(),
             distribution: distribution.trim(),
             url: url.trim(),
+            email: founderEmail.trim().toLowerCase(),
         };
 
         if (!payload.ideaName && !payload.description && !payload.url) {
             setError('Please enter at least your SaaS Idea Name or Description.');
+            return;
+        }
+
+        if (!payload.email || !payload.email.includes('@')) {
+            setError('Please enter your founder work email so we can dispatch your report & score.');
             return;
         }
 
@@ -218,6 +225,11 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
 
             setResult(data);
             setStatus('done');
+
+            if (payload.email) {
+                setAuditEmail(payload.email);
+                setEmailSent(true);
+            }
 
             // Track 3. tool_completed and 4. result_viewed
             trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
@@ -589,6 +601,29 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                     disabled={status === 'loading'}
                                 />
                             </div>
+                        </div>
+
+                        {/* 8. Founder / Work Email */}
+                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                            <label htmlFor="founder-email" className={styles.inputLabel}>
+                                8. Founder / Work Email <span className={styles.required}>*</span>
+                                <span style={{ marginLeft: '8px', fontSize: '0.78rem', color: '#818cf8', fontWeight: 500 }}>
+                                    (Where we dispatch your confidential score card, viability dossier & 14-day bottleneck teardowns)
+                                </span>
+                            </label>
+                            <input
+                                id="founder-email"
+                                type="email"
+                                className={styles.textInput}
+                                placeholder="founder@yourcompany.com"
+                                value={founderEmail}
+                                onChange={(e) => {
+                                    setFounderEmail(e.target.value);
+                                    if (error) setError('');
+                                }}
+                                disabled={status === 'loading'}
+                                required
+                            />
                         </div>
                     </div>
 
@@ -967,7 +1002,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
 
                         {emailSent ? (
                             <div className={styles.emailSuccess}>
-                                ✓ Blueprint dispatched to <strong>{auditEmail}</strong>! Check your inbox in 2 minutes.
+                                ✓ Score Card & Viability Dossier (Email #1) dispatched to <strong>{auditEmail || founderEmail}</strong>! Check your inbox in 2 minutes. Your weakest bottleneck teardown will arrive in 48 hours.
                             </div>
                         ) : (
                             <form onSubmit={handleFullAudit} className={styles.emailForm}>
