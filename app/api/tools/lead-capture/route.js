@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { Resend } from 'resend';
+import { enrollInLifecycle } from '@/lib/email-lifecycle';
 
 const resend = process.env.RESEND_API_KEY
     ? new Resend(process.env.RESEND_API_KEY)
@@ -85,6 +86,24 @@ export async function POST(request) {
                 }
             } catch (err) {
                 console.warn('[Lead Capture] Supabase skip:', err.message);
+            }
+        }
+
+        // Enroll in 5-Email Lifecycle Funnel if tool is AI SaaS Grader or contains viability metrics
+        if (toolId === 'ai-saas-grader' || resultSummary?.overall_score) {
+            try {
+                await enrollInLifecycle({
+                    email: cleanEmail,
+                    ideaName: resultSummary?.idea_name || 'Your AI SaaS',
+                    auditResult: resultSummary,
+                    toolId,
+                    utmSource,
+                    utmMedium,
+                    utmCampaign,
+                    refCode
+                });
+            } catch (lifeErr) {
+                console.warn('[Lead Capture Lifecycle Note]:', lifeErr.message);
             }
         }
 

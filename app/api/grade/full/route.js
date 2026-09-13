@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import Groq from 'groq-sdk';
 import { supabase } from '@/lib/supabase';
+import { enrollInLifecycle } from '@/lib/email-lifecycle';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_AUDIT_EMAIL = process.env.RESEND_FROM_EMAIL || 'LaunchXact Deep Audit <hello@launchxact.com>';
@@ -166,6 +167,26 @@ Verdict: ${summaryResult?.verdict_headline || summaryResult?.roast_summary || 'N
             } catch (emailErr) {
                 console.warn('Resend send error:', emailErr.message);
             }
+        }
+        // Automatically enroll founder into the 5-Email Qualification Lifecycle Funnel
+        try {
+            await enrollInLifecycle({
+                email,
+                ideaName: subjectName,
+                auditResult: summaryResult || {
+                    overall_score: summaryResult?.overall_score || 64,
+                    founder_archetype: summaryResult?.founder_archetype,
+                    weakest_pillar: summaryResult?.weakest_pillar,
+                    weakest_pillar_name: summaryResult?.weakest_pillar_name,
+                    pillar_scores: summaryResult?.pillar_scores,
+                    weakness_diagnosis: summaryResult?.weakness_diagnosis,
+                    action_items: summaryResult?.action_items
+                },
+                toolId: 'ai-saas-grader'
+            });
+            console.log(`✅ Successfully enrolled ${email} into 5-email qualification lifecycle for ${subjectName}`);
+        } catch (lifecycleErr) {
+            console.warn('[Lifecycle Enrollment Warning]:', lifecycleErr.message);
         }
 
         // Try updating founder_email in saas_idea_audits

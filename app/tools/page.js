@@ -89,6 +89,16 @@ export default function ToolsHubPage() {
             href: '/tools/auto-blog-generator',
             actionText: 'Open Blog Generator →',
         },
+        {
+            id: 'lifecycle-preview',
+            title: '5-Email Automated Qualification Funnel',
+            description: 'Automated 14-day founder qualification sequence. Turns AI SaaS audits into a high-converting drip funnel that delivers scores, teaches weaknesses, and drives Genesis applications.',
+            icon: '📬',
+            status: 'Automated Engine',
+            isLive: true,
+            href: '/tools/lifecycle-preview',
+            actionText: 'Explore Lifecycle Funnel →',
+        },
     ];
 
     const jsonLd = {
