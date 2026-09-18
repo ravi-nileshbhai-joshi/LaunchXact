@@ -104,7 +104,7 @@ export default function GeoSchemaSnippetGeneratorPage() {
                 name: 'How does LaunchXact help with semantic AI search visibility?',
                 acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'LaunchXact operates as a curated multi-vendor SaaS marketplace featuring an integrated AI semantic search system (The Tornado). High-value software accepted into the Genesis Batch is indexed immediately into this semantic engine and showcased to over 350,000 tech buyers and adopters.'
+                    text: 'LaunchXact operates as a curated SaaS directory featuring an integrated AI semantic search system (The Tornado). High-value software accepted into the Founding 50 is indexed directly into this semantic engine, structured for LLM retrieval, and showcased to active software adopters.'
                 }
             }
         ]

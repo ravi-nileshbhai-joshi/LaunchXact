@@ -1,17 +1,16 @@
 import { Inter, Playfair_Display } from 'next/font/google';
 
 export const metadata = {
-    title: 'Free SaaS Launch Readiness Grader | LaunchXact Distribution Grader',
-    description: 'Is your SaaS landing page ready for launch? Get a free AI-powered audit with conversion psychology analysis, trust signal checks, and a custom headline rewrite. Score 80+ to fast-track your Genesis Batch application.',
+    title: 'Free SaaS Discovery Audit | LaunchXact',
+    description: 'Is your SaaS ready to be discovered? Enter your website and get a free analysis of your landing page, messaging, trust signals, SEO and AI-search readiness.',
     keywords: [
-        'SaaS grader', 'landing page grader', 'launch readiness', 'SaaS audit tool',
-        'LaunchXact grader', 'free SaaS audit', 'landing page score',
-        'conversion rate audit', 'startup launch checklist',
-        'LaunchXact SaaS grader', 'SaaS landing page checker'
+        'SaaS discovery audit', 'landing page audit', 'SaaS grader', 'free SaaS audit',
+        'LaunchXact discovery audit', 'landing page score', 'AI search readiness',
+        'conversion rate audit', 'GEO audit', 'SEO audit tool'
     ],
     openGraph: {
-        title: 'Free SaaS Launch Readiness Grader | LaunchXact',
-        description: 'AI-powered audit for your SaaS landing page. Get scored on conversion, trust, and distribution readiness. Score 80+ to fast-track your Genesis Batch application.',
+        title: 'Free SaaS Discovery Audit | LaunchXact',
+        description: 'Is your SaaS ready to be discovered? Enter your website and get a free analysis of your landing page, messaging, trust signals, SEO and AI-search readiness.',
         url: 'https://www.launchxact.com/grade',
         siteName: 'LaunchXact',
         images: [
@@ -19,7 +18,7 @@ export const metadata = {
                 url: '/opengraph-image.png',
                 width: 1200,
                 height: 630,
-                alt: 'LaunchXact Distribution Grader',
+                alt: 'LaunchXact Free SaaS Discovery Audit',
             },
         ],
         locale: 'en_US',
@@ -27,8 +26,8 @@ export const metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Free SaaS Launch Readiness Grader | LaunchXact',
-        description: 'Is your landing page ready for launch? Get your free AI audit now.',
+        title: 'Free SaaS Discovery Audit | LaunchXact',
+        description: 'Is your SaaS ready to be discovered? Get your free discovery analysis now.',
         creator: '@launchxact',
         images: ['/twitter-image.png'],
     },
@@ -38,7 +37,7 @@ export const metadata = {
 const graderJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'LaunchXact Distribution Grader',
+    name: 'LaunchXact Free SaaS Discovery Audit',
     applicationCategory: 'BusinessApplication, DeveloperApplication, UtilitiesApplication',
     operatingSystem: 'Web',
     url: 'https://www.launchxact.com/grade',
@@ -46,7 +45,7 @@ const graderJsonLd = {
         '@type': 'WebSite',
         '@id': 'https://www.launchxact.com/#website'
     },
-    description: 'Free AI-powered SaaS landing page grader. Analyzes conversion psychology, trust signals, buyer friction, and distribution potential.',
+    description: 'Free SaaS Discovery Audit analyzing landing page messaging, conversion friction, trust signals, SEO indexability, and AI search readiness.',
     offers: {
         '@type': 'Offer',
         price: '0',
@@ -58,11 +57,11 @@ const graderJsonLd = {
         url: 'https://www.launchxact.com',
     },
     featureList: [
-        'AI Landing Page Audit',
-        'Conversion Psychology Analysis',
-        'Trust Signal Detection',
-        'Headline Optimization',
-        'SEO & Meta Tag Review'
+        'Messaging Audit',
+        'Conversion Analysis',
+        'Trust Signal Review',
+        'SEO & Search Engine Indexing',
+        'AI Search Readiness (AEO/GEO)'
     ],
     aggregateRating: {
         '@type': 'AggregateRating',
@@ -77,26 +76,26 @@ const faqJsonLd = {
     mainEntity: [
         {
             '@type': 'Question',
-            name: 'How does the LaunchXact SaaS Readiness Grader work?',
+            name: 'How does the LaunchXact Free SaaS Discovery Audit work?',
             acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'The LaunchXact Grader uses advanced AI and conversion psychology models to audit a SaaS landing page in real-time. It analyzes 4 critical pillars: The Hook (headline clarity and immediate value proposition), The Trust Gap (social proof, founder transparency, and developer signals), Buyer Friction (pricing clarity and onboarding ease), and Distribution Engine (organic discoverability and shareability).'
+                text: 'The LaunchXact Discovery Audit analyzes your SaaS landing page across 5 core pillars: Messaging, Conversion, Trust, Search, and AI Discovery. It returns a 0-100 breakdown score along with 3 prioritized fixes to optimize your page for human buyers and AI search engines.'
             }
         },
         {
             '@type': 'Question',
-            name: 'What is a good Launch Readiness Score?',
+            name: 'Does my discovery score determine if my SaaS gets accepted into LaunchXact?',
             acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'A score of 80/100 or above indicates high launch readiness with strong conversion psychology and minimal friction. SaaS products that score 80+ are fast-tracked for direct admission into the LaunchXact Genesis Batch.'
+                text: 'No. The grader is a free diagnostic tool for founders. Human curation determines whether a SaaS gets listed on LaunchXact. Products scoring 62/100 or below can still be accepted into the Founding 50 if the underlying software utility is strong.'
             }
         },
         {
             '@type': 'Question',
-            name: 'How do I improve my SaaS landing page grade?',
+            name: 'How do I improve my SaaS discovery score?',
             acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'To improve your grade, implement the 3 tactical fixes provided in your audit report: rewrite your H1 to focus on acute customer pain rather than features, add visible human trust signals (founder profiles, GitHub links, transparent pricing), and streamline your call to action.'
+                text: 'Implement the 3 prioritized fixes in your audit report: rewrite your H1 to communicate concrete outcomes, add visible trust signals above the fold, and add structured JSON-LD schemas for search engines and AI assistants.'
             }
         }
     ]

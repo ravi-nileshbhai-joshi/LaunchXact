@@ -58,7 +58,7 @@ export default function FrankenStackCostForecasterPage() {
             '1-Click Quick Preset Stacks (Solo Indie, Modern Next.js, Scale-Ready Pro)',
             'Interactive SVG Multi-Tier Scaling Curve with Inflection Points',
             'Line-by-Line Service Bill Breakdown with Per-User Unit Economics',
-            'Direct Genesis Batch Distribution Handoff'
+            'Direct Founding 50 Distribution Handoff'
         ],
         aggregateRating: {
             '@type': 'AggregateRating',

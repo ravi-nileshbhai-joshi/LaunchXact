@@ -178,11 +178,11 @@ export async function POST(request) {
       </div>
 
       <div style="margin:24px 0;padding:20px;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(168,85,247,0.08));border-radius:12px;border:1px solid rgba(99,102,241,0.3);">
-        <h3 style="margin:0 0 8px;font-size:16px;font-weight:700;color:#ffffff;">Skip the Fragmentation: Join the Genesis Batch</h3>
+        <h3 style="margin:0 0 8px;font-size:16px;font-weight:700;color:#ffffff;">Skip the Fragmentation: Join the Founding 50</h3>
         <p style="margin:0 0 14px;font-size:13.5px;color:#cbd5e1;line-height:1.5;">
-          LaunchXact gives curated founders 0% platform fees for 90 days, native Merchant of Record with automated global tax, and direct distribution to 350k+ tech buyers.
+          LaunchXact gives accepted founders 100% free permanent directory listing in The Vault, DoFollow SEO authority, and targeted early adopter discovery with zero listing fees or revenue cuts.
         </p>
-        <a href="https://launchxact.com/#founder-form" style="display:inline-block;background:#6366f1;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13.5px;">Apply for Genesis Batch →</a>
+        <a href="https://launchxact.com/#founder-form" style="display:inline-block;background:#6366f1;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13.5px;">Apply for Founding 50 →</a>
       </div>
 
       <p style="margin:0;font-size:13.5px;color:#64748b;">

@@ -32,7 +32,7 @@ const STEPS = [
         step: 5,
         dayLabel: 'Day 14 (+120 hours)',
         title: 'Applications Open',
-        objective: 'The automated qualification CTA. Genesis Batch applications open (limited spots).'
+        objective: 'The automated qualification CTA. Founding 50 applications open (limited spots).'
     }
 ];
 
@@ -144,7 +144,7 @@ export default function LifecyclePreviewPage() {
                     </h1>
                     <p className={styles.subtitle}>
                         Transforming tool audits into an automated qualification engine. Instead of a dead-end calculator,
-                        founders receive a timed, 14-day value sequence that educates, proves vision, and drives high-intent Genesis Batch applications.
+                        founders receive a timed, 14-day value sequence that educates, proves vision, and drives high-intent Founding 50 applications.
                     </p>
                 </header>
 
@@ -248,7 +248,7 @@ export default function LifecyclePreviewPage() {
                                 <strong style={{ color: '#38bdf8' }}>38.2%</strong>
                             </div>
                             <div className={styles.statRow}>
-                                <span style={{ color: '#94a3b8' }}>Step 5 (Genesis Batch CTA)</span>
+                                <span style={{ color: '#94a3b8' }}>Step 5 (Founding 50 CTA)</span>
                                 <strong style={{ color: '#fbbf24' }}>24.6% Conversion</strong>
                             </div>
                         </div>

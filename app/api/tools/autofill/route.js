@@ -213,6 +213,10 @@ function generateDeterministicFallback(rawScraped, toolType) {
             website: `https://${hostname}`,
             description: cleanDesc,
             category: 'AI & DevTools',
+            useCases: 'Workflow automation, task management, team productivity',
+            targetCustomer: 'Modern software teams, founders, and operators',
+            pricing: 'Free tier available; paid plans start at $19/mo',
+            keyFeatures: 'Fast setup, intuitive dashboard, automated sync, team permissions',
             stage: 'Live',
             monthlyRevenue: 'Pre-revenue ($0)',
             biggestProblem: 'Distribution'
@@ -427,7 +431,7 @@ Return valid JSON with this exact schema:
             } else {
                 // Generic / Onboarding
                 prompt = `You are the LaunchXact Founder Onboarding Agent.
-Extract founder submission details for the Genesis Batch from this SaaS site:
+Extract founder submission details for the Founding 50 from this SaaS site:
 
 WEBSITE URL: ${normalizedUrl}
 TITLE: ${title}
@@ -438,9 +442,13 @@ Return valid JSON with this exact schema:
 {
   "productName": "<Clean Product Name>",
   "website": "${normalizedUrl}",
-  "description": "<Compelling 1-2 sentence pitch>",
+  "description": "<Concise 1-line description of what the software does>",
   "category": "<Exact one of: AI & DevTools, B2B SaaS, Marketing & Sales, Fintech & Payments, Productivity & Ops, Creator Economy, Other>",
-  "stage": "<Exact one of: Idea, MVP, Live, Already generating revenue>",
+  "useCases": "<2-3 primary use cases separated by commas, e.g. Customer support automation, workflow orchestration>",
+  "targetCustomer": "<1 clear sentence defining the ideal customer, e.g. Remote engineering teams and early-stage founders>",
+  "pricing": "<Pricing overview, e.g. Free tier available; paid plans from $29/mo>",
+  "keyFeatures": "<3-4 main features separated by commas, e.g. Real-time collaboration, automated reports, native webhooks>",
+  "stage": "<Exact one of: MVP, Live, Generating revenue>",
   "monthlyRevenue": "<Exact one of: Pre-revenue ($0), < $1,000 / mo, $1,000 – $5,000 / mo, $5,000 – $20,000 / mo, $20,000+ / mo>",
   "biggestProblem": "<Exact one of: Building, Infrastructure, Payments, Distribution, Discovery, Other>"
 }`;

@@ -26,8 +26,8 @@ Analyze their pricing model and customer acquisition cost (CAC) risks. How can t
 ### 4. Zero-to-One Distribution Engine
 Suggest 3 specific, non-obvious acquisition channels (specific subreddits, communities, cold outbound angles, or directory wedges) where this product can acquire its first 100 paying customers without paid ads.
 
-### 5. The Genesis Batch 30-Day Execution Sprints
-Give them a tactical 30-day checklist. Specific milestones to validate demand, launch to initial buyers, and reach launch-readiness for the LaunchXact Genesis Batch.
+### 5. The Founding 50 30-Day Execution Sprints
+Give them a tactical 30-day checklist. Specific milestones to validate demand, launch to initial buyers, and reach launch-readiness for the LaunchXact Founding 50.
 
 TONE: Senior technical partner code review energy. Direct, candid, constructive. Return content in Markdown format.`;
 
@@ -128,7 +128,7 @@ Verdict: ${summaryResult?.verdict_headline || summaryResult?.roast_summary || 'N
         }
 
         if (!auditMarkdown) {
-            auditMarkdown = `### 1. Market Positioning & The Value Proposition\nTargeting ${targetCustomer || 'your chosen audience'} requires razor-sharp specificity. Shift from broad productivity claims to guaranteed time-to-value.\n\n### 2. The Defensibility Moat & Architecture\nBuild proprietary deterministic logic around user workflows. Don't rely solely on LLM wrappers.\n\n### 3. Friction, Unit Economics & Pricing Power\nStructure pricing around high-intent business tiers ($99/mo to $299/mo) rather than $9 hobbyist plans.\n\n### 4. Zero-to-One Distribution Engine\nPartner with niche agencies and build targeted distribution loops before expanding paid ad spend.\n\n### 5. The Genesis Batch 30-Day Execution Sprints\nFocus on securing 5 design partner letters of intent and submit your verified prototype to LaunchXact.`;
+            auditMarkdown = `### 1. Market Positioning & The Value Proposition\nTargeting ${targetCustomer || 'your chosen audience'} requires razor-sharp specificity. Shift from broad productivity claims to guaranteed time-to-value.\n\n### 2. The Defensibility Moat & Architecture\nBuild proprietary deterministic logic around user workflows. Don't rely solely on LLM wrappers.\n\n### 3. Friction, Unit Economics & Pricing Power\nStructure pricing around high-intent business tiers ($99/mo to $299/mo) rather than $9 hobbyist plans.\n\n### 4. Zero-to-One Distribution Engine\nPartner with niche agencies and build targeted distribution loops before expanding paid ad spend.\n\n### 5. The Founding 50 30-Day Execution Sprints\nFocus on securing 5 design partner letters of intent and submit your verified prototype to LaunchXact.`;
         }
 
         // Send via Resend if available
@@ -159,7 +159,7 @@ Verdict: ${summaryResult?.verdict_headline || summaryResult?.roast_summary || 'N
                             
                             <div style="text-align: center;">
                                 <p style="font-size: 15px; color: #e2e8f0; font-weight: 600; margin-bottom: 14px;">Ready to fix the weaknesses and launch?</p>
-                                <a href="https://launchxact.com/#founder-form" style="display: inline-block; background: #7c3aed; color: #ffffff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: 700; font-size: 14px;">Apply for Genesis Batch →</a>
+                                <a href="https://launchxact.com/#founder-form" style="display: inline-block; background: #7c3aed; color: #ffffff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: 700; font-size: 14px;">Apply for Founding 50 →</a>
                             </div>
                         </div>
                     `

@@ -60,7 +60,7 @@ export default function PreLaunchDistributionArchitectPage() {
             'Viral "Steal This Hook" Copy Templates with 1-Click Clipboard Copy',
             'Interactive Milestone Checklist with Real-Time Launch Momentum Meter',
             '1-Click Exportable Markdown Launch Roadmap for Notion and Linear',
-            'Direct Genesis Batch Distribution Handoff'
+            'Direct Founding 50 Distribution Handoff'
         ],
         aggregateRating: {
             '@type': 'AggregateRating',
@@ -102,7 +102,7 @@ export default function PreLaunchDistributionArchitectPage() {
                 name: 'How does LaunchXact provide day-one SaaS distribution?',
                 acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'LaunchXact operates as a curated multi-vendor marketplace showcasing software products to over 350,000 targeted buyers and early adopters. Accepted founders in the Genesis Batch gain long-term visibility in The Vault and AI semantic search indexing without paying upfront listing fees or high ad spend.'
+                    text: 'LaunchXact operates as a curated directory and discovery platform showcasing vetted software products to targeted early adopters and active builders. Every submission is manually tested for market gap and real problem-solving utility. Accepted founders in the Founding 50 gain permanent visibility in The Vault and AI search indexing with 100% free listing and zero revenue cuts.'
                 }
             }
         ]

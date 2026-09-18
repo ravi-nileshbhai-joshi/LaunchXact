@@ -1,0 +1,210 @@
+.bannerContainer {
+    width: 100%;
+    margin: 2.5rem 0 1.5rem 0;
+    position: relative;
+    border-radius: 1.25rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    box-sizing: border-box;
+}
+
+.glowTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6366f1, #a855f7, #0284c7);
+}
+
+.innerContent {
+    position: relative;
+    z-index: 1;
+}
+
+.topBadgeRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 9999px;
+    color: #4338ca;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.badgePulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4f46e5;
+    animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.spotsLeft {
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.headline {
+    font-family: 'Plus Jakarta Sans', var(--font-sans), sans-serif;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.25;
+    margin: 0 0 0.75rem 0;
+    letter-spacing: -0.02em;
+}
+
+.gradientText {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.description {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+    max-width: 760px;
+}
+
+.benefitsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+}
+
+@media (max-width: 900px) {
+    .benefitsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 540px) {
+    .benefitsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.benefitItem {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.benefitIcon {
+    font-size: 1.15rem;
+    margin-bottom: 0.2rem;
+}
+
+.benefitTitle {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.benefitDesc {
+    font-size: 0.76rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.actionCluster {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.primaryBtn {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.92rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 0.65rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.primaryBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}
+
+.secondaryBtn {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    color: #334155;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 0.65rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.secondaryBtn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+.trustFooter {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 600;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1rem;
+}
+
+.trustItem {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}

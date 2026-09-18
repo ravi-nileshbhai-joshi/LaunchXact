@@ -16,7 +16,7 @@ export const metadata = {
     default: 'LaunchXact - Premium Curated SaaS Marketplace & Founder Launchpad',
     template: '%s | LaunchXact',
   },
-  description: 'LaunchXact is a curated multi-vendor SaaS marketplace and founder launchpad. Zero platform fees, AI-powered founder tools, guaranteed launch visibility, and direct founder distribution.',
+  description: 'LaunchXact is a curated SaaS directory and founder launchpad. 100% free permanent listing, manually tested products, AI-powered diagnostics, and organic early adopter discovery.',
   keywords: [
     'LaunchXact', 'SaaS', 'SaaS Marketplace', 'B2B Software', 'Startup', 'Software Discovery', 'Enterprise Tools', 'Tech Tools',
     'where to launch my SaaS', 'curated software directory', 'premium saas marketplace', 'buy saas products',

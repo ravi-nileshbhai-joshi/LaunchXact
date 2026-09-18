@@ -606,20 +606,20 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
                         <div className={styles.comparisonColFix}>
                             <div className={styles.comparisonColHeader}>
                                 <span className={styles.colIcon}>✅</span>
-                                <span className={styles.colTitle}>The LaunchXact Genesis Model</span>
+                                <span className={styles.colTitle}>The LaunchXact Founding 50 Model</span>
                             </div>
                             <ul className={styles.comparisonList}>
                                 <li>
-                                    <strong>0% Commission for 90 Days:</strong> Keep 100% of your MRR during the Genesis Launch.
+                                    <strong>100% Free Listing:</strong> We never charge founders to list products. Keep 100% of your customer revenue.
                                 </li>
                                 <li>
-                                    <strong>Native Merchant of Record:</strong> Eliminate standalone Stripe, sales tax, and EU VAT invoicing software.
+                                    <strong>Manual Founder Curation:</strong> Every submission is tested by hand for real market gap and problem-solving utility.
                                 </li>
                                 <li>
-                                    <strong>350k+ Buyer Reach:</strong> Direct distribution push across LinkedIn, 𝕏, Reddit, and active tech buyers.
+                                    <strong>Targeted Early Adopter Discovery:</strong> Inbound discoverability across high-intent builders and active software buyers.
                                 </li>
                                 <li>
-                                    <strong>Permanent High-Authority Backlink:</strong> DoFollow SEO equity that drives organic discovery long after launch.
+                                    <strong>Permanent High-Authority Backlink:</strong> DoFollow SEO equity in The Vault that drives organic discovery long after launch.
                                 </li>
                             </ul>
                         </div>
@@ -628,22 +628,22 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
                     <div className={styles.solutionActionArea}>
                         <div className={styles.solutionButtons}>
                             <Link
-                                href="/#founder-form"
+                                href="/#founder-form?source=franken-stack"
                                 onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'franken-stack-cost-forecaster' })}
                                 className={styles.solutionPrimaryBtn}
                             >
-                                <span>🚀 Apply to Genesis Batch with This Stack →</span>
+                                <span>🚀 Apply for Founding 50 with This Stack →</span>
                             </Link>
                             <Link href="/grade" className={styles.solutionSecondaryBtn}>
                                 <span>⚡ Grade SaaS Viability First (Free AI Audit) →</span>
                             </Link>
                         </div>
                         <div className={styles.solutionGuarantees}>
-                            <span>✓ Zero platform fees for 90 days</span>
+                            <span>✓ 100% Free permanent listing</span>
                             <span>•</span>
-                            <span>Keep 100% MRR</span>
+                            <span>Keep 100% of your revenue</span>
                             <span>•</span>
-                            <span>Strict 40-product curation</span>
+                            <span>Manually tested & curated</span>
                         </div>
                     </div>
                 </div>
@@ -699,7 +699,7 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
                 <div className={styles.handoffContent}>
                     <div className={styles.handoffBadge}>
                         <span className={styles.handoffBadgePulse} />
-                        <span>🚀 Q1 2026 Genesis Cohort · Limited to 40 Curated Products</span>
+                        <span>🚀 Founding 50 Cohort · Limited to 50 Curated Products</span>
                     </div>
 
                     <h2 className={styles.handoffHeadline}>
@@ -708,36 +708,36 @@ Forecast your stack: https://www.launchxact.com/tools/franken-stack-cost-forecas
                     </h2>
 
                     <p className={styles.handoffDesc}>
-                        Instead of juggling 6 billing dashboards, unpredictable tier spikes, and zero organic distribution, launch your software in LaunchXact&apos;s curated marketplace. Get built-in monetization, tax compliance, and direct exposure to 350k+ founders and early adopters.
+                        Stop paying high listing fees or burning cash on cold DMs. LaunchXact manually vets and showcases exceptional indie software to targeted early adopters who are actively looking for real solutions.
                     </p>
 
                     {/* 3 Value Pillars Grid */}
                     <div className={styles.handoffPillars}>
                         <div className={styles.pillarCard}>
-                            <div className={styles.pillarIcon}>💳</div>
-                            <div className={styles.pillarTitle}>0% Platform Fees</div>
-                            <div className={styles.pillarDesc}>Keep 100% of your revenue for 90 days. Zero commission.</div>
+                            <div className={styles.pillarIcon}>💎</div>
+                            <div className={styles.pillarTitle}>100% Free Listing</div>
+                            <div className={styles.pillarDesc}>Never pay to list your software. Keep 100% of your customer revenue.</div>
                         </div>
                         <div className={styles.pillarCard}>
-                            <div className={styles.pillarIcon}>🌍</div>
-                            <div className={styles.pillarTitle}>Native MoR & Tax</div>
-                            <div className={styles.pillarDesc}>Global sales tax, EU VAT OSS, and invoicing fully automated.</div>
+                            <div className={styles.pillarIcon}>🔍</div>
+                            <div className={styles.pillarTitle}>Manually Tested</div>
+                            <div className={styles.pillarDesc}>Vetted by hand for genuine utility, alternatives, and market gap.</div>
                         </div>
                         <div className={styles.pillarCard}>
-                            <div className={styles.pillarIcon}>📢</div>
-                            <div className={styles.pillarTitle}>350k+ Distribution</div>
-                            <div className={styles.pillarDesc}>Featured launch day debut across high-intent software buyers.</div>
+                            <div className={styles.pillarIcon}>🏛️</div>
+                            <div className={styles.pillarTitle}>Permanent Vault</div>
+                            <div className={styles.pillarDesc}>Dofollow backlinks and AI engine indexing that compound over time.</div>
                         </div>
                     </div>
 
                     {/* Designed CTA Buttons */}
                     <div className={styles.handoffActionCluster}>
                         <Link
-                            href="/#founder-form"
+                            href="/#founder-form?source=franken-stack"
                             onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'franken-stack-cost-forecaster' })}
                             className={styles.handoffPrimaryBtn}
                         >
-                            <span>🚀 Apply for Genesis Batch Selection →</span>
+                            <span>🚀 Apply for Founding 50 Selection →</span>
                         </Link>
                         <Link href="/grade" className={styles.handoffSecondaryBtn}>
                             <span>⚡ Test SaaS Readiness (Free AI Grader) →</span>

@@ -38,7 +38,7 @@ export default function HomeContent({ latestArticles }) {
 
                     <div className={styles.heroActions}>
                         <Link href="/#founder-form" className={styles.btnPrimary}>
-                            Join LaunchXact Genesis Batch
+                            Apply for Founding 50
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                         </Link>
                         <Link href="/tools" className={styles.btnSecondary}>
@@ -123,20 +123,19 @@ export default function HomeContent({ latestArticles }) {
                 </div>
             </section>
 
-            {/* ===== GRADE CTA CALLOUT ===== */}
+            {/* ===== FREE SAAS DISCOVERY AUDIT CALLOUT ===== */}
             <section className={`${styles.reveal} ${styles.gradeCta}`}>
                 <div className={styles.gradeCtaInner}>
-                    <span className={styles.gradeBadge}>🔥 Free AI Tool</span>
+                    <span className={styles.gradeBadge}>✨ Free Discovery Tool</span>
                     <h2 className={styles.gradeTitle}>
-                        Grade your landing page for free
+                        Is your SaaS ready to be discovered?
                     </h2>
                     <p className={styles.gradeDesc}>
-                        Get an instant AI audit. We'll score your conversion readiness, trust signals, and SEO structure — then tell you exactly what to fix.
+                        Enter your website and get a free analysis of your landing page, messaging, trust signals, SEO and AI-search readiness.
                     </p>
                     <Link href="/grade" className={styles.btnPrimary}>
-                        ⚡ Grade My Landing Page
+                        Analyze My SaaS — Free →
                     </Link>
-                    <p className={styles.gradeNote}>Score 80+ to fast-track your Beta Platform application</p>
                 </div>
             </section>
 
@@ -151,7 +150,7 @@ export default function HomeContent({ latestArticles }) {
                                 <span className={styles.accent}>curated directory</span>
                             </h2>
                             <p className={styles.betaDesc}>
-                                LaunchXact is building a premium, manually curated SaaS marketplace. Submit your product for our Genesis launch batch or join as an early adopter to discover tools before they go mainstream.
+                                LaunchXact is building a premium, manually curated SaaS marketplace. Submit your product for our Founding 50 launch batch or join as an early adopter to discover tools before they go mainstream.
                             </p>
                             <div className={styles.betaActions}>
                                 <Link href="/#founder-form" className={styles.btnPrimary}>
@@ -219,7 +218,7 @@ export default function HomeContent({ latestArticles }) {
                     </p>
                     <div className={styles.heroActions}>
                         <Link href="/#founder-form" className={styles.btnPrimary}>
-                            Apply for Genesis Listing (0% Fees)
+                            Apply for Founding 50 (0% Fees)
                         </Link>
                         <Link href="/grade" className={styles.btnSecondary}>
                             Grade Your SaaS Now

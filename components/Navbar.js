@@ -99,7 +99,7 @@ export default function Navbar() {
                     </div>
                     <div className={styles.mobileCta}>
                         <Link href="/#founder-form" className={styles.ctaBtn} onClick={() => setIsOpen(false)}>
-                            Submit SaaS to Genesis Batch →
+                            Apply for Founding 50 →
                         </Link>
                     </div>
                 </div>

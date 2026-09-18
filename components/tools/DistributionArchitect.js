@@ -326,7 +326,7 @@ Here is what happened to their average turnaround time:
 - Client B: Saved $650 in redundant Zapier tasks
 
 Public launch happens next Monday.
-Genesis batch pricing will be locked in for life for the first 30 signups.`
+Founding 50 pricing will be locked in for life for the first 30 signups.`
         },
         launch: {
             title: 'Launch Day: B2B Multi-Vendor Coordinated Blast',
@@ -336,7 +336,7 @@ Genesis batch pricing will be locked in for life for the first 30 signups.`
                     name: 'LaunchXact B2B Marketplace',
                     icon: '🚀',
                     target: 'List product for vetted business buyers seeking productivity software',
-                    tags: ['Genesis Batch', 'Vetted Directory']
+                    tags: ['Founding 50', 'Vetted Directory']
                 },
                 {
                     name: 'LinkedIn Announcement Blast',
@@ -515,7 +515,7 @@ Would love to know if this fits your next weekly roundup!`
                     tags: ['#1 AI Product', 'Product Hunt']
                 },
                 {
-                    name: 'LaunchXact Genesis Batch',
+                    name: 'LaunchXact Founding 50',
                     icon: '🚀',
                     target: 'Secure curated listing to reach enterprise buyers instead of transient tire-kickers',
                     tags: ['LaunchXact Batch', 'The Vault']
@@ -677,7 +677,7 @@ Sent you a free lifetime VIP link in your DMs—no strings attached, just hope i
                     name: 'LaunchXact Curated Hub',
                     icon: '🚀',
                     target: 'List product for serious adopters and software buyers',
-                    tags: ['Genesis Batch', 'Curated Launch']
+                    tags: ['Founding 50', 'Curated Launch']
                 },
                 {
                     name: 'Social Launch Blitz',
@@ -991,7 +991,7 @@ Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-archi
                     <span className={styles.momentumBadge}>Live Launch Momentum</span>
                     <h2 className={styles.momentumTitle}>
                         {momentumScore === 100
-                            ? '🚀 Ready for Genesis Batch Launch!'
+                            ? '🚀 Ready for Founding 50 Launch!'
                             : momentumScore >= 50
                             ? '⚡ High Traction Velocity'
                             : '🌱 Initial Seeding Phase'}
@@ -1161,11 +1161,11 @@ Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-archi
 
                 <div className={styles.ahaActionRow}>
                     <Link
-                        href="/#founder-form"
+                        href="/#founder-form?source=distribution-architect"
                         onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'pre-launch-distribution-architect' })}
                         className={styles.btnAhaGenesis}
                     >
-                        Join the Genesis Batch →
+                        Apply for Founding 50 →
                     </Link>
                     <span className={styles.genesisGuarantees}>
                         ✓ Guaranteed buyer distribution · 0 cold DMs · The Vault permanent indexing
@@ -1219,15 +1219,15 @@ Plan your launch: https://www.launchxact.com/tools/pre-launch-distribution-archi
                     Skip the 30-day manual outreach grind.
                 </h3>
                 <p className={styles.handoffDesc}>
-                    Want guaranteed day-one distribution to 350,000+ targeted software adopters instead of sending 200 cold DMs across Reddit and Twitter? Apply for the curated LaunchXact Genesis Batch.
+                    Want genuine organic distribution and high-intent inbound discoverability instead of sending 200 cold DMs across Reddit and Twitter? Apply for the curated LaunchXact Founding 50.
                 </p>
                 <div className={styles.handoffActions}>
                     <Link
-                        href="/#founder-form"
+                        href="/#founder-form?source=distribution-architect"
                         onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'pre-launch-distribution-architect' })}
                         className={styles.btnPrimary}
                     >
-                        Apply to Genesis Batch for Instant Traction &rarr;
+                        Apply for Founding 50 for Instant Traction &rarr;
                     </Link>
                     <button onClick={handleCopyRoadmap} className={styles.btnSecondary}>
                         {copiedRoadmap ? '✓ Copied Markdown!' : 'Export Distribution Plan'}

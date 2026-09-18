@@ -169,11 +169,11 @@ export default function ToolEmailCapture({
                             </button>
 
                             <Link
-                                href="/#founder-form"
+                                href={`/#founder-form?email=${encodeURIComponent(email || '')}&source=${encodeURIComponent(toolId || 'tool-capture')}`}
                                 onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId })}
                                 className={styles.btnGenesis}
                             >
-                                <span>Apply to Genesis Batch →</span>
+                                <span>Apply for Founding 50 →</span>
                             </Link>
                         </div>
                     </div>
@@ -207,7 +207,7 @@ export default function ToolEmailCapture({
                                 className={styles.checkbox}
                             />
                             <span className={styles.checkboxText}>
-                                Also reserve my spot in the LaunchXact Genesis Batch (0% platform fees for 90 days).
+                                Also consider my product for the LaunchXact Founding 50 (100% free permanent listing).
                             </span>
                         </label>
 

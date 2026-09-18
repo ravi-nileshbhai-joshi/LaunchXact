@@ -555,14 +555,14 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
 
                 <div className={styles.ahaActionRow}>
                     <Link
-                        href="/#founder-form"
+                        href="/#founder-form?source=true-cost-of-payments"
                         onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'true-cost-of-payments' })}
                         className={styles.btnAhaGenesis}
                     >
-                        Join the Genesis Batch →
+                        Apply for Founding 50 →
                     </Link>
                     <span className={styles.genesisGuarantees}>
-                        ✓ 5% Flat Merchant of Record · Zero VAT/GST liability · Built-in distribution
+                        ✓ 100% Free permanent listing · Keep 100% of revenue · Hand-curated selection
                     </span>
                 </div>
             </section>
@@ -614,15 +614,15 @@ Calculate yours: https://www.launchxact.com/tools/true-cost-of-payments`;
                     Collapse your fragmented payment stack into one platform.
                 </h3>
                 <p className={styles.handoffDesc}>
-                    Stop managing separate subscriptions for Stripe, TaxJar, invoicing software, and foreign exchange brokers. LaunchXact acts as your legal Merchant of Record, instantly handling worldwide sales tax, EU VAT OSS, and chargeback protection.
+                    Get your SaaS discovered without paying expensive listing fees or ad spend. LaunchXact gives vetted software products permanent high-authority backlinks in The Vault and targeted discovery across active software buyers.
                 </p>
                 <div className={styles.handoffActions}>
                     <Link
-                        href="/#founder-form"
+                        href="/#founder-form?source=true-cost-of-payments"
                         onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'true-cost-of-payments' })}
                         className={styles.btnPrimary}
                     >
-                        Apply to Genesis Batch with Native MoR →
+                        Apply for Founding 50 Selection →
                     </Link>
                 </div>
             </section>

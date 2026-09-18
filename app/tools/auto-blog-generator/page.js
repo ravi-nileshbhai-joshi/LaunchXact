@@ -11,7 +11,7 @@ const DEFAULT_PROFILE = {
     siteName: 'LaunchXact',
     domain: 'www.launchxact.com',
     title: 'LaunchXact - Premium Curated SaaS Marketplace',
-    headline: 'Launch Your SaaS to 350k+ Real Users in Days. Zero Ad Spend.',
+    headline: 'Launch Your SaaS to High-Intent Software Adopters. Zero Ad Spend.',
     valueProposition: 'A manually curated multi-vendor SaaS marketplace that connects vetted indie software directly with enterprise buyers and active tech adopters.',
     targetAudience: 'SaaS Founders, Full-Stack Builders & Growth Teams',
     suggestedKeywords: [

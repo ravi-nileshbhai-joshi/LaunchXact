@@ -168,33 +168,20 @@ export async function POST(request) {
         }
 
         // =========================================================================
-        // BADGE VERIFICATION CHECK FOR FREE TIER (STANDARD REVIEW)
-        // Free tier requires the LaunchXact Genesis badge in their website footer.
-        // Fast-Track tier ($99) bypasses the badge requirement completely.
+        // BADGE VERIFICATION CHECK (OPTIONAL / NON-BLOCKING)
+        // Founding 50 has: No listing fee. No recurring fee. No mandatory backlink.
+        // If a badge is detected on their site, we record badge_verified = true.
         // =========================================================================
         let badgeVerified = false;
-        if (reviewTier === 'standard') {
-            if (!website) {
-                return NextResponse.json({
-                    error: 'website_required',
-                    message: 'Your website URL is required for standard free review so we can verify the LaunchXact badge in your footer.'
-                }, { status: 400 });
+        if (website) {
+            try {
+                badgeVerified = await verifyBadgeOnWebsite(website);
+                if (badgeVerified) {
+                    console.log(`[Waitlist API] ✅ Verified badge on ${website} for ${productName}!`);
+                }
+            } catch (bErr) {
+                console.warn('[Waitlist API] Badge check skipped:', bErr.message);
             }
-
-            // Verify badge live on website
-            badgeVerified = await verifyBadgeOnWebsite(website);
-
-            if (!badgeVerified) {
-                console.log(`[Waitlist API] Rejected free submission for ${productName} (${website}) — badge not detected.`);
-                return NextResponse.json({
-                    error: 'badge_not_detected',
-                    message: `LaunchXact badge was not detected in the footer of ${website}. Standard free curation requires our embed badge. Please copy the embed code below, add it to your website, and click 'Verify Badge & Submit', or upgrade to ⚡ Fast-Track ($99) to launch without a badge.`
-                }, { status: 422 });
-            }
-
-            console.log(`[Waitlist API] ✅ Verified badge on ${website} for ${productName}!`);
-        } else {
-            console.log(`[Waitlist API] ⚡ Fast-Track tier selected for ${productName} — badge requirement bypassed.`);
         }
 
         const slug = generateSlug(productName);
@@ -215,7 +202,7 @@ export async function POST(request) {
             badge_verified: badgeVerified,
             key_features: [
                 `Built for ${category} workflows`,
-                `Verified member of the LaunchXact Genesis Batch`,
+                `Verified member of the LaunchXact Founding 50`,
                 `Direct founder support and fast iteration cycles`
             ],
             faq: [
@@ -225,7 +212,7 @@ export async function POST(request) {
                 },
                 {
                     q: `Who is building ${productName}?`,
-                    a: `Built by ${founderName} and submitted to the LaunchXact Genesis Batch.`
+                    a: `Built by ${founderName} and submitted to the LaunchXact Founding 50.`
                 }
             ]
         };
@@ -334,51 +321,37 @@ export async function POST(request) {
         if (resend) {
             try {
                 const isFastTrack = reviewTier === 'fast_track';
-                const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just applied to the @LaunchXact Genesis Batch with ${productName}! Excited to launch in a curated SaaS marketplace. 🚀 https://launchxact.com`)}`;
-                const emailSubject = isFastTrack
-                    ? `⚡ Fast-Track Priority Application: ${productName} — LaunchXact Genesis Batch (48h Review)`
-                    : `🚀 Application Received: ${productName} — LaunchXact Genesis Batch`;
+                const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just applied to the @LaunchXact Founding 50 with ${productName}! Excited to get a permanent place to be discovered. 🚀 https://launchxact.com`)}`;
+                const emailSubject = `🚀 Application Received: ${productName} — LaunchXact Founding 50`;
                 const emailBody = `Hi ${founderName},
 
-Thanks for submitting ${productName} to the LaunchXact Genesis Batch!
+Thanks for applying to the LaunchXact Founding 50 with ${productName}!
 
-${isFastTrack ? `⚡ TIER: FAST-TRACK 48-HOUR REVIEW PASS ($99)
-Your application is prioritized at the top of our queue with:
-- Guaranteed 48-hour review turnaround & 1-on-1 positioning teardown
-- Dedicated AEO, GEO & SEO-optimized product page (optimized for ChatGPT, Perplexity, Gemini & Google)
-- Lifetime visibility on the LaunchXact platform (never archived)
-- Featured placement in the homepage product showcase
-- Dedicated referral traffic directly to your website
-- Zero badge requirement
-` : `Your application has been logged into our standard founder review queue.
-- Review Queue: Standard Community Queue (14–21 business days)
-- LaunchXact Badge: Verified in your website footer ✅
-- 0% Platform Commission & $0 Listing Fee
-`}
+We're selecting the first 50 products for LaunchXact's founding collection. Every accepted product receives a free permanent listing, founder profile, category and use-case placement, and eligibility for future comparisons and discovery features.
+
+No listing fee. No recurring fee. No mandatory backlink.
+
 Application Summary:
 - Product: ${productName}
-- Review Tier: ${isFastTrack ? '⚡ Fast-Track Priority (48h SLA)' : 'Standard Community Queue (14–21 days)'}
-- Badge Status: ${badgeVerified ? '✅ Verified on Website Footer' : (isFastTrack ? '⚡ Bypassed (Fast-Track Tier)' : 'Pending')}
 - Stage: ${stage}
-- Monthly Revenue: ${monthlyRevenue}
-- Core Bottleneck: ${biggestProblem}
 - Category: ${category}
 ${website ? `- Website: ${website}\n` : ''}
-How Our Curation Review Works:
-We are hand-curating an initial cohort of 40 breakout SaaS products for our official launch batch. To protect buyers and ensure high value, every submission is reviewed for technical stability, problem clarity, and founder authenticity.
+What happens next?
+1. We review — A real person checks the product.
+2. We prepare your listing — We turn your website information into a structured LaunchXact product page.
+3. You approve it — You'll receive a preview before it goes live.
+4. Your listing stays — Accepted products receive a permanent LaunchXact listing.
 
-Selected Genesis builders receive:
-1. Priority Placement: Featured spot on launch day with permanent high-authority DoFollow backlink.
-2. 0% Platform Fees: Keep 100% of your customer revenue forever.
-3. Dedicated AEO/GEO Visibility: Citable schema that puts your tool into AI search answers.
-4. Direct Distribution: Push to our 350k+ founder network across LinkedIn, 𝕏, and Reddit.
-5. Early Adopter Influx: Direct visibility and user testing from active tech buyers.
-
-Want to boost your review ranking?
-Founders who share their Genesis application move to the top of our review queue:
-
-Share on 𝕏 (+2x Priority Review):
-${tweetUrl}
+Founding 50 benefits:
+✓ Free permanent listing
+✓ Free editorial setup
+✓ Founder profile
+✓ Category placement
+✓ Use-case placement
+✓ Comparison eligibility
+✓ Launch announcement
+✓ LaunchXact analytics
+✓ Founding-product badge
 
 I'll personally review your submission and follow up with you.
 
@@ -407,7 +380,7 @@ https://launchxact.com`;
     <div style="padding: 32px 32px 24px; border-bottom: 1px solid #1e293b;">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <span style="font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">Launch<span style="color: #6366f1;">Xact</span></span>
-        <span style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; border: 1px solid rgba(99, 102, 241, 0.3); text-transform: uppercase; letter-spacing: 0.5px;">Genesis Batch</span>
+        <span style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; border: 1px solid rgba(99, 102, 241, 0.3); text-transform: uppercase; letter-spacing: 0.5px;">Founding 50</span>
       </div>
     </div>
 
@@ -424,7 +397,7 @@ https://launchxact.com`;
       <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.08)); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 18px 20px; margin-bottom: 26px;">
         <div style="font-size: 12px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Status: In Curation Queue</div>
         <p style="margin: 0; font-size: 14px; color: #cbd5e1; line-height: 1.5;">
-          Our team manually reviews every candidate for real utility, technical stability, and founder authenticity. Only 40 products will debut in the official Genesis cohort.
+          Our team manually reviews every candidate for real utility, technical stability, and founder authenticity. Only 50 products will debut in the official Founding 50 cohort.
         </p>
       </div>
 
@@ -459,20 +432,20 @@ https://launchxact.com`;
       <!-- What to Expect -->
       <h3 style="margin: 0 0 12px; font-size: 16px; font-weight: 700; color: #ffffff;">What to expect next</h3>
       <p style="margin: 0 0 14px; font-size: 14px; color: #94a3b8;">
-        We are hand-curating the initial cohort of 40 breakout SaaS products for the Genesis Launch. Selected builders receive:
+        We are hand-curating the initial cohort of 50 breakout SaaS products for the Founding 50 Launch. Selected builders receive:
       </p>
       <ul style="margin: 0 0 28px; padding-left: 20px; font-size: 14px; color: #cbd5e1; line-height: 1.8;">
-        <li><strong style="color: #ffffff;">Priority Placement:</strong> Featured debut spot with permanent high-authority DoFollow backlink.</li>
-        <li><strong style="color: #ffffff;">0% Platform Fees:</strong> 90 days zero-fee transactions on the marketplace.</li>
-        <li><strong style="color: #ffffff;">Distribution Push:</strong> Exposure across our 350k+ founder network on LinkedIn, 𝕏, and Reddit.</li>
-        <li><strong style="color: #ffffff;">Early Adopter Influx:</strong> Immediate feedback from high-intent tech buyers.</li>
+        <li><strong style="color: #ffffff;">Priority Placement:</strong> Featured debut spot with permanent high-authority DoFollow backlink in The Vault.</li>
+        <li><strong style="color: #ffffff;">100% Free Listing:</strong> We never charge founders to list products. Keep 100% of your revenue.</li>
+        <li><strong style="color: #ffffff;">Hand-Curated Vetting:</strong> Every product is manually tested for market gap, alternatives, and real utility.</li>
+        <li><strong style="color: #ffffff;">Early Adopter Discovery:</strong> Direct discoverability from active builders and high-intent software buyers.</li>
       </ul>
 
       <!-- Boost Selection Box -->
       <div style="background: rgba(30, 41, 59, 0.5); border: 1px dashed #334155; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
         <div style="font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Want to move to the top of our review queue?</div>
         <p style="margin: 0 0 14px; font-size: 13px; color: #94a3b8;">
-          Founders who share their Genesis status get prioritized fast-track review.
+          Founders who share their Founding 50 status get prioritized fast-track review.
         </p>
         <a href="${tweetUrl}" target="_blank" style="display: inline-block; background: #1da1f2; color: #ffffff; text-decoration: none; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 13px;">
           Share on 𝕏 (+2x Priority Review) →
@@ -523,7 +496,7 @@ https://launchxact.com`;
 
         return NextResponse.json({
             success: true,
-            message: `Successfully submitted ${productName} to the Genesis Batch review queue!`
+            message: `Successfully submitted ${productName} to the Founding 50 curation queue!`
         });
 
     } catch (error) {

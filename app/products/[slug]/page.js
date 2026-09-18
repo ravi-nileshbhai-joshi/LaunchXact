@@ -57,7 +57,7 @@ async function getProduct(slug) {
             website_url: aeo.website_url || founder.website_url || '',
             key_features: aeo.key_features || [
                 `Engineered for ${dbProduct.category || 'modern workflows'}`,
-                `Hand-curated candidate for the LaunchXact Genesis Batch 2026`,
+                `Hand-curated candidate for the LaunchXact Founding 50`,
                 `Direct founder contact & rapid iteration cycles`
             ],
             isStatic: false
@@ -84,11 +84,11 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: `${product.name} — ${product.category} | LaunchXact Genesis Batch`,
+        title: `${product.name} — ${product.category} | LaunchXact Founding 50`,
         description: product.tagline || product.description,
         alternates: { canonical: `/products/${slug}` },
         openGraph: {
-            title: `${product.name} — LaunchXact Genesis Showcase`,
+            title: `${product.name} — LaunchXact Founding 50 Showcase`,
             description: product.tagline || product.description,
             url: `https://www.launchxact.com/products/${slug}`,
             siteName: 'LaunchXact',
@@ -201,7 +201,7 @@ export default async function DynamicProductPage({ params }) {
                 {/* HERO SHOWCASE CARD */}
                 <section className={styles.heroSection}>
                     <div className={styles.heroTopRow}>
-                        <span className={styles.genesisBadge}>✦ Genesis Batch 2026</span>
+                        <span className={styles.genesisBadge}>✦ Founding 50</span>
                         <span className={styles.stageBadge}>
                             {product.stage === 'Live' && '🚀 Live'}
                             {product.stage === 'Already generating revenue' && '💰 Generating Revenue'}
@@ -232,7 +232,7 @@ export default async function DynamicProductPage({ params }) {
                         )}
 
                         <Link href="/#founder-form" className={styles.secondaryCta}>
-                            Submit Your SaaS to Genesis Batch →
+                            Apply for Founding 50 →
                         </Link>
                     </div>
 
@@ -308,10 +308,10 @@ export default async function DynamicProductPage({ params }) {
                 <section className={styles.bottomBanner}>
                     <h3 className={styles.bottomHeading}>Building software like {product.name}?</h3>
                     <p className={styles.bottomSub}>
-                        Join the LaunchXact Genesis Batch. Get permanent directory discovery, multi-region billing infrastructure, and access to 350k+ tech users.
+                        Join the LaunchXact Founding 50. Get permanent directory discovery, DoFollow backlinks in The Vault, and targeted early adopter reach.
                     </p>
                     <Link href="/#founder-form" className={styles.bottomBtn}>
-                        Apply to Join Genesis Batch (Free) →
+                        Apply for Founding 50 (Free) →
                     </Link>
                 </section>
             </div>

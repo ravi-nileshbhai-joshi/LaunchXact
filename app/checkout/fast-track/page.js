@@ -63,11 +63,11 @@ function FastTrackContent() {
                 <div className={styles.header}>
                     <div className={styles.badge}>
                         <FontAwesomeIcon icon={faBolt} className={styles.badgeIcon} />
-                        Genesis Batch #1 Priority Review
+                        Founding 50 Priority Review
                     </div>
                     <h1 className={styles.title}>Fast-Track 48-Hour Launch Pass</h1>
                     <p className={styles.subtitle}>
-                        Skip the 14–21 day community backlog. Lock in guaranteed 48-hour audit turnaround, an in-depth founder positioning teardown, and priority placement in the Genesis Cohort.
+                        Skip the 14–21 day community backlog. Lock in guaranteed 48-hour audit turnaround, an in-depth founder positioning teardown, and priority placement in the Founding 50 Cohort.
                     </p>
                 </div>
 

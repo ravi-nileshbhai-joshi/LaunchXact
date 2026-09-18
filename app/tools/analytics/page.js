@@ -338,7 +338,7 @@ export default function FunnelAnalyticsPage() {
                         ← Return to Founder Tools Suite
                     </Link>
                     <Link href="/#founder-form" className={styles.genesisLink}>
-                        Open Genesis Application Portal →
+                        Open Founding 50 Application Portal →
                     </Link>
                 </div>
 

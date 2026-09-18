@@ -92,12 +92,37 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
     const hasStartedRef = useRef(false);
     const resultsViewedRef = useRef(false);
 
-    // Track 1. landing_page_view on mount
+    // Track 1. landing_page_view on mount & Restore session state if returning
     useEffect(() => {
         trackAcquisitionEvent(ACQUISITION_EVENTS.LANDING_PAGE_VIEW, {
             toolId: 'ai-saas-grader',
             once: true
         });
+
+        // Restore audit session if returning within the same browser tab
+        try {
+            const savedSession = sessionStorage.getItem('launchxact_grader_session');
+            if (savedSession) {
+                const data = JSON.parse(savedSession);
+                if (data && data.result && data.status === 'done') {
+                    if (data.ideaName) setIdeaName(data.ideaName);
+                    if (data.targetCustomer) setTargetCustomer(data.targetCustomer);
+                    if (data.pricing) setPricing(data.pricing);
+                    if (data.description) setDescription(data.description);
+                    if (data.competitors) setCompetitors(data.competitors);
+                    if (data.distribution) setDistribution(data.distribution);
+                    if (data.url) setUrl(data.url);
+                    if (data.founderEmail) setFounderEmail(data.founderEmail);
+                    if (data.capturedLogo) setCapturedLogo(data.capturedLogo);
+                    setResult(data.result);
+                    setStatus('done');
+                    setAnimatedScore(data.result.overall_score || 0);
+                    if (data.founderEmail) setAuditEmail(data.founderEmail);
+                }
+            }
+        } catch (e) {
+            console.warn('Could not restore grader session:', e);
+        }
     }, []);
 
     const notifyToolStarted = () => {
@@ -231,6 +256,25 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                 setEmailSent(true);
             }
 
+            // Save to sessionStorage so audit results persist across page navigation until browser tab closes
+            try {
+                sessionStorage.setItem('launchxact_grader_session', JSON.stringify({
+                    ideaName: payload.ideaName || ideaName,
+                    targetCustomer: payload.targetCustomer || targetCustomer,
+                    pricing: payload.pricing || pricing,
+                    description: payload.description || description,
+                    competitors: payload.competitors || competitors,
+                    distribution: payload.distribution || distribution,
+                    url: payload.url || url,
+                    founderEmail: payload.email || founderEmail,
+                    capturedLogo,
+                    result: data,
+                    status: 'done'
+                }));
+            } catch (e) {
+                console.warn('Could not save grader session:', e);
+            }
+
             // Track 3. tool_completed and 4. result_viewed
             trackAcquisitionEvent(ACQUISITION_EVENTS.TOOL_COMPLETED, {
                 toolId: 'ai-saas-grader',
@@ -323,6 +367,12 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
         return styles.scoreRed;
     };
 
+    const getScoreHexColor = (score) => {
+        if (score >= 75) return '#16a34a';
+        if (score >= 50) return '#d97706';
+        return '#dc2626';
+    };
+
     const getScoreEmoji = (score) => {
         if (score >= 85) return '🔥';
         if (score >= 70) return '🚀';
@@ -331,44 +381,39 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
         return '🚨';
     };
 
-    // Pillar configuration
+    // 5 Discovery Audit Pillars
     const pillars = [
         {
-            key: 'market_potential',
-            label: 'Market Potential',
-            desc: 'TAM size, expansion velocity, and urgency of budget.',
+            key: 'messaging',
+            label: '1. Messaging',
+            question: 'Can visitors understand what the product does?',
+            desc: 'Evaluates headline clarity, speed of understanding, and outcome-focused positioning.',
         },
         {
-            key: 'problem_severity',
-            label: 'Problem Severity',
-            desc: 'Bleeding-neck painkiller ($10k+ problem) vs optional vitamin.',
+            key: 'conversion',
+            label: '2. Conversion',
+            question: 'Does the page make the next action obvious?',
+            desc: 'Evaluates CTA placement, friction, onboarding clarity, and price transparency.',
         },
         {
-            key: 'competition_moat',
-            label: 'Competition & Moat',
-            desc: 'Defensibility against OpenAI native models & incumbent cloning.',
+            key: 'trust',
+            label: '3. Trust',
+            question: 'Does the website provide enough evidence to believe the product?',
+            desc: 'Evaluates social proof, customer logos, founder transparency, and rating badges.',
         },
         {
-            key: 'distribution',
-            label: 'Distribution Reality',
-            desc: 'Repeatable acquisition channel vs wishful thinking.',
+            key: 'search',
+            label: '4. Search',
+            question: 'Can traditional search engines understand and discover it?',
+            desc: 'Evaluates heading hierarchy (H1/H2), meta tags, semantic HTML, and organic indexability.',
         },
         {
-            key: 'monetization',
-            label: 'Monetization Power',
-            desc: 'Willingness to pay, margin health against LLM inference.',
-        },
-        {
-            key: 'ai_defensibility',
-            label: 'AI Defensibility',
-            desc: 'Proprietary workflows & switching costs vs thin API wrapper.',
+            key: 'ai_discovery',
+            label: '5. AI Discovery',
+            question: 'Is the product represented clearly enough for AI systems to understand and potentially surface it?',
+            desc: 'Evaluates entity clarity, schema markup, and AI-search readiness (ChatGPT, Perplexity, Gemini).',
         },
     ];
-
-    // Weakest pillar information
-    const weakestKey = result?.weakest_pillar || 'distribution';
-    const weakestScore = result?.pillar_scores?.[weakestKey] ?? 0;
-    const weakestName = result?.weakest_pillar_name || 'Distribution Strategy';
 
     // SVG circle calculations
     const radius = 90;
@@ -382,58 +427,57 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                 <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
                     <Breadcrumb items={[
                         { label: 'Founder Tools', href: '/tools' },
-                        { label: 'AI SaaS Viability Grader' }
+                        { label: 'Free SaaS Discovery Audit' }
                     ]} />
                 </div>
             )}
 
             {!isEmbeddedSpoke ? (
-                /* LAYER 1: THE BRUTAL ACQUISITION HOOK */
+                /* LAYER 1: HERO SECTION */
                 <section className={styles.hero}>
                     <div className={styles.badgeRow}>
                         <span className={styles.topBadge}>
-                            🔥 60-SECOND BRUTAL AUDIT · TOP OF FUNNEL
+                            ✨ FREE SAAS DISCOVERY AUDIT
                         </span>
                     </div>
                     <h1 className={styles.heroTitle}>
-                        Will Your AI SaaS Idea<br />Actually Work?
+                        Is your SaaS ready to be discovered?
                     </h1>
                     <p className={styles.heroSub}>
-                        Get brutally graded before you burn 6 months and $20,000 building something nobody wants.
-                        Scored on <strong>Market Potential, Problem Severity, Defensibility, Distribution, Monetization, and Moat</strong>.
+                        Enter your website and get a free analysis of your landing page, messaging, trust signals, SEO and AI-search readiness.
                     </p>
 
                     {/* Real-time Founder Proof Banner */}
                     <div className={styles.socialProofBar}>
                         <span className={styles.proofDot} />
                         <span className={styles.proofText}>
-                            <strong>{founderCount} founders</strong> have already joined the Genesis Batch. Real-time founder intelligence · 0% generic fluff.
+                            <strong>{founderCount} founders</strong> have run their SaaS discovery audit this week.
                         </span>
                     </div>
                 </section>
             ) : (
                 <div style={{ textAlign: 'center', padding: '1rem 1.5rem 2.5rem', maxWidth: '820px', margin: '0 auto' }}>
                     <span className={styles.topBadge} style={{ marginBottom: '0.75rem', display: 'inline-flex' }}>
-                        ⚡ Live Diagnostic Tool
+                        ⚡ Free Discovery Audit
                     </span>
                     <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.25rem)', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', margin: '0.5rem 0' }}>
-                        Test Your SaaS Viability in Real Time
+                        Is your SaaS ready to be discovered?
                     </h2>
                     <p style={{ color: '#64748b', fontSize: '1.05rem', lineHeight: 1.6, margin: '0 auto' }}>
-                        Run your concept through our 6-pillar algorithm below to detect fatal moat flaws, token margin leaks, and customer acquisition risks before building.
+                        Enter your website and get a free analysis of your landing page, messaging, trust signals, SEO and AI-search readiness.
                     </p>
                 </div>
             )}
 
-            {/* LAYER 2: THE INTERACTIVE PROFILE INPUT */}
+            {/* LAYER 2: THE INTERACTIVE URL & SaaS PROFILE INPUT */}
             <section className={styles.formContainer}>
                 {/* Instant AI Auto-Fill & Audit Bar */}
                 <ToolUrlAutoFill
                     toolType="grader"
-                    title="Instant Viability Audit from Website URL"
-                    subtitle="Don't want to type? Paste your SaaS link below. Our AI Agent crawls your landing page, catches and caches your brand logo in Supabase, extracts your customer ICP & value prop, and can grade your idea instantly."
-                    buttonText="Auto-Fill Inputs ✨"
-                    autoTriggerText="Auto-Fill & Audit ⚡"
+                    title="Instant Audit from Website URL"
+                    subtitle="Paste your website URL below (e.g. https://yourproduct.com). Our AI Agent crawls your landing page, analyzes H1s, trust proof, CTAs & meta tags, and generates your 5-score discovery analysis."
+                    buttonText="Auto-Fill & Analyze ✨"
+                    autoTriggerText="Analyze My SaaS ⚡"
                     onSuccess={(extractedData, logo) => {
                         if (extractedData.ideaName) setIdeaName(extractedData.ideaName);
                         if (extractedData.targetCustomer) setTargetCustomer(extractedData.targetCustomer);
@@ -461,7 +505,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
 
                 {/* Quick Presets Bar */}
                 <div className={styles.presetsBar}>
-                    <span className={styles.presetsLabel}>⚡ Quick Presets:</span>
+                    <span className={styles.presetsLabel}>⚡ Or Try A Sample SaaS:</span>
                     <div className={styles.presetsList}>
                         {PRESETS.map((preset, idx) => (
                             <button
@@ -479,109 +523,13 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
 
                 <form onSubmit={handleGrade} className={styles.graderForm}>
                     <div className={styles.formGrid}>
-                        {/* 1. Idea Name */}
-                        <div className={styles.formGroup}>
-                            <label htmlFor="idea-name" className={styles.inputLabel}>
-                                1. SaaS / Idea Name <span className={styles.required}>*</span>
-                            </label>
-                            <input
-                                id="idea-name"
-                                type="text"
-                                className={styles.textInput}
-                                placeholder="e.g. SQLNinja AI, ChargeShield, AutoBrief..."
-                                value={ideaName}
-                                onChange={(e) => setIdeaName(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
-                        </div>
-
-                        {/* 2. Target Customer */}
-                        <div className={styles.formGroup}>
-                            <label htmlFor="target-customer" className={styles.inputLabel}>
-                                2. Target Customer (ICP) <span className={styles.required}>*</span>
-                            </label>
-                            <input
-                                id="target-customer"
-                                type="text"
-                                className={styles.textInput}
-                                placeholder="e.g. Solo founders, B2B sales reps, Shopify stores doing $50k+/mo..."
-                                value={targetCustomer}
-                                onChange={(e) => setTargetCustomer(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
-                        </div>
-
-                        {/* 3. Pricing Model */}
-                        <div className={styles.formGroup}>
-                            <label htmlFor="pricing-model" className={styles.inputLabel}>
-                                3. Pricing Model & Price Point <span className={styles.required}>*</span>
-                            </label>
-                            <input
-                                id="pricing-model"
-                                type="text"
-                                className={styles.textInput}
-                                placeholder="e.g. $49/mo subscription, Usage-based $0.02/token, $299/mo enterprise..."
-                                value={pricing}
-                                onChange={(e) => setPricing(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
-                        </div>
-
-                        {/* 4. Known Competitors */}
-                        <div className={styles.formGroup}>
-                            <label htmlFor="competitors" className={styles.inputLabel}>
-                                4. Competitors & Existing Alternatives
-                            </label>
-                            <input
-                                id="competitors"
-                                type="text"
-                                className={styles.textInput}
-                                placeholder="e.g. ChatGPT, Gong, Gorgias, manual spreadsheets..."
-                                value={competitors}
-                                onChange={(e) => setCompetitors(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
-                        </div>
-
-                        {/* 5. Problem & Description (Full width) */}
-                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                            <label htmlFor="idea-desc" className={styles.inputLabel}>
-                                5. Problem & Solution Description <span className={styles.required}>*</span>
-                            </label>
-                            <textarea
-                                id="idea-desc"
-                                className={styles.textArea}
-                                rows={3}
-                                placeholder="What urgent, expensive problem are you solving? How does your AI workflow actually work under the hood?"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
-                        </div>
-
-                        {/* 6. Distribution Strategy (Full width) */}
-                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                            <label htmlFor="distribution-strategy" className={styles.inputLabel}>
-                                6. Distribution Strategy (How will you get your first 100 paying customers?) <span className={styles.required}>*</span>
-                            </label>
-                            <input
-                                id="distribution-strategy"
-                                type="text"
-                                className={styles.textInput}
-                                placeholder="e.g. Cold outbound on LinkedIn, Product Hunt launch, Shopify App store ranking, niche Discord community..."
-                                value={distribution}
-                                onChange={(e) => setDistribution(e.target.value)}
-                                disabled={status === 'loading'}
-                            />
-                        </div>
-
-                        {/* 7. Optional Live URL */}
+                        {/* 1. Website URL Primary Input */}
                         <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                             <label htmlFor="live-url" className={styles.inputLabel}>
-                                7. Live Landing Page or Prototype URL <span className={styles.optional}>(Optional)</span>
+                                🌐 Website URL <span className={styles.required}>*</span>
                                 {capturedLogo && (
                                     <span style={{ marginLeft: '8px', fontSize: '0.75rem', color: '#16a34a', fontWeight: 700 }}>
-                                        ✓ Logo Cached in Supabase
+                                        ✓ Logo Cached
                                     </span>
                                 )}
                             </label>
@@ -595,7 +543,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                     id="live-url"
                                     type="text"
                                     className={styles.textInput}
-                                    placeholder="https://your-startup.com (we'll scrape H1, CTAs & proof signals if available)"
+                                    placeholder="https://yourproduct.com"
                                     value={url}
                                     onChange={(e) => setUrl(e.target.value)}
                                     disabled={status === 'loading'}
@@ -603,19 +551,32 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                             </div>
                         </div>
 
-                        {/* 8. Founder / Work Email */}
-                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                        {/* 2. SaaS Product Name */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="idea-name" className={styles.inputLabel}>
+                                Product Name <span className={styles.optional}>(Optional)</span>
+                            </label>
+                            <input
+                                id="idea-name"
+                                type="text"
+                                className={styles.textInput}
+                                placeholder="e.g. Acme AI, SQLNinja..."
+                                value={ideaName}
+                                onChange={(e) => setIdeaName(e.target.value)}
+                                disabled={status === 'loading'}
+                            />
+                        </div>
+
+                        {/* 3. Founder Email */}
+                        <div className={styles.formGroup}>
                             <label htmlFor="founder-email" className={styles.inputLabel}>
-                                8. Founder / Work Email <span className={styles.required}>*</span>
-                                <span style={{ marginLeft: '8px', fontSize: '0.78rem', color: '#818cf8', fontWeight: 500 }}>
-                                    (Where we dispatch your confidential score card, viability dossier & 14-day bottleneck teardowns)
-                                </span>
+                                Founder Email <span className={styles.required}>*</span>
                             </label>
                             <input
                                 id="founder-email"
                                 type="email"
                                 className={styles.textInput}
-                                placeholder="founder@yourcompany.com"
+                                placeholder="founder@yourproduct.com"
                                 value={founderEmail}
                                 onChange={(e) => {
                                     setFounderEmail(e.target.value);
@@ -623,6 +584,22 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                 }}
                                 disabled={status === 'loading'}
                                 required
+                            />
+                        </div>
+
+                        {/* 4. Value Proposition / Description */}
+                        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                            <label htmlFor="idea-desc" className={styles.inputLabel}>
+                                Product Headline / Value Prop <span className={styles.optional}>(Optional - extracted automatically from URL if empty)</span>
+                            </label>
+                            <textarea
+                                id="idea-desc"
+                                className={styles.textArea}
+                                rows={2}
+                                placeholder="What main problem does your product solve for buyers?"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                disabled={status === 'loading'}
                             />
                         </div>
                     </div>
@@ -636,7 +613,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                             className={styles.submitBtn}
                             disabled={status === 'loading'}
                         >
-                            {status === 'loading' ? 'Analyzing 6 Viability Pillars...' : '🔥 Brutally Grade My AI SaaS in 60s →'}
+                            {status === 'loading' ? 'Analyzing 5 Discovery Pillars...' : 'Analyze My SaaS — Free →'}
                         </button>
                     </div>
                 </form>
@@ -649,16 +626,16 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                         <div className={styles.spinner} />
                         <div className={styles.scannerPulse} />
                     </div>
-                    <p className={styles.loadingTitle}>Conducting Ruthless Viability Audit...</p>
+                    <p className={styles.loadingTitle}>Analyzing Landing Page & Discovery Signals...</p>
                     <p className={styles.loadingQuip}>{loadingQuip}</p>
                 </section>
             )}
 
-            {/* LAYER 3: THE "AHA" MOMENT & RESULTS */}
+            {/* LAYER 3: RESULTS & 5 SCORES BREAKDOWN */}
             {status === 'done' && result && (
                 <section ref={resultsRef} className={styles.resultsSection}>
 
-                    {/* OVERALL VIABILITY SCORE HUD */}
+                    {/* OVERALL SCORE HUD */}
                     <div className={styles.scoreHud}>
                         <div className={styles.scoreRingWrapper}>
                             <svg className={styles.scoreRingSvg} viewBox="0 0 220 220">
@@ -675,7 +652,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                     {animatedScore}
                                 </div>
                                 <div className={styles.scoreScale}>/ 100</div>
-                                <div className={styles.scoreCaption}>Overall Viability</div>
+                                <div className={styles.scoreCaption}>Overall Discovery</div>
                             </div>
                         </div>
 
@@ -687,60 +664,62 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                     </div>
                                     <div>
                                         <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', display: 'block' }}>
-                                            {result.idea_name || ideaName}
-                                        </span>
-                                        <span style={{ fontSize: '0.72rem', color: '#16a34a', fontWeight: 700 }}>
-                                            ✓ Verified Candidate Staged in Supabase
+                                            {result.idea_name || ideaName || 'Your SaaS'}
                                         </span>
                                     </div>
                                 </div>
                             )}
-                            <div className={styles.archetypeBadge}>
-                                <span className={styles.archetypeIcon}>{getScoreEmoji(result.overall_score)}</span>
-                                <span className={styles.archetypeName}>{result.founder_archetype}</span>
-                            </div>
 
                             <h2 className={styles.verdictTitle}>
-                                “{result.verdict_headline}”
+                                Overall: <span style={{ color: result.overall_score >= 70 ? '#16a34a' : '#d97706' }}>{result.overall_score}/100</span>
                             </h2>
+                            <p style={{ color: '#475569', fontSize: '1.02rem', lineHeight: 1.6, margin: '0 0 1rem' }}>
+                                {result.verdict_headline}
+                            </p>
 
-                            <div className={styles.weakestWarning}>
-                                <span className={styles.warningIcon}>🚨</span>
-                                <div>
-                                    <strong className={styles.warningLabel}>Single Fatal Bottleneck:</strong>
-                                    <span className={styles.warningPillar}>
-                                        {' '}{result.weakest_pillar_name} ({result.pillar_scores?.[result.weakest_pillar]}/100)
-                                    </span>
-                                    <p className={styles.warningDiagnosis}>
-                                        {result.weakness_diagnosis}
-                                    </p>
-                                </div>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    try { sessionStorage.removeItem('launchxact_grader_session'); } catch (e) {}
+                                    setStatus('idle');
+                                    setResult(null);
+                                    setAnimatedScore(0);
+                                }}
+                                style={{
+                                    background: '#f1f5f9',
+                                    border: '1px solid #cbd5e1',
+                                    borderRadius: '9999px',
+                                    padding: '6px 14px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 700,
+                                    color: '#475569',
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                }}
+                            >
+                                🔄 Audit Another SaaS
+                            </button>
                         </div>
                     </div>
 
-                    {/* 6-PILLAR SCORECARD GRID */}
+                    {/* 5 SCORES BREAKDOWN GRID */}
                     <div className={styles.pillarsSection}>
                         <div className={styles.pillarsHeader}>
-                            <h3 className={styles.pillarsTitle}>The 6 Core Viability Pillars</h3>
-                            <span className={styles.pillarsSub}>Ruthless score per dimension</span>
+                            <h3 className={styles.pillarsTitle}>5 Core Discovery Scores</h3>
+                            <span className={styles.pillarsSub}>Detailed 0-100 analysis per pillar</span>
                         </div>
 
                         <div className={styles.pillarsGrid}>
                             {pillars.map((p) => {
                                 const score = result.pillar_scores?.[p.key] ?? 0;
-                                const isWeakest = result.weakest_pillar === p.key;
 
                                 return (
                                     <div
                                         key={p.key}
-                                        className={`${styles.pillarCard} ${isWeakest ? styles.pillarCardWeakest : ''}`}
+                                        className={styles.pillarCard}
                                     >
-                                        {isWeakest && (
-                                            <div className={styles.weakestBadgeTag}>
-                                                🚨 FATAL BOTTLENECK
-                                            </div>
-                                        )}
                                         <div className={styles.pillarTop}>
                                             <span className={styles.pillarName}>{p.label}</span>
                                             <span className={`${styles.pillarScoreVal} ${getScoreColorClass(score)}`}>
@@ -748,10 +727,14 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                             </span>
                                         </div>
 
+                                        <p style={{ fontSize: '0.82rem', fontWeight: 600, color: '#4b5563', margin: '0 0 0.5rem', fontStyle: 'italic' }}>
+                                            &quot;{p.question}&quot;
+                                        </p>
+
                                         <div className={styles.pillarMeterTrack}>
                                             <div
-                                                className={`${styles.pillarMeterBar} ${getScoreColorClass(score)}`}
-                                                style={{ width: `${score}%` }}
+                                                className={styles.pillarMeterBar}
+                                                style={{ width: `${score}%`, backgroundColor: getScoreHexColor(score) }}
                                             />
                                         </div>
 
@@ -762,247 +745,183 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                         </div>
                     </div>
 
-                    {/* BRUTAL CRITIQUE DEEP-DIVE */}
-                    <div className={styles.critiqueCard}>
-                        <div className={styles.critiqueHeader}>
-                            <span className={styles.critiqueBadge}>Senior Founder Review</span>
-                            <h3 className={styles.critiqueHeading}>The Raw, Unvarnished Truth</h3>
+                    {/* DIAGNOSIS SECTION: FIX THESE 3 THINGS FIRST */}
+                    <div className={styles.pivotCard}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                            <h3 className={styles.pivotTitle} style={{ margin: 0 }}>Fix these 3 things first</h3>
+                            <span style={{ fontSize: '0.78rem', fontWeight: 800, background: '#fee2e2', color: '#dc2626', padding: '4px 12px', borderRadius: '9999px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                Prioritized Diagnosis
+                            </span>
                         </div>
-                        <div className={styles.critiqueBody}>
-                            {result.brutal_critique?.split('\n\n').map((para, i) => (
-                                <p key={i}>{para}</p>
-                            ))}
-                        </div>
-                    </div>
 
-                    {/* "HERE'S WHAT WE'D CHANGE" PIVOT PLAYBOOK */}
-                    {result.action_items && result.action_items.length > 0 && (
-                        <div className={styles.pivotCard}>
-                            <h3 className={styles.pivotTitle}>Here&apos;s What We&apos;d Change Before Writing Code</h3>
-                            <div className={styles.actionItemsList}>
-                                {result.action_items.map((item, idx) => (
-                                    <div key={idx} className={styles.actionItemRow}>
-                                        <span className={styles.actionIndex}>{idx + 1}</span>
-                                        <p className={styles.actionText}>{item}</p>
+                        <div className={styles.actionItemsList}>
+                            {result.diagnosis_items && result.diagnosis_items.length > 0 ? (
+                                result.diagnosis_items.map((item, idx) => (
+                                    <div key={idx} className={styles.actionItemRow} style={{ borderLeft: item.priority === 'high' ? '4px solid #dc2626' : '4px solid #f59e0b' }}>
+                                        <div style={{ fontSize: '1.2rem', flexShrink: 0 }}>
+                                            {item.priority === 'high' ? '🔴' : '🟠'}
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <h4 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                                                {idx + 1}. {item.title}
+                                            </h4>
+                                            {item.current && (
+                                                <p style={{ margin: '0 0 4px', fontSize: '0.88rem', color: '#991b1b', background: '#fef2f2', padding: '6px 10px', borderRadius: '6px' }}>
+                                                    <strong>Current:</strong> {item.current}
+                                                </p>
+                                            )}
+                                            {item.recommended && (
+                                                <p style={{ margin: '0 0 6px', fontSize: '0.88rem', color: '#166534', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                                                    <strong>Recommended:</strong> {item.recommended}
+                                                </p>
+                                            )}
+                                            {item.details && (
+                                                <p style={{ margin: 0, fontSize: '0.84rem', color: '#475569', lineHeight: 1.5 }}>
+                                                    {item.details}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
+                                ))
+                            ) : (
+                                <>
+                                    <div className={styles.actionItemRow} style={{ borderLeft: '4px solid #dc2626' }}>
+                                        <div style={{ fontSize: '1.2rem', flexShrink: 0 }}>🔴</div>
+                                        <div style={{ flex: 1 }}>
+                                            <h4 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                                                1. Your H1 doesn&apos;t explain the outcome
+                                            </h4>
+                                            <p style={{ margin: '0 0 4px', fontSize: '0.88rem', color: '#991b1b', background: '#fef2f2', padding: '6px 10px', borderRadius: '6px' }}>
+                                                <strong>Current:</strong> &quot;The future of automated productivity...&quot;
+                                            </p>
+                                            <p style={{ margin: '0 0 6px', fontSize: '0.88rem', color: '#166534', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                                                <strong>Recommended:</strong> &quot;Automate X without Y&quot;
+                                            </p>
+                                            <p style={{ margin: 0, fontSize: '0.84rem', color: '#475569', lineHeight: 1.5 }}>
+                                                Visitors leave in 3 seconds when headlines describe technology instead of the concrete benefit.
+                                            </p>
+                                        </div>
+                                    </div>
 
-                            {result.ai_pricing_advice && (
-                                <div className={styles.pricingAdviceBox}>
-                                    <div className={styles.pricingAdviceLabel}>💰 Pricing Power & Margin Recommendation</div>
-                                    <p className={styles.pricingAdviceText}>{result.ai_pricing_advice}</p>
-                                </div>
+                                    <div className={styles.actionItemRow} style={{ borderLeft: '4px solid #f59e0b' }}>
+                                        <div style={{ fontSize: '1.2rem', flexShrink: 0 }}>🟠</div>
+                                        <div style={{ flex: 1 }}>
+                                            <h4 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                                                2. No social proof above the fold
+                                            </h4>
+                                            <p style={{ margin: '0 0 6px', fontSize: '0.88rem', color: '#166534', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                                                <strong>Add:</strong> User counter, customer logos, or verified rating badge directly below your CTA.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.actionItemRow} style={{ borderLeft: '4px solid #f59e0b' }}>
+                                        <div style={{ fontSize: '1.2rem', flexShrink: 0 }}>🟠</div>
+                                        <div style={{ flex: 1 }}>
+                                            <h4 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                                                3. Missing structured product information
+                                            </h4>
+                                            <p style={{ margin: '0 0 6px', fontSize: '0.88rem', color: '#166534', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                                                <strong>Add:</strong> SoftwareApplication JSON-LD schemas so AI recommendation tools can surface your product.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </>
                             )}
                         </div>
-                    )}
-
-                    {/* LAYER 4: DEDICATED GENESIS BATCH TRANSITION FUNNEL */}
-                    <div className={styles.genesisFunnelCard}>
-                        <div className={styles.genesisGlow} />
-                        <div className={styles.genesisHeader}>
-                            <span className={styles.genesisPill}>✦ Dedicated Founder Transition</span>
-                            <h3 className={styles.genesisTitle}>Want to fix the weaknesses?</h3>
-                            <p className={styles.genesisSub}>
-                                Join the LaunchXact Genesis Batch. We don&apos;t just diagnose fatal bottlenecks — we solve them with native B2B infrastructure.
-                            </p>
-                        </div>
-
-                        {/* Highlight weakest score specifically */}
-                        <div className={styles.genesisBottleneckCallout}>
-                            <div className={styles.bottleneckIcon}>⚡</div>
-                            <div className={styles.bottleneckContent}>
-                                <h4 className={styles.bottleneckHeading}>
-                                    {weakestName}: {weakestScore}/100
-                                </h4>
-                                <p className={styles.bottleneckMessage}>
-                                    That&apos;s probably the single biggest existential risk to <strong>{result.idea_name || 'your idea'}</strong>.
-                                    We&apos;re building LaunchXact for exactly this: zero-overhead global payments, built-in directory distribution,
-                                    and enterprise compliance so you can focus on engineering defensibility.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Genesis Batch Perks List */}
-                        <div className={styles.perksGrid}>
-                            <div className={styles.perkItem}>
-                                <span className={styles.perkCheck}>✓</span>
-                                <div>
-                                    <strong>0% launch platform fees</strong>
-                                    <p>Zero platform fees on all marketplace transactions for your first 90 days.</p>
-                                </div>
-                            </div>
-                            <div className={styles.perkItem}>
-                                <span className={styles.perkCheck}>✓</span>
-                                <div>
-                                    <strong>Direct distribution push</strong>
-                                    <p>Featured exposure to our network of 400+ verified B2B software buyers.</p>
-                                </div>
-                            </div>
-                            <div className={styles.perkItem}>
-                                <span className={styles.perkCheck}>✓</span>
-                                <div>
-                                    <strong>1-on-1 architecture review</strong>
-                                    <p>Deep-dive with senior SaaS architects to lock down AI defensibility.</p>
-                                </div>
-                            </div>
-                            <div className={styles.perkItem}>
-                                <span className={styles.perkCheck}>✓</span>
-                                <div>
-                                    <strong>Unified multi-region billing</strong>
-                                    <p>Instant Merchant of Record support with 100% automated international VAT/sales tax.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Dynamic Honest Founder Counter & CTA */}
-                        <div className={styles.genesisCtaRow}>
-                            <div className={styles.genesisCounterBadge}>
-                                <span className={styles.pulseDot} />
-                                <span><strong>{founderCount} founders</strong> have already joined</span>
-                            </div>
-
-                            <Link
-                                href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
-                                onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'ai-saas-grader' })}
-                                className={styles.genesisApplyBtn}
-                            >
-                                Apply for Genesis Batch →
-                            </Link>
-                        </div>
                     </div>
 
-                    {/* MONETIZATION: FIX YOUR FATAL BOTTLENECK UPSELL */}
+                    {/* ECOSYSTEM ACQUISITION FUNNEL: WANT TO IMPROVE YOUR SCORE? */}
                     <div style={{
                         marginTop: '2.5rem',
                         marginBottom: '2.5rem',
                         padding: '2.25rem 2.5rem',
                         background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
                         border: '2px solid #7c3aed',
-                        borderRadius: '16px',
+                        borderRadius: '20px',
                         boxShadow: '0 20px 40px -15px rgba(124, 58, 237, 0.3)',
-                        position: 'relative',
-                        overflow: 'hidden',
                         color: '#ffffff'
                     }}>
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            background: 'linear-gradient(135deg, #7c3aed, #f59e0b)',
-                            color: '#fff',
-                            fontSize: '0.72rem',
-                            fontWeight: 800,
-                            padding: '4px 14px',
-                            borderBottomLeftRadius: '10px',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em'
-                        }}>
-                            ⚡ The Antidote Playbook
-                        </div>
-
                         <div style={{ maxWidth: '820px' }}>
-                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                                Don&apos;t Let This Bottleneck Kill Your Startup
+                            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>
+                                🚀 LaunchXact Ecosystem Engine
                             </span>
-                            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '8px 0 12px', color: '#ffffff', lineHeight: 1.25 }}>
-                                Fix Your <span style={{ color: '#f59e0b' }}>{weakestName}</span> with LaunchXact
+                            <h3 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 8px', color: '#ffffff', lineHeight: 1.25 }}>
+                                Want to improve your score?
                             </h3>
-                            <p style={{ color: '#cbd5e1', fontSize: '0.98rem', lineHeight: 1.6, margin: '0 0 1.5rem' }}>
-                                Our AI flagged <strong>{weakestName} ({weakestScore}/100)</strong> as your single existential point of failure.
-                                LaunchXact gives your SaaS permanent discoverability, high-intent buyer traffic, and dedicated AEO/GEO indexing without paid ad burn. Apply to the Genesis Batch today.
+                            <p style={{ color: '#cbd5e1', fontSize: '1rem', lineHeight: 1.6, margin: '0 0 1.75rem' }}>
+                                Use LaunchXact&apos;s free tools, guides, and discovery network to optimize your SaaS landing page and scale your organic distribution.
                             </p>
 
                             <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                                 gap: '1rem',
-                                marginBottom: '1.75rem'
+                                marginBottom: '2rem'
                             }}>
-                                <div style={{ background: 'rgba(255,255,255,0.06)', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                    <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#f8fafc', marginBottom: '4px' }}>🎯 Positioning Framework</div>
-                                    <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>Turn raw features into $10k painkiller copy that commands high willingness-to-pay.</p>
-                                </div>
-                                <div style={{ background: 'rgba(255,255,255,0.06)', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                    <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#f8fafc', marginBottom: '4px' }}>🤖 Modern GEO & AEO</div>
-                                    <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>Schema blueprints to force ChatGPT, Perplexity, and Gemini to cite your SaaS.</p>
-                                </div>
-                                <div style={{ background: 'rgba(255,255,255,0.06)', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                    <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#f8fafc', marginBottom: '4px' }}>📢 Organic Distribution</div>
-                                    <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>Permanent marketplace showcase and 100+ vetted directory launch stack without paid ad burn.</p>
-                                </div>
+                                <Link href="/tools" style={{ background: 'rgba(255,255,255,0.07)', padding: '16px 18px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#fff', transition: 'all 0.2s ease' }}>
+                                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#a78bfa', marginBottom: '4px' }}>🔍 SEO Tools →</div>
+                                    <p style={{ margin: 0, fontSize: '0.84rem', color: '#cbd5e1', lineHeight: 1.5 }}>Free tools to audit meta tags, heading structures, and search engine discoverability.</p>
+                                </Link>
+
+                                <Link href="/tools/geo-schema-generator" style={{ background: 'rgba(255,255,255,0.07)', padding: '16px 18px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#fff', transition: 'all 0.2s ease' }}>
+                                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#38bdf8', marginBottom: '4px' }}>🤖 GEO & AEO Tools →</div>
+                                    <p style={{ margin: 0, fontSize: '0.84rem', color: '#cbd5e1', lineHeight: 1.5 }}>Generate SoftwareApplication schema blueprints for ChatGPT, Perplexity, and Gemini.</p>
+                                </Link>
+
+                                <Link href="/articles" style={{ background: 'rgba(255,255,255,0.07)', padding: '16px 18px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#fff', transition: 'all 0.2s ease' }}>
+                                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#f59e0b', marginBottom: '4px' }}>📚 LaunchXact Guides →</div>
+                                    <p style={{ margin: 0, fontSize: '0.84rem', color: '#cbd5e1', lineHeight: 1.5 }}>Deep-dive positioning teardowns, conversion benchmarks, and distribution playbooks.</p>
+                                </Link>
+
+                                <Link
+                                    href={`/#founder-form?website=${encodeURIComponent(url || '')}&product=${encodeURIComponent(ideaName || result?.idea_name || '')}&email=${encodeURIComponent(founderEmail || auditEmail || '')}&source=grader`}
+                                    style={{ background: 'rgba(124,58,237,0.25)', padding: '16px 18px', borderRadius: '12px', border: '1px solid #7c3aed', textDecoration: 'none', color: '#fff', transition: 'all 0.2s ease' }}
+                                >
+                                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#c084fc', marginBottom: '4px' }}>🚀 Apply to Founding 50 →</div>
+                                    <p style={{ margin: 0, fontSize: '0.84rem', color: '#e2e8f0', lineHeight: 1.5 }}>Get your product permanently listed in LaunchXact&apos;s curated discovery directory.</p>
+                                </Link>
                             </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-                                <Link
-                                    href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
-                                    onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'ai-saas-grader' })}
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem',
-                                        background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-                                        color: '#ffffff',
-                                        padding: '13px 26px',
-                                        borderRadius: '10px',
-                                        fontWeight: 800,
-                                        fontSize: '0.95rem',
-                                        textDecoration: 'none',
-                                        boxShadow: '0 6px 20px rgba(124, 58, 237, 0.4)',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    <span>Apply to LaunchXact Genesis Batch (Free Listing) →</span>
-                                </Link>
-
-                                <Link
-                                    href={`/?idea=${encodeURIComponent(result.idea_name || ideaName)}&weakness=${encodeURIComponent(weakestName)}&score=${result.overall_score}&from_grader=true#founder-form`}
-                                    onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'ai-saas-grader' })}
-                                    style={{
-                                        color: '#cbd5e1',
-                                        fontSize: '0.88rem',
-                                        textDecoration: 'underline',
-                                        fontWeight: 600
-                                    }}
-                                >
-                                    Or apply with Fast-Track 48h Curation ($99) →
-                                </Link>
+                            {/* CRITICAL NON-GATING EXPLANATION NOTICE */}
+                            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '14px 18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.55 }}>
+                                <strong style={{ color: '#ffffff' }}>💡 How LaunchXact Curation Works:</strong> Your grader score is a free diagnostic tool to help you optimize your page. It is <em>not</em> an acceptance gate for product submission. LaunchXact&apos;s human curation team reviews every SaaS independently — a product scoring 62/100 can still be accepted into the Founding 50 if the underlying utility is strong.
                             </div>
                         </div>
                     </div>
 
-                    {/* LAYER 5: VIRAL GROWTH LOOP (ToolShareCard) */}
+                    {/* VIRAL SHARE CARD */}
                     <div style={{ margin: '3rem 0' }}>
                         <ToolShareCard
-                            badge="AI SaaS Viability Audit"
+                            badge="Free SaaS Discovery Audit"
                             statHighlight={`${result.overall_score}/100`}
-                            statLabel="Launch Viability Score"
+                            statLabel="Discovery Readiness Score"
                             subMetrics={[
-                                { label: 'Archetype', value: result.founder_archetype || 'Builder' },
-                                { label: 'Weakest Link', value: `${weakestName} (${weakestScore})` },
-                                { label: 'Moat Rating', value: `${result.pillar_scores?.competition_moat || 0}/100` },
+                                { label: 'Messaging', value: `${result.pillar_scores?.messaging || 0}/100` },
+                                { label: 'Conversion', value: `${result.pillar_scores?.conversion || 0}/100` },
+                                { label: 'AI Discovery', value: `${result.pillar_scores?.ai_discovery || 0}/100` },
                             ]}
                             quote={result.verdict_headline}
-                            toolName="AI SaaS Viability Grader"
+                            toolName="Free SaaS Discovery Audit"
                             toolId="ai-saas-grader"
                             toolUrl="https://www.launchxact.com/grade"
-                            shareTextX={`Just put my SaaS idea "${result.idea_name || 'project'}" through the @LaunchXact Brutal AI Grader.\n\nViability: ${result.overall_score}/100 ${getScoreEmoji(result.overall_score)}\nArchetype: "${result.founder_archetype}"\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\n\nGrade your AI SaaS in 60s:`}
-                            shareTitleReddit={`My AI SaaS idea just got a ${result.overall_score}/100 brutal viability score 💀`}
-                            shareTextReddit={`I just ran my SaaS idea ("${result.idea_name || 'My Project'}") through the LaunchXact Brutal AI Grader.\n\nOverall Score: ${result.overall_score}/100\nVerdict: ${result.verdict_headline}\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\n\nCheck your startup viability here: https://www.launchxact.com/grade`}
-                            copySummaryText={`LaunchXact AI Viability Audit: ${result.idea_name || 'My SaaS'}\nOverall Score: ${result.overall_score}/100\nArchetype: "${result.founder_archetype}"\nFatal Bottleneck: ${weakestName} (${weakestScore}/100)\nVerdict: ${result.verdict_headline}\nhttps://www.launchxact.com/grade`}
+                            shareTextX={`Just ran a Free SaaS Discovery Audit on "${result.idea_name || 'my product'}".\n\nDiscovery Score: ${result.overall_score}/100\nVerdict: ${result.verdict_headline}\n\nGet your free SaaS audit in 60s:`}
+                            shareTitleReddit={`Ran my SaaS landing page through the LaunchXact Discovery Audit (${result.overall_score}/100)`}
+                            shareTextReddit={`I just ran my SaaS ("${result.idea_name || 'My Product'}") through the LaunchXact Free SaaS Discovery Audit.\n\nOverall Score: ${result.overall_score}/100\nMessaging: ${result.pillar_scores?.messaging}/100\nAI Discovery: ${result.pillar_scores?.ai_discovery}/100\n\nCheck your SaaS readiness here: https://www.launchxact.com/grade`}
+                            copySummaryText={`LaunchXact Discovery Audit: ${result.idea_name || 'My SaaS'}\nOverall Score: ${result.overall_score}/100\nVerdict: ${result.verdict_headline}\nhttps://www.launchxact.com/grade`}
                         />
                     </div>
 
-                    {/* EMAIL CAPTURE: FULL 5-PAGE BLUEPRINT */}
+                    {/* EMAIL BLUEPRINT CAPTURE */}
                     <div className={styles.emailCaptureCard}>
-                        <h4 className={styles.emailTitle}>Want the full 5-page AI Viability & Distribution Blueprint?</h4>
+                        <h4 className={styles.emailTitle}>Want the full AI Discovery Teardown & Fix Checklist?</h4>
                         <p className={styles.emailSub}>
-                            We&apos;ll send you the deep-dive positioning teardown, 30-day validation sprint checklist, and technical moat blueprint directly to your inbox.
+                            We&apos;ll send your confidential score breakdown and actionable copy rewrites directly to your inbox.
                         </p>
 
                         {emailSent ? (
                             <div className={styles.emailSuccess}>
-                                ✓ Score Card & Viability Dossier (Email #1) dispatched to <strong>{auditEmail || founderEmail}</strong>! Check your inbox in 2 minutes. Your weakest bottleneck teardown will arrive in 48 hours.
+                                ✓ Discovery Audit Report dispatched to <strong>{auditEmail || founderEmail}</strong>! Check your inbox in 2 minutes.
                             </div>
                         ) : (
                             <form onSubmit={handleFullAudit} className={styles.emailForm}>
@@ -1020,7 +939,7 @@ export default function GradePage({ initialPreset = null, hideBreadcrumb = false
                                     className={styles.emailBtn}
                                     disabled={isAuditing}
                                 >
-                                    {isAuditing ? 'Generating Blueprint...' : 'Send Me The Full Dossier →'}
+                                    {isAuditing ? 'Sending Report...' : 'Send Me The Full Dossier →'}
                                 </button>
                             </form>
                         )}

@@ -908,11 +908,11 @@ Generate your schema: https://www.launchxact.com/tools/geo-schema-snippet-genera
 
                 <div className={styles.ahaActionRow}>
                     <Link
-                        href="/#founder-form"
+                        href={`/#founder-form?website=${encodeURIComponent(url || '')}&product=${encodeURIComponent(name || '')}&source=geo-schema-generator`}
                         onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'geo-schema-snippet-generator' })}
                         className={styles.btnAhaGenesis}
                     >
-                        Join the Genesis Batch →
+                        Apply for Founding 50 →
                     </Link>
                     <span className={styles.genesisGuarantees}>
                         ✓ Guaranteed AI indexing · Verified entity syndication · Permanent Vault listing
@@ -999,11 +999,11 @@ Generate your schema: https://www.launchxact.com/tools/geo-schema-snippet-genera
                     Want instant indexing in our semantic AI search engine?
                 </h3>
                 <p className={styles.handoffDesc}>
-                    Skip waiting months for organic search crawlers. High-value software products accepted into the LaunchXact Genesis Batch get indexed directly into The Tornado semantic engine and showcased to over 350,000 targeted enterprise buyers and tech adopters.
+                    Skip waiting months for organic search crawlers. High-value software products accepted into the LaunchXact Founding 50 get indexed directly into The Tornado semantic engine and showcased to early software adopters searching for real solutions.
                 </p>
                 <div className={styles.handoffActions}>
                     <Link
-                        href="/#founder-form"
+                        href={`/#founder-form?website=${encodeURIComponent(url || '')}&product=${encodeURIComponent(name || '')}&source=geo-schema-generator`}
                         onClick={() => trackAcquisitionEvent(ACQUISITION_EVENTS.GENESIS_APPLICATION, { toolId: 'geo-schema-snippet-generator' })}
                         className={styles.btnPrimary}
                     >

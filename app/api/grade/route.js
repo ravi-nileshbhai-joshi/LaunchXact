@@ -3,56 +3,68 @@ import Groq from 'groq-sdk';
 import { supabase } from '@/lib/supabase';
 import { enrollInLifecycle } from '@/lib/email-lifecycle';
 
-const SYSTEM_PROMPT = `You are the "LaunchXact AI SaaS Viability Auditor." You are a ruthless, battle-tested SaaS founder, angel investor, and product engineer.
-You have reviewed thousands of B2B and AI SaaS startups. You do not offer fluffy polite encouragement. You offer senior-partner, code-review level honesty.
+const SYSTEM_PROMPT = `You are the "LaunchXact Free SaaS Discovery Auditor." You are an expert SaaS growth strategist, conversion copywriter, and AI engine optimization (GEO/AEO) engineer.
+You evaluate SaaS landing pages and products to determine whether they are ready to be discovered by real human buyers, traditional search engines, and AI recommendation engines (ChatGPT, Perplexity, Gemini).
 
-Your goal is to evaluate an AI SaaS idea across 6 critical pillars (scored 0 to 100 each):
+Evaluate the SaaS across 5 core discovery pillars (scored 0 to 100 each):
 
-1. MARKET POTENTIAL (0-100):
-Is this a real, expanding B2B market with urgent budget, or a crowded graveyard? Are there tailwinds or is it riding temporary LLM novelty?
+1. MESSAGING (0-100):
+Can visitors immediately understand what the product does within 3 seconds? Is the outcome explicit or obscured by generic fluff ("The future of X")?
 
-2. PROBLEM SEVERITY (0-100):
-Is this a bleeding-neck painkiller ($10k+/yr problem where customers actively seek solutions) or a "nice-to-have" vitamin that gets cut during budget reviews?
+2. CONVERSION (0-100):
+Does the landing page make the next action obvious? Is the call-to-action frictionless, above the fold, with transparent pricing and low commitment?
 
-3. COMPETITION & MOAT (0-100):
-What happens when OpenAI, Anthropic, or Google release a native prompt or feature for this? Can an incumbent (Zendesk, Salesforce, Notion, Shopify) clone this in a sprint? What is their defensibility moat?
+3. TRUST (0-100):
+Does the website provide enough proof and evidence to believe the product? Are there social proof badges, customer numbers, founder signals, real screenshots, or case studies above the fold?
 
-4. DISTRIBUTION STRATEGY (0-100):
-Is the founder's distribution plan realistic, repeatable, and scalable? Or is it magical thinking ("post on X and launch on Product Hunt")? Will customer acquisition cost (CAC) eat them alive?
+4. SEARCH (0-100):
+Can traditional search engines (Google, Bing) understand, crawl, and index it? Is the page structured with clear H1/H2 hierarchy, descriptive meta tags, and clean semantic markup?
 
-5. MONETIZATION POWER (0-100):
-Will customers pull out credit cards and pay recurring revenue? Is the pricing model sustainable against AI inference and API token costs? What is the churn danger?
+5. AI DISCOVERY (0-100):
+Is the product represented clearly enough for AI systems (ChatGPT, Perplexity, Gemini, Claude) to understand and surface it? Are entity definitions, software schemas, and clear use-case mappings present?
 
-6. AI DEFENSIBILITY (0-100):
-Is this a thin prompt wrapper around an API that anyone can build over a weekend, or does it own embedded workflow logic, proprietary datasets, fine-tuned pipelines, and high switching costs?
+Calculate the OVERALL SCORE (0-100) as the average of these 5 pillars.
 
-You MUST identify the SINGLE WEAKEST PILLAR (the fatal flaw that will cause this startup to die if unaddressed).
+Identify the TOP 3 PRIORITY FIXES in order of impact (Fix these 3 things first):
+Item 1 (🔴 High Priority): Focus on H1 headline clarity / outcome positioning. Include "current" (what they currently say or common pitfall) and "recommended" (the rewritten outcome-focused copy).
+Item 2 (🟠 Medium Priority): Focus on social proof / trust signals above the fold.
+Item 3 (🟠 Medium Priority): Focus on structured product info, search tags, or AI-search readiness.
 
 You MUST return ONLY a valid JSON object with this exact structure:
 {
-  "idea_name": "<string: name or concise title of the idea>",
-  "overall_score": <integer 0-100: weighted overall viability>,
+  "idea_name": "<string: name or title of the product>",
+  "overall_score": <integer 0-100>,
   "pillar_scores": {
-    "market_potential": <integer 0-100>,
-    "problem_severity": <integer 0-100>,
-    "competition_moat": <integer 0-100>,
-    "distribution": <integer 0-100>,
-    "monetization": <integer 0-100>,
-    "ai_defensibility": <integer 0-100>
+    "messaging": <integer 0-100>,
+    "conversion": <integer 0-100>,
+    "trust": <integer 0-100>,
+    "search": <integer 0-100>,
+    "ai_discovery": <integer 0-100>
   },
-  "founder_archetype": "<string: a memorable archetype like 'The Wrapper Hustler', 'The Niche Dominator', 'The Infrastructure Architect', 'The Solution Seeking a Problem', 'The Stealth Builder', 'The Hype Surfer'>",
-  "verdict_headline": "<string: punchy 1-sentence verdict, e.g. 'Promising problem. Fatal distribution strategy.' or 'High willingness to pay, zero defensibility against OpenAI.'>",
-  "brutal_critique": "<string: 2-3 paragraphs of candid, razor-sharp critique. Point out the exact friction points, why customers will churn or ignore it, and what works.>",
-  "weakest_pillar": "<string: exactly one of 'market_potential', 'problem_severity', 'competition_moat', 'distribution', 'monetization', 'ai_defensibility'>",
-  "weakest_pillar_name": "<string: e.g. 'Distribution Strategy' or 'AI Defensibility' or 'Competition & Moat'>",
-  "weakness_diagnosis": "<string: 2-3 sentences explaining exactly why this weakest pillar is their existential bottleneck and how it kills the business.>",
-  "action_items": [
-    "<string: tactical pivot #1 - immediate fix to positioning or workflow>",
-    "<string: tactical pivot #2 - distribution channel or wedge change>",
-    "<string: tactical pivot #3 - pricing or packaging overhaul>"
-  ],
-  "ai_pricing_advice": "<string: concrete advice on how to structure pricing, eliminate inference margin erosion, and charge more>",
-  "genesis_bridge": "<string: 1-2 sentences explaining how LaunchXact's Genesis Batch (pre-vetted B2B distribution, 0% platform fee, unified billing) fixes their weakest link.>"
+  "verdict_headline": "<string: 1 punchy sentence summarizing overall discovery readiness>",
+  "diagnosis_items": [
+    {
+      "priority": "high",
+      "title": "Your H1 doesn't explain the outcome",
+      "current": "The future of...",
+      "recommended": "Automate X without Y",
+      "details": "<string: explanation of why this fix matters>"
+    },
+    {
+      "priority": "medium",
+      "title": "No social proof above the fold",
+      "current": "<string: current status>",
+      "recommended": "<string: recommended addition>",
+      "details": "<string: explanation>"
+    },
+    {
+      "priority": "medium",
+      "title": "Missing structured product information",
+      "current": "<string: current status>",
+      "recommended": "<string: recommended addition>",
+      "details": "<string: explanation>"
+    }
+  ]
 }`;
 
 // Helper: normalize URLs
@@ -100,66 +112,52 @@ async function scrapeUrlSafe(url) {
 
 // Deterministic high-quality fallback generator if Groq API is unavailable
 function generateFallbackGrade({ ideaName, targetCustomer, pricing, description, competitors, distribution, url }) {
-    const name = ideaName || 'Your SaaS Idea';
-    const isWrapperRisk = /chatgpt|openai|wrapper|prompt|llm|ai bot/i.test(description || '');
-    const hasEnterpriseCustomer = /b2b|enterprise|mid-market|companies|teams|executives/i.test(targetCustomer || '');
-    const weakDist = /twitter|social media|viral|reddit|launching|waitlist/i.test(distribution || '');
+    const name = ideaName || 'Your SaaS';
+    const hasClearH1 = description && description.length > 25;
+    const hasPricing = pricing && pricing.length > 5;
 
-    const market_potential = hasEnterpriseCustomer ? 78 : 64;
-    const problem_severity = description?.length > 40 ? 74 : 58;
-    const competition_moat = isWrapperRisk ? 44 : 62;
-    const dist_score = weakDist ? 38 : 65;
-    const monetization = /month|\$|pricing|annual/i.test(pricing || '') ? 71 : 52;
-    const ai_defensibility = isWrapperRisk ? 36 : 59;
+    const messaging = hasClearH1 ? 78 : 58;
+    const conversion = hasPricing ? 64 : 48;
+    const trust = 71;
+    const search = 52;
+    const ai_discovery = 43;
 
-    const overall_score = Math.round(
-        (market_potential * 0.2) +
-        (problem_severity * 0.2) +
-        (competition_moat * 0.15) +
-        (dist_score * 0.2) +
-        (monetization * 0.15) +
-        (ai_defensibility * 0.1)
-    );
-
-    let weakest_pillar = 'distribution';
-    let weakest_pillar_name = 'Distribution Strategy';
-    let minScore = dist_score;
-
-    if (ai_defensibility < minScore) {
-        minScore = ai_defensibility;
-        weakest_pillar = 'ai_defensibility';
-        weakest_pillar_name = 'AI Defensibility';
-    }
-    if (competition_moat < minScore) {
-        minScore = competition_moat;
-        weakest_pillar = 'competition_moat';
-        weakest_pillar_name = 'Competition & Moat';
-    }
+    const overall_score = Math.round((messaging + conversion + trust + search + ai_discovery) / 5);
 
     return {
         idea_name: name,
         overall_score,
         pillar_scores: {
-            market_potential,
-            problem_severity,
-            competition_moat,
-            distribution: dist_score,
-            monetization,
-            ai_defensibility
+            messaging,
+            conversion,
+            trust,
+            search,
+            ai_discovery
         },
-        founder_archetype: isWrapperRisk ? 'The Wrapper Hustler' : (hasEnterpriseCustomer ? 'The Stealth Builder' : 'The Solution Seeking a Problem'),
-        verdict_headline: dist_score < 50 ? 'Promising problem. Fatal distribution strategy.' : 'Solid concept. Defensibility requires proprietary workflow lock-in.',
-        brutal_critique: `Your concept targets a tangible pain point, but you're drastically underestimating the friction of customer acquisition. Relying on organic noise or generic launch spikes will bleed your momentum before you reach $10k MRR.\n\nFurthermore, if your primary value prop can be replicated by an OpenAI developer prompt or a Zapier recipe in 48 hours, enterprise buyers will refuse annual contracts. You need deep deterministic hooks into the customer's daily data pipeline.\n\nTo survive, narrow your ICP by 80%, tie pricing to measurable economic output rather than user seats, and secure an unfair distribution channel before writing more code.`,
-        weakest_pillar,
-        weakest_pillar_name,
-        weakness_diagnosis: `${weakest_pillar_name} is your single biggest point of failure (${minScore}/100). Without fixing this bottleneck, even a flawless product will fail to convert and churn out before hitting product-market fit.`,
-        action_items: [
-            `Narrow your target customer from "${targetCustomer || 'broad market'}" to one ultra-specific buyer whose bonus depends on solving this problem.`,
-            `Ditch passive launch tactics. Secure 5 design partner pilots via high-touch workflow teardowns before scaling ad spend.`,
-            `Restructure pricing to value-based metrics ($/workflow or % of savings) to prevent LLM inference API costs from cannibalizing gross margins.`
+        verdict_headline: "Good core concept, but your messaging & AI discovery layer need immediate optimization to scale organic traffic.",
+        diagnosis_items: [
+            {
+                priority: 'high',
+                title: "Your H1 doesn't explain the outcome",
+                current: description ? `"${description.substring(0, 35)}..."` : '"The future of automated productivity..."',
+                recommended: `"Automate ${targetCustomer || 'your key workflow'} without ${competitors || 'manual overhead'}"`,
+                details: "Visitors leave within 3 seconds if your primary headline describes your technology instead of the concrete outcome your customer gets."
+            },
+            {
+                priority: 'medium',
+                title: "No social proof above the fold",
+                current: "Hero section relies primarily on text claims without visible proof indicators.",
+                recommended: 'Add "Trusted by 100+ teams", live user counters, or verified customer rating badges directly below your main CTA button.',
+                details: "Social proof placed above the fold increases visitor trial conversion by up to 34%."
+            },
+            {
+                priority: 'medium',
+                title: "Missing structured product information for AI Search",
+                current: "No JSON-LD SoftwareApplication schema or structured capabilities matrix.",
+                recommended: "Add schema tags & explicit feature lists so ChatGPT, Perplexity, and Gemini can index and recommend your product.",
+                details: "Modern AI search engines require structured metadata to surface your SaaS when users ask for recommendations in your niche."
+            }
         ],
-        ai_pricing_advice: `Avoid low-tier $9–$19/mo pricing. For B2B AI tools, minimum viable pricing should be $99/mo to $299/mo with usage boundaries to protect token unit economics.`,
-        genesis_bridge: `LaunchXact's Genesis Batch directly eliminates your ${weakest_pillar_name} deficit by plugging your tool into our curated directory, multi-region compliance billing, and pre-vetted B2B buyer network.`,
         is_demo: true
     };
 }
@@ -308,30 +306,14 @@ Deliver your brutal, quantitative 6-pillar viability audit in valid JSON format.
             resultData = generateFallbackGrade({ ideaName, targetCustomer, pricing, description, competitors, distribution, url });
         }
 
-        // Make sure weakest_pillar is properly identified if missing
-        if (!resultData.weakest_pillar && resultData.pillar_scores) {
-            const scores = resultData.pillar_scores;
-            let lowestKey = 'distribution';
-            let lowestVal = Infinity;
-            for (const [key, val] of Object.entries(scores)) {
-                if (typeof val === 'number' && val < lowestVal) {
-                    lowestVal = val;
-                    lowestKey = key;
-                }
-            }
-            resultData.weakest_pillar = lowestKey;
-        }
-
-        // Human readable name for the weakest pillar
+        // Human readable name mapping for the 5 discovery pillars
         const pillarNames = {
-            market_potential: 'Market Potential',
-            problem_severity: 'Problem Severity',
-            competition_moat: 'Competition & Moat',
-            distribution: 'Distribution Strategy',
-            monetization: 'Monetization Power',
-            ai_defensibility: 'AI Defensibility'
+            messaging: 'Messaging',
+            conversion: 'Conversion',
+            trust: 'Trust',
+            search: 'Search',
+            ai_discovery: 'AI Discovery'
         };
-        resultData.weakest_pillar_name = resultData.weakest_pillar_name || pillarNames[resultData.weakest_pillar] || 'Distribution Strategy';
 
         // 4. Persist data into Supabase
         // Attempt insert into saas_idea_audits
@@ -345,16 +327,13 @@ Deliver your brutal, quantitative 6-pillar viability audit in valid JSON format.
                 distribution: distribution || null,
                 url: url ? normalizeUrl(url) : null,
                 overall_score: resultData.overall_score || 0,
-                market_potential: resultData.pillar_scores?.market_potential ?? null,
-                problem_severity: resultData.pillar_scores?.problem_severity ?? null,
-                competition_moat: resultData.pillar_scores?.competition_moat ?? null,
-                distribution_score: resultData.pillar_scores?.distribution ?? null,
-                monetization_score: resultData.pillar_scores?.monetization ?? null,
-                ai_defensibility: resultData.pillar_scores?.ai_defensibility ?? null,
-                weakest_pillar: resultData.weakest_pillar || null,
+                messaging_score: resultData.pillar_scores?.messaging ?? null,
+                conversion_score: resultData.pillar_scores?.conversion ?? null,
+                trust_score: resultData.pillar_scores?.trust ?? null,
+                search_score: resultData.pillar_scores?.search ?? null,
+                ai_discovery_score: resultData.pillar_scores?.ai_discovery ?? null,
                 verdict_headline: resultData.verdict_headline || null,
-                brutal_critique: resultData.brutal_critique || null,
-                action_items: resultData.action_items || [],
+                diagnosis_items: resultData.diagnosis_items || [],
                 founder_email: email ? email.trim().toLowerCase() : null
             };
 

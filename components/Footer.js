@@ -47,7 +47,7 @@ export default function Footer() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src="https://launchxact.com/badges/launchxact-badge.svg"
-                            alt="Featured on LaunchXact | Genesis Batch"
+                            alt="Featured on LaunchXact | Founding 50"
                             width="200"
                             height="56"
                             className={styles.badgeImg}
