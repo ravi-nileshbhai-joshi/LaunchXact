@@ -163,6 +163,14 @@ export async function POST(request) {
         const logoUrl = data.logoUrl?.trim() || data.logo?.trim() || '';
         const reviewTier = data.reviewTier === 'fast_track' || data.fastTrack ? 'fast_track' : 'standard';
 
+        // Rich Metadata gathered from 3-Step Wizard & AI Autofill
+        const useCases = data.useCases?.trim() || '';
+        const targetCustomer = data.targetCustomer?.trim() || '';
+        const pricing = data.pricing?.trim() || '';
+        const keyFeatures = data.keyFeatures?.trim() || '';
+        const founderStory = data.founderStory?.trim() || '';
+        const source = data.source?.trim() || data.utmSource?.trim() || data.utm_source?.trim() || 'direct';
+
         if (!email) {
             return NextResponse.json({ error: 'Email is required.' }, { status: 400 });
         }
@@ -189,30 +197,50 @@ export async function POST(request) {
         // Synthesize rich AEO / showcase metadata
         const aeoContent = {
             tagline: description.length > 0 ? description.substring(0, 140) : `${productName} — modern SaaS built for ${category}`,
-            problem_solved: `${productName} tackles ${biggestProblem.toLowerCase()} challenges for modern teams by streamlining core workflows.`,
-            target_audience: `${category} teams, technical founders, and operators looking for high-efficiency tooling.`,
+            description: description,
+            problem_solved: founderStory || `${productName} tackles ${biggestProblem.toLowerCase()} challenges for modern teams by streamlining core workflows.`,
+            target_audience: targetCustomer || `${category} teams, technical founders, and operators looking for high-efficiency tooling.`,
             stage: stage,
             monthly_revenue: monthlyRevenue,
             biggest_problem: biggestProblem,
+            pricing_model: pricing || 'Free tier / freemium',
             founder_name: founderName,
             social_profile: social,
             website_url: website,
             logo_url: logoUrl,
             review_tier: reviewTier,
             badge_verified: badgeVerified,
-            key_features: [
+            funnel_source: source,
+            use_cases: useCases ? useCases.split(',').map(s => s.trim()).filter(Boolean) : [
+                `Workflow automation for ${category}`,
+                'High-performance productivity and efficiency'
+            ],
+            key_features: keyFeatures ? keyFeatures.split(',').map(s => s.trim()).filter(Boolean) : [
                 `Built for ${category} workflows`,
                 `Verified member of the LaunchXact Founding 50`,
                 `Direct founder support and fast iteration cycles`
             ],
+            founder_story: founderStory || '',
             faq: [
                 {
                     q: `What is ${productName}?`,
-                    a: `${productName} is an emerging ${category} product currently in the ${stage} stage.`
+                    a: description || `${productName} is an emerging ${category} product currently in the ${stage} stage.`
                 },
                 {
                     q: `Who is building ${productName}?`,
                     a: `Built by ${founderName} and submitted to the LaunchXact Founding 50.`
+                },
+                {
+                    q: `Who is the ideal user for ${productName}?`,
+                    a: targetCustomer || `Designed for technical operators, founders, and software teams.`
+                },
+                {
+                    q: `What are the core use cases for ${productName}?`,
+                    a: useCases || `Designed to streamline key ${category} workflows.`
+                },
+                {
+                    q: `How is ${productName} priced?`,
+                    a: pricing || `Free tier or flexible subscription plans available.`
                 }
             ]
         };
@@ -243,9 +271,15 @@ export async function POST(request) {
                 logo_url: logoUrl,
                 review_tier: reviewTier,
                 badge_verified: badgeVerified,
+                use_cases: useCases,
+                target_customer: targetCustomer,
+                pricing: pricing,
+                key_features: keyFeatures,
+                founder_story: founderStory,
+                source: source,
                 aeo: aeoContent
             },
-            utm_source: data.utmSource || null,
+            utm_source: source !== 'direct' ? source : (data.utmSource || null),
             utm_medium: data.utmMedium || null,
             utm_campaign: data.utmCampaign || null,
         };
@@ -268,11 +302,11 @@ export async function POST(request) {
                 founder_name: founderName,
                 product_name: productName,
                 website_url: website,
-                description: `[Stage: ${stage} | MRR: ${monthlyRevenue} | Bottleneck: ${biggestProblem} | Tier: ${reviewTier} | Badge: ${badgeVerified}] ${description}`,
+                description: `[Stage: ${stage} | MRR: ${monthlyRevenue} | Bottleneck: ${biggestProblem} | Pricing: ${pricing || 'N/A'} | Target: ${targetCustomer || 'N/A'} | Source: ${source}] ${description}`,
                 category: category,
                 email: email,
                 social_profile: social,
-                utm_source: data.utmSource || null,
+                utm_source: source !== 'direct' ? source : (data.utmSource || null),
                 utm_medium: data.utmMedium || null,
                 utm_campaign: data.utmCampaign || null,
             };
@@ -488,6 +522,73 @@ https://launchxact.com`;
                     emailSent = true;
                     emailMessageId = resendResult.data?.id;
                     console.log('✅ Resend confirmation email delivered! Message ID:', emailMessageId);
+                }
+
+                // =========================================================================
+                // Admin Notification: Complete Founder & Product Dossier for Curation
+                // =========================================================================
+                try {
+                    const adminRecipient = process.env.ADMIN_EMAIL || 'hello@launchxact.com';
+                    const adminSubject = `🚨 New Founding 50 Application: ${productName} (${founderName})`;
+                    const adminHtml = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:24px;background:#080c14;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:640px;margin:0 auto;background:#0f172a;border-radius:12px;border:1px solid #1e293b;padding:28px;">
+    <div style="border-bottom:1px solid #1e293b;padding-bottom:14px;margin-bottom:20px;">
+      <span style="font-size:20px;font-weight:800;color:#ffffff;">Launch<span style="color:#6366f1;">Xact</span> Curation Queue</span>
+      <div style="display:inline-block;margin-left:12px;background:rgba(99,102,241,0.2);color:#818cf8;font-size:11px;font-weight:700;padding:3px 10px;border-radius:9999px;">NEW APPLICATION</div>
+    </div>
+
+    <h2 style="margin:0 0 16px;color:#ffffff;font-size:22px;font-weight:800;">${productName}</h2>
+    
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.6;margin-bottom:20px;">
+      <tr><td style="padding:6px 0;color:#94a3b8;width:35%;"><strong>Founder Name:</strong></td><td style="padding:6px 0;color:#f8fafc;font-weight:600;">${founderName}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Founder Email:</strong></td><td style="padding:6px 0;"><a href="mailto:${email}" style="color:#818cf8;text-decoration:none;">${email}</a></td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Website:</strong></td><td style="padding:6px 0;"><a href="${website}" style="color:#818cf8;text-decoration:none;" target="_blank">${website}</a></td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Social / 𝕏:</strong></td><td style="padding:6px 0;color:#f8fafc;">${social || 'Not provided'}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Category:</strong></td><td style="padding:6px 0;color:#f8fafc;">${category}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Product Stage:</strong></td><td style="padding:6px 0;color:#f8fafc;">${stage}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Monthly Revenue:</strong></td><td style="padding:6px 0;color:#f8fafc;">${monthlyRevenue}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Current Bottleneck:</strong></td><td style="padding:6px 0;color:#f8fafc;">${biggestProblem}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Target Customer:</strong></td><td style="padding:6px 0;color:#f8fafc;">${targetCustomer || 'Not specified'}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Use Cases:</strong></td><td style="padding:6px 0;color:#f8fafc;">${useCases || 'Not specified'}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Key Features:</strong></td><td style="padding:6px 0;color:#f8fafc;">${keyFeatures || 'Not specified'}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Pricing Model:</strong></td><td style="padding:6px 0;color:#f8fafc;">${pricing || 'Not specified'}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Funnel Source:</strong></td><td style="padding:6px 0;color:#34d399;font-weight:700;">${source}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Badge Verified:</strong></td><td style="padding:6px 0;color:#f8fafc;">${badgeVerified ? '✅ Yes' : '❌ No'}</td></tr>
+      <tr><td style="padding:6px 0;color:#94a3b8;"><strong>Generated Slug:</strong></td><td style="padding:6px 0;color:#94a3b8;">/products/${slug}</td></tr>
+    </table>
+
+    <div style="background:#090d16;border:1px solid #1e293b;border-radius:8px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Product Description</div>
+      <p style="margin:0;font-size:13.5px;color:#cbd5e1;line-height:1.5;">${description}</p>
+    </div>
+
+    ${founderStory ? `
+    <div style="background:#090d16;border:1px solid #1e293b;border-radius:8px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Founder Story / Why They Built It</div>
+      <p style="margin:0;font-size:13.5px;color:#cbd5e1;line-height:1.5;">${founderStory}</p>
+    </div>` : ''}
+
+    <div style="margin-top:20px;text-align:center;">
+      <a href="${website}" target="_blank" style="display:inline-block;background:#6366f1;color:#ffffff;text-decoration:none;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;margin-right:10px;">Visit Founder Website →</a>
+      <a href="mailto:${email}?subject=${encodeURIComponent(`Your LaunchXact Founding 50 Application: ${productName}`)}" style="display:inline-block;background:#1e293b;color:#ffffff;text-decoration:none;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;">Reply to Founder</a>
+    </div>
+  </div>
+</body>
+</html>`;
+
+                    await resend.emails.send({
+                        from: FROM_EMAIL,
+                        to: adminRecipient,
+                        subject: adminSubject,
+                        html: adminHtml,
+                    });
+                    console.log(`✅ Admin dossier email dispatched to: ${adminRecipient}`);
+                } catch (adminErr) {
+                    console.warn('⚠️ Admin notification email exception:', adminErr.message);
                 }
             } catch (emailErr) {
                 console.error('❌ Resend send exception:', emailErr.message);

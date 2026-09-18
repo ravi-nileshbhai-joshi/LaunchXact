@@ -75,12 +75,15 @@ export default function MarketplaceHome({ latestArticles }) {
         const productParam = params.get('product') || params.get('name');
         const emailParam = params.get('email');
 
-        if (websiteParam || productParam || emailParam) {
+        const sourceParam = params.get('source') || params.get('utm_source') || params.get('ref');
+
+        if (websiteParam || productParam || emailParam || sourceParam) {
             setFounderForm(prev => ({
                 ...prev,
                 website: websiteParam || prev.website,
                 productName: productParam || prev.productName,
                 email: emailParam || prev.email,
+                source: sourceParam || prev.source,
             }));
         }
 
@@ -118,7 +121,8 @@ export default function MarketplaceHome({ latestArticles }) {
         monthlyRevenue: 'Pre-revenue ($0)',
         biggestProblem: 'Distribution',
         reviewTier: 'standard',
-        logoUrl: ''
+        logoUrl: '',
+        source: ''
     });
 
 
