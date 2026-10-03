@@ -9,6 +9,12 @@ function RouteScrollReset({ lenisRef }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // Immediately unlock any lingering overflow styles left by menus or modals
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.removeProperty('overflow');
+      document.body.style.removeProperty('overflow');
+    }
+
     // If URL contains a hash, scroll smoothly to that element
     const hash = typeof window !== 'undefined' ? window.location.hash : '';
     if (hash) {
@@ -57,17 +63,47 @@ export default function SmoothScroll() {
       window.history.scrollRestoration = 'manual';
     }
 
+    // Always clear any stale overflow locks
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.removeProperty('overflow');
+      document.body.style.removeProperty('overflow');
+    }
+
+    // Mobile / touch screen detection:
+    // Android phones and iPhones have native, 120Hz/60Hz hardware-accelerated momentum scrolling.
+    // Lenis is designed for desktop mouse-wheel smoothing; running Lenis on touch devices
+    // causes touch event conflicts, RAF lagging, and overflow locks during transitions.
+    const isTouchOrMobile = () => {
+      if (typeof window === 'undefined') return false;
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      const isMobileWidth = window.innerWidth <= 1024;
+      return hasTouch && (isCoarse || isMobileWidth);
+    };
+
+    if (isTouchOrMobile()) {
+      // Ensure global handles don't block mobile interaction
+      if (typeof window !== 'undefined') {
+        window.__lenis = null;
+        window.lenis = null;
+      }
+      return () => {
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow');
+      };
+    }
+
+    // Desktop initialization with safe options (autoToggle disabled to avoid permanent 'overflow: clip')
     const lenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       direction: 'vertical',
       gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
+      smoothWheel: true,
+      syncTouch: false,
+      touchMultiplier: 1,
       infinite: false,
-      autoToggle: true,
+      autoToggle: false,
       allowNestedScroll: true,
       stopInertiaOnNavigate: true,
       prevent: (node) => {
@@ -97,7 +133,7 @@ export default function SmoothScroll() {
 
     animationFrameId = requestAnimationFrame(raf);
 
-    // Global listener for internal links to cancel inertia or scroll to top on same page
+    // Global listener for same-page internal links (scrollTo top if current page)
     const handleLinkClick = (e) => {
       const anchor = e.target.closest('a');
       if (!anchor) return;
@@ -114,12 +150,6 @@ export default function SmoothScroll() {
       ) {
         return;
       }
-
-      // Stop any running inertia so the outgoing page doesn't fling into the new one
-      lenis.stop();
-      requestAnimationFrame(() => {
-        lenis.start();
-      });
 
       // If clicking a link to the current page without a hash, scroll smoothly to top
       const [path] = href.split('#');
@@ -140,6 +170,8 @@ export default function SmoothScroll() {
         delete window.__lenis;
         delete window.lenis;
       }
+      document.documentElement.style.removeProperty('overflow');
+      document.body.style.removeProperty('overflow');
     };
   }, []);
 

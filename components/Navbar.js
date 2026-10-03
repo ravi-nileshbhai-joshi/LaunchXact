@@ -1,12 +1,26 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import RocketLogo from './RocketLogo';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const pathname = usePathname();
+
+    // Automatically close mobile menu and ensure overflow is unlocked on route change
+    useEffect(() => {
+        setIsOpen(prev => {
+            if (prev) return false;
+            return prev;
+        });
+        if (typeof document !== 'undefined') {
+            document.body.style.removeProperty('overflow');
+            document.documentElement.style.removeProperty('overflow');
+        }
+    }, [pathname]);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -15,16 +29,25 @@ export default function Navbar() {
     }, []);
 
     useEffect(() => {
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-        if (typeof window !== 'undefined' && window.__lenis) {
-            if (isOpen) {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+            if (typeof window !== 'undefined' && window.__lenis) {
                 window.__lenis.stop();
-            } else {
+            }
+        } else {
+            if (typeof document !== 'undefined') {
+                document.body.style.removeProperty('overflow');
+                document.documentElement.style.removeProperty('overflow');
+            }
+            if (typeof window !== 'undefined' && window.__lenis) {
                 window.__lenis.start();
             }
         }
         return () => { 
-            document.body.style.overflow = ''; 
+            if (typeof document !== 'undefined') {
+                document.body.style.removeProperty('overflow'); 
+                document.documentElement.style.removeProperty('overflow');
+            }
             if (typeof window !== 'undefined' && window.__lenis) {
                 window.__lenis.start();
             }

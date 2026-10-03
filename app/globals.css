@@ -60,16 +60,25 @@
   padding: 0;
 }
 
-html, body {
+html {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100%;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ==================== TYPOGRAPHY ==================== */
