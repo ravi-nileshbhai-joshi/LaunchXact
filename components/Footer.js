@@ -39,6 +39,21 @@ export default function Footer() {
                         />
                     </a>
                     <a
+                        href="https://nicklaunches.com/products/launchxact/"
+                        target="_blank"
+                        rel="noopener"
+                        className={styles.badgeLink}
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="https://nicklaunches.com/badges/featured.png"
+                            alt="LaunchXact on Nick Launches"
+                            width="244"
+                            height="56"
+                            className={styles.badgeImg}
+                        />
+                    </a>
+                    <a
                         href="https://launchxact.com"
                         target="_blank"
                         rel="noopener"
