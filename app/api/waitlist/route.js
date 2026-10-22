@@ -160,8 +160,9 @@ export async function POST(request) {
         const biggestProblem = data.biggestProblem?.trim() || 'Distribution';
         const category = data.category?.trim() || 'B2B SaaS';
         const social = data.social?.trim() || '';
-        const logoUrl = data.logoUrl?.trim() || data.logo?.trim() || '';
-        const reviewTier = data.reviewTier === 'fast_track' || data.fastTrack ? 'fast_track' : 'standard';
+        const rawLogo = (data.logoUrl || data.logo || '').trim();
+        const logoUrl = /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(rawLogo) ? rawLogo : null;
+        const reviewTier = (data.reviewTier === 'fast_track' || data.fastTrack) ? 'fast_track' : 'standard';
 
         // Rich Metadata gathered from 3-Step Wizard & AI Autofill
         const useCases = data.useCases?.trim() || '';
@@ -246,8 +247,6 @@ export async function POST(request) {
         };
 
         // 1. Insert into waitlist_founders
-        let founderRowId = null;
-
         // Try inserting with new intelligence & monetization columns
         const fullFounderPayload = {
             founder_name: founderName,
@@ -268,7 +267,7 @@ export async function POST(request) {
                 stage,
                 monthly_revenue: monthlyRevenue,
                 biggest_problem: biggestProblem,
-                logo_url: logoUrl,
+                logo_url: logoUrl || null,
                 review_tier: reviewTier,
                 badge_verified: badgeVerified,
                 use_cases: useCases,
@@ -284,24 +283,38 @@ export async function POST(request) {
             utm_campaign: data.utmCampaign || null,
         };
 
-        const { data: insertedFounder, error: fullInsertErr } = await supabase
+        const { error: fullInsertErr } = await supabase
             .from('waitlist_founders')
-            .insert([fullFounderPayload])
-            .select('id')
-            .single();
+            .insert([fullFounderPayload]);
 
         if (fullInsertErr) {
-            console.warn('Extended columns insert warning (schema pending):', fullInsertErr.message);
-
             if (fullInsertErr.code === '23505') { // Unique violation
                 return NextResponse.json({ error: 'This email is already registered on our founder waitlist!' }, { status: 409 });
             }
 
-            // Fallback to baseline columns if table doesn't have the new columns yet
+            // Only fallback to baseline payload if the error is an expected schema mismatch (missing columns in deployed schema)
+            const isSchemaMismatch = (
+                fullInsertErr.code === 'PGRST204' ||
+                fullInsertErr.code === '42703' ||
+                /column.*schema cache|column.*does not exist/i.test(fullInsertErr.message || '')
+            );
+
+            if (!isSchemaMismatch) {
+                console.error('Extended founder insert unexpected error:', fullInsertErr);
+                throw fullInsertErr;
+            }
+
+            console.warn('Extended columns insert warning (schema pending):', fullInsertErr.message);
+
+            // Fallback to baseline columns verified against deployed schema
             const baselinePayload = {
                 founder_name: founderName,
                 product_name: productName,
                 website_url: website,
+                logo_url: logoUrl || null,
+                review_tier: reviewTier,
+                fast_track_paid: reviewTier === 'fast_track',
+                badge_verified: Boolean(badgeVerified),
                 description: `[Stage: ${stage} | MRR: ${monthlyRevenue} | Bottleneck: ${biggestProblem} | Pricing: ${pricing || 'N/A'} | Target: ${targetCustomer || 'N/A'} | Source: ${source}] ${description}`,
                 category: category,
                 email: email,
@@ -311,11 +324,9 @@ export async function POST(request) {
                 utm_campaign: data.utmCampaign || null,
             };
 
-            const { data: baselineFounder, error: baseErr } = await supabase
+            const { error: baseErr } = await supabase
                 .from('waitlist_founders')
-                .insert([baselinePayload])
-                .select('id')
-                .single();
+                .insert([baselinePayload]);
 
             if (baseErr) {
                 console.error('Base founder insert error:', baseErr);
@@ -324,10 +335,6 @@ export async function POST(request) {
                 }
                 throw baseErr;
             }
-
-            founderRowId = baselineFounder?.id;
-        } else {
-            founderRowId = insertedFounder?.id;
         }
 
         // Also stage/update in products table so the founder is ready for marketplace launch
@@ -349,10 +356,16 @@ export async function POST(request) {
         }
 
         // 2. Send Application Confirmation Email via Resend
+        // Guard: Server-controlled test mode is primary; reserved test domains serve as an additional safety net
+        const isServerTestMode = process.env.NODE_ENV === 'test' ||
+            process.env.LAUNCHXACT_TEST_MODE === 'true';
+        const isReservedTestDomain = /@(example\.(com|org|net|test|invalid)|test\.local)$/i.test(email);
+        const shouldSuppressEmails = isServerTestMode || isReservedTestDomain;
+
         let emailSent = false;
         let emailMessageId = null;
 
-        if (resend) {
+        if (resend && !shouldSuppressEmails) {
             try {
                 const isFastTrack = reviewTier === 'fast_track';
                 const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just applied to the @LaunchXact Founding 50 with ${productName}! Excited to get a permanent place to be discovered. 🚀 https://launchxact.com`)}`;
